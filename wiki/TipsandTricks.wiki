@@ -1,0 +1,12 @@
+#summary Tips and Tricks
+
+= Introduction =
+
+Tips and Tricks for using Itadaki.
+
+
+= Details =
+
+You can lookup a word in the dictionary by selecting it and pressing *Ctrl+G*.
+
+To change the appearance of furigana go to "Format > Asian Phonetic Guide" There, under "Character style for ruby text", should be "Rubys" selected. If you click on the "Styles" button, then right click on any of the styles in the list (ie. Rubys), you can modify the font, size, effects, and also get rid of the grey background in the furigana boxes ("background" tab, and choose to fill with white).
