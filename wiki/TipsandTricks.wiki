@@ -54,6 +54,15 @@ Change the width of the kanji table to automatic:
 }}}
 This is useful if you want to display more kanji at once, when you look up a word in the Rikaichan lookup bar. It doesn't work in Rikaichan 1.06 and earlier, because Rikaichan incorrectly always assumes that the width of the kanji table is 300 pixel.
 
+== How to install the dictionary ==
+There are two ways to install the dictionary required by Furigana Inserter.
+ # The first option is to install the dictionary add-on for Firefox.
+  # Download the file `furiganainserter-dictionary.7z` and unpack it with [http://www.7-zip.org 7-Zip] or WinRAR.
+  # Then either drag and drop the resulting file `furiganainserter-dictionary.xpi` into a Firefox window or go the `File` menu in Firefox, choose `Open File...` and select the file `furiganainserter-dictionary.xpi`.
+ # Second option is to install [http://sourceforge.net/projects/mecab/files/ MeCab] instead of the dictionary add-on.
+  # If you are on Windows then download for example [http://sourceforge.net/projects/mecab/files/mecab-win32/mecab-0.97.exe/download mecab-0.97.exe].
+  # During the installation choose `UTF-8` format.
+
 = Tips and Tricks for using Itadaki.=
 
 == Lookup ==
