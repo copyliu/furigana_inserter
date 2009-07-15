@@ -63,10 +63,10 @@ There are two ways to install the dictionary required by Furigana Inserter.
   # If you are on Windows then download for example [http://sourceforge.net/projects/mecab/files/mecab-win32/mecab-0.97.exe/download mecab-0.97.exe].
   # During the installation choose `UTF-8` format.
 
-= Tips and Tricks for using Itadaki.=
+= Tips and Tricks for using Itadaki =
 
 == Lookup ==
 You can lookup a word in the dictionary by selecting it and pressing *Ctrl+G*.
 
 ==Appearance of Ruby==
-To change the appearance of furigana go to "Format > Asian Phonetic Guide" There, under "Character style for ruby text", should be "Rubys" selected. If you click on the "Styles" button, then right click on any of the styles in the list (ie. Rubys), you can modify the font, size, effects, and also get rid of the grey background in the furigana boxes ("background" tab, and choose to fill with white).
+To change the appearance of furigana go to "Format > Asian Phonetic Guide" There, under "Character style for ruby text", should be "Rubies" selected. If you click on the "Styles" button, then right click on any of the styles in the list (ie. Rubies), you can modify the font, size, effects, and also get rid of the grey background in the furigana boxes ("background" tab, and choose to fill with white).
