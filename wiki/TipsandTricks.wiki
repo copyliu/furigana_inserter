@@ -61,7 +61,7 @@ There are two ways to install the dictionary required by Furigana Inserter.
   # Then either drag and drop the resulting file `furiganainserter-dictionary.xpi` into a Firefox window or go the `File` menu in Firefox, choose `Open File...` and select the file `furiganainserter-dictionary.xpi`.
  # Second option is to install [http://sourceforge.net/projects/mecab/files/ MeCab] instead of the dictionary add-on.
   # If you are on Windows then download for example [http://sourceforge.net/projects/mecab/files/mecab-win32/mecab-0.97.exe/download mecab-0.97.exe].
-  # During the installation choose `UTF-8` format.
+  # During the installation choose the UTF-8 format.
 
 = Tips and Tricks for using Itadaki =
 
