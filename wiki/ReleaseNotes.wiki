@@ -1,0 +1,40 @@
+#summary Release notes for Furigana Inserter.
+
+= Release Notes =
+==15.07.2009 Furigana Inserter 1.0.2==
+This is a major update.
+ * Added: You can now choose between hiragana, katakana and romaji for furigana alphabet.
+ * Added: Furigana Inserter can now split Japanese into words. You can change the style of those words in `chrome\userContent.css` in your Firefox profile directory.
+ * Furigana Inserter can now look up words and display the translation in a popup just like Rikaichan. [https://addons.mozilla.org/firefox/addon/2471 Rikaichan] needs to be installed for that to work. There are two lookup modes:
+  # If Furigana Inserter is configured to split words then a word can be used for lookup. Just move the mouse cursor somewhere into the word.
+  # Furigana Inserter can lookup the word that follows the cursor, just like Rikaichan. It will ignore all markup in the word, including ruby (furigana).
+
+==31.05.2009 Furigana Inserter 1.0.1==
+ * Fixed: Sometimes, very rarely it didn't insert furigana for some words.
+ * Fixed: Other small bugs.
+
+==24.05.2009 Furigana Inserter 1.0.0==
+ * Fixed: Some bugs, that could not be triggered through the normal user interface.
+ * Changed GUI: Now you have to use left click to access the menu in the status bar.
+
+Works with Firefox 3.5.
+
+==22.12.2008 Furigana Inserter 0.9.4==
+ * Major bug fix: Should now work on all versions of Windows. Not only on German and English versions. Only tested on German Windows XP.
+
+Works with Firefox 3.1 beta 2.
+
+==05.07.2008 Furigana Inserter 0.9.3==
+ * Fixed: Furigana wasn't displayed for words starting with hiragana.
+ * Improved speed.
+ * Rewritten more code for speed and clarity. Almost all code is rewritten by now.
+
+==30.06.2008 Furigana Inserter 0.9.2==
+ * If the Rikaichan add-on is installed then it is modified to ignore ruby elements.
+ * Removed on-the-fly modifications to the HTML Ruby add-on. The latest version of HTML Ruby - version 4.43 works great without any modifications.
+
+==29.06.2008 Furigana Inserter 0.9.1==
+ * Second release. Requires Firefox 3. Also requires the HTML Ruby add-on to display furigana.
+
+==24.06.2008 Furigana Inserter 0.9==
+ * This is the first release of Furigana Inserter. Currently it only works on Windows. Only tested on Windows XP SP3. You are welcome to port it to other platforms and to submit patches. I'll gladly accept them.
