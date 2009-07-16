@@ -1,5 +1,4 @@
 #summary Feedback
-#labels Featured
 
 = Introduction =
 
