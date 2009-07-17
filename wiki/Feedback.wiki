@@ -1,8 +1,0 @@
-#summary Feedback
-
-= Introduction =
-
-You can leave your feedback about Itadaki here.
-
-
-= Feedback =
