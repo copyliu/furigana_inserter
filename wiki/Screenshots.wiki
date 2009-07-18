@@ -1,0 +1,10 @@
+#summary Furigana Inserter screen shots.
+
+= Screen shots =
+[http://xs941.xs.to/xs941/09296/fi-statusbar166.png]
+
+Furigana Inserter icon in the status bar. Click on it to display a menu.
+
+[http://xs941.xs.to/xs941/09296/fi-popup604.png]
+
+Furigana Inserter popup. Shows translation of the Japanese word and information about the kanji. The Rikaichan add-on needs to be installed for this. You can also see the furigana above kanji. Furigana is rendered by the HTML Ruby add-on.
