@@ -1,0 +1,9 @@
+#summary Frequently Asked Questions about Furigana Inserter.
+
+= Frequently Asked Questions =
+
+== How do I install the dictionary for Furigana Inserter?=
+See [TipsandTricks#How_to_install_the_dictionary].
+
+== How do I change the font size of ruby? ==
+The HTML Ruby add-on allows you to change the font size of ruby. Go to the `Tools` menu, select `Add-ons` then select `HTML Ruby` and choose `Options`. There you will find the option `Ruby text size`.
