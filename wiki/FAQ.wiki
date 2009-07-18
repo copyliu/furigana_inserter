@@ -1,4 +1,5 @@
 #summary Frequently Asked Questions about Furigana Inserter.
+#labels Featured
 
 = Frequently Asked Questions =
 
