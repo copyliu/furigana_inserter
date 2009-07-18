@@ -1,4 +1,5 @@
 #summary Furigana Inserter screen shots.
+#labels Featured
 
 = Screen shots =
 [http://xs941.xs.to/xs941/09296/fi-statusbar166.png]
