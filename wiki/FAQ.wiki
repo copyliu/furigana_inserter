@@ -8,3 +8,6 @@ See [TipsandTricks#How_to_install_the_dictionary].
 
 == How do I change the font size of ruby? ==
 The HTML Ruby add-on allows you to change the font size of ruby. Go to the `Tools` menu, select `Add-ons` then select `HTML Ruby` and choose `Options`. There you will find the option `Ruby text size`.
+
+== Why is does it take so long for furigana to appear? I use the HTML Ruby add-on. ==
+HTML Ruby version 5.11 and above have a bug, which makes it react very slowly, especially on large web pages. I have put a version of HTML Ruby on the [http://code.google.com/p/itadaki/downloads/list download] page, which fixes this bug.
