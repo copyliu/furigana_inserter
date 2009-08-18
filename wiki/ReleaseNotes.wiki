@@ -2,6 +2,11 @@
 #labels Featured
 
 = Release Notes =
+==18.08.2009 Furigana Inserter 1.0.3==
+This is a minor update.
+ * Fixed: Selection was removed even in the "use word" mode.
+ * Fixed: Word lookup didn't work in Firefox 3.5 with dynamically inserted ruby.
+
 ==15.07.2009 Furigana Inserter 1.0.2==
 This is a major update.
  * Added: You can now choose between hiragana, katakana and romaji for furigana alphabet.
