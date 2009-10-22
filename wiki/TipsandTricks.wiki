@@ -7,13 +7,16 @@
 You can customize the style of the dictionary popup and of Japanese words using [http://en.wikipedia.org/wiki/CSS CSS]. You need to put the CSS code in the file `chrome\userContent.css` in the Firefox profile directory. On Windows it is located in the directory `%APPDATA%\Mozilla\Firefox\Profiles`. You can copy and paste this path into the Windows Explorer address bar.
 
 == Customizing the style of words ==
-This CSS rule will introduce space between Japanese words.
+This CSS rule will introduce space between Japanese words, if you are using katakana or hiragana.
 {{{
 span.fi {
     padding-left: 0.3ex !important;
     padding-right: 0.3ex !important
 }
-ruby.fi {
+}}}
+If you are using romaji then you need to use the following rule.
+{{{
+ruby {
     padding-left: 0.3ex !important;
     padding-right: 0.3ex !important
 }
