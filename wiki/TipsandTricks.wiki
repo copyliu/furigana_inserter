@@ -4,20 +4,16 @@
 =Tips and Tricks for using Furigana Inserter=
 
 == General information ==
-You can customize the style of the dictionary popup and of Japanese words using [http://en.wikipedia.org/wiki/CSS CSS]. You need to put the CSS code in the file `chrome\userContent.css` in the Firefox profile directory. On Windows it is located in the directory `%APPDATA%\Mozilla\Firefox\Profiles`. You can copy and paste this path into the Window Explorer address bar.
+You can customize the style of the dictionary popup and of Japanese words using [http://en.wikipedia.org/wiki/CSS CSS]. You need to put the CSS code in the file `chrome\userContent.css` in the Firefox profile directory. On Windows it is located in the directory `%APPDATA%\Mozilla\Firefox\Profiles`. You can copy and paste this path into the Windows Explorer address bar.
 
 == Customizing the style of words ==
-If you use hiragana or katakana for ruby then you need to customize the style of `<span class="fi">` elements. Example:
+This CSS rule will introduce space between Japanese words.
 {{{
 span.fi {
     padding-left: 0.3ex !important;
     padding-right: 0.3ex !important
 }
-}}}
-This CSS rule will introduce space between Japanese words.
-If you use romaji then you need to customize the style of `<ruby>` elements. Example:
-{{{
-ruby {
+ruby.fi {
     padding-left: 0.3ex !important;
     padding-right: 0.3ex !important
 }
