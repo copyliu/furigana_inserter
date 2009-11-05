@@ -2,6 +2,14 @@
 #labels Featured
 
 = Release Notes =
+==05.11.2009 Furigana Inserter 1.0.4==
+  * Made compatible with Firefox 3.6
+  * Fixed: furigana was inserted in the wrong tab, if "process every page automatically" was turned on and user reloaded a tab through right-click menu.
+  * Integrated part of the HTML Ruby add-on. Now Furigana Inserter will render the ruby elements itself if the HTML Ruby add-on is not installed and Firefox is version 3.5 or higher. If you have Firefox 3.5 or higher and FI 1.0.4, then you don't need the HTML Ruby add-on.
+  * Added support for a user dictionary. The option "extensions.furiganainserter.user_dic_path" is only accessible through "about:options". This is a feature for advanced users.
+  * Changed defaults: FI now uses words for lookup and splits Japanese into words per default
+  * Removed option to not insert furigana for links from the options dialog. Still accessible through "about:config".
+
 ==18.08.2009 Furigana Inserter 1.0.3==
 This is a minor update.
  * Fixed: Selection was removed even in the "use word" mode.
