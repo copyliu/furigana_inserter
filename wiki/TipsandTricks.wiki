@@ -37,21 +37,20 @@ Change the font size of the kanji to 24 pixel:
 }
 }}}
 
-Change width of the popup to 600 pixel and height to automatic:
+Change the maximum width of the popup to 600 pixel, the height is set to automatic per default:
 {{{
 #rikaichan-window {
-    height: auto !important;
-    width: 600px !important;
+    max-width: 600px !important;
 }
 }}}
 
-Change the width of the kanji table to automatic:
+Change the width of the kanji table to 150 pixel:
 {{{
 #rikaichan-window .k-main-tb {
-    width: auto !important;
+    width: 150px !important;
 }
 }}}
-This is useful if you want to display more kanji at once, when you look up a word in the Rikaichan lookup bar. It doesn't work in Rikaichan 1.06 and earlier, because Rikaichan incorrectly always assumes that the width of the kanji table is 300 pixel.
+This is useful if you want to display more kanji at once, when you look up a word in the Rikaichan lookup bar. It doesn't work in Rikaichan version 1.06 and earlier, because Rikaichan incorrectly assumes that the width of the kanji table is 300 pixel.
 
 == How to install the dictionary ==
 There are two ways to install the dictionary required by Furigana Inserter.
