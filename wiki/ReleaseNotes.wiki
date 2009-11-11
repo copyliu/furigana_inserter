@@ -2,6 +2,9 @@
 #labels Featured
 
 = Release Notes =
+==11.11.2009 Furigana Inserter 1.0.5==
+  * Reworked the popup
+
 ==05.11.2009 Furigana Inserter 1.0.4==
   * Made compatible with Firefox 3.6
   * Fixed: furigana was inserted in the wrong tab, if "process every page automatically" was turned on and user reloaded a tab through right-click menu.
