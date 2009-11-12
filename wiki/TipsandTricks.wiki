@@ -23,6 +23,8 @@ ruby {
 }}}
 
 == Customizing the dictionary popup ==
+The following tips will only work for Rikaichan and Furigana Inserter 1.0.3 and earlier. Since version 1.0.4 Furigana Inserter uses a popup with a different id. It also looks good per default, so you probably won't need to customize it, although it's still possible.
+
 To remove the information about a kanji like the number of strokes etc. use this rule:
 {{{
 #rikaichan-window .k-abox-tb {
