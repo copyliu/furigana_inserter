@@ -2,7 +2,7 @@
 #labels Featured
 
 = Release Notes =
-==11.11.2009 Furigana Inserter 1.0.5==
+==16.11.2009 Furigana Inserter 1.0.6==
   * Removed support for Ruby characters again
 ==11.11.2009 Furigana Inserter 1.0.5==
   * Reworked the popup
