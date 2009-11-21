@@ -2,6 +2,10 @@
 #labels Featured
 
 = Release Notes =
+==21.11.2009 Furigana Inserter 1.0.7==
+  * Fixed: Bug introduced in 1.0.6. Sometimes after showing the popup the page scrolled to the wrong place.
+  * Fixed: When you selected text, that spanned two or more paragraphs, and inserted furigana into this selection, sometimes paragraphs were split in two.
+
 ==16.11.2009 Furigana Inserter 1.0.6==
   * "Copy Text Without Furigana" only shows up if text is selected
   * Reworked the popup
@@ -10,6 +14,7 @@
   * Added support for a user dictionary. The option "extensions.furiganainserter.user_dic_path" is only accessible through "about:options". This is a feature for advanced users.
   * Changed defaults: FI now uses words for lookup and splits Japanese into words per default
   * Removed option to not insert furigana for links from the options dialog. Still accessible through "about:config".
+  * Improved the error message: now also shows the error from MeCab.
 
 ==18.08.2009 Furigana Inserter 1.0.3==
 This is a minor update.
