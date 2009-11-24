@@ -2,6 +2,9 @@
 #labels Featured
 
 = Release Notes =
+==21.11.2009 Furigana Inserter 1.0.8==
+  * Fixed: Sometimes furigana wasn't inserted in a selection.
+
 ==21.11.2009 Furigana Inserter 1.0.7==
   * Fixed: Bug introduced in 1.0.6. Sometimes after showing the popup the page scrolled to the wrong place.
   * Fixed: When you selected text, that spanned two or more paragraphs, and inserted furigana into this selection, sometimes paragraphs were split in two.
