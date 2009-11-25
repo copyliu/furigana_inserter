@@ -2,7 +2,7 @@
 #labels Featured
 
 = Release Notes =
-==21.11.2009 Furigana Inserter 1.0.8==
+==24.11.2009 Furigana Inserter 1.0.8==
   * Fixed: Sometimes furigana wasn't inserted in a selection.
 
 ==21.11.2009 Furigana Inserter 1.0.7==
