@@ -2,6 +2,9 @@
 #labels Featured
 
 = Release Notes =
+==28.11.2009 Furigana Inserter 1.0.9==
+  * Fixed: Sometimes a space was inserted into the web page
+
 ==24.11.2009 Furigana Inserter 1.0.8==
   * Fixed: Sometimes furigana wasn't inserted in a selection.
 
