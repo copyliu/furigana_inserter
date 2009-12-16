@@ -2,6 +2,9 @@
 #labels Featured
 
 = Release Notes =
+==16.12.2009 Furigana Inserter 1.0.11==
+  * Improved popup placement
+
 ==02.12.2009 Furigana Inserter 1.0.10==
   * Fixed: Sometimes the style of the popup wasn't changed, when the user selected a new style in the options of Rikaichan
   * Added: Russian and German locales, thanks to those who sent them
