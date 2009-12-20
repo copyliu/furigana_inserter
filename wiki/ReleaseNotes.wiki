@@ -2,6 +2,10 @@
 #labels Featured
 
 = Release Notes =
+==20.12.2009 Furigana Inserter 1.0.12==
+  * Fixed: English locale
+  * Fixed: Sometimes Furigana wasn't inserted in a selection
+
 ==16.12.2009 Furigana Inserter 1.0.11==
   * Improved popup placement
 
