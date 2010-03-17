@@ -4,7 +4,13 @@
 =Frequently Asked Questions=
 
 ==How do I install the dictionary for Furigana Inserter?==
-See [TipsandTricks#How_to_install_the_dictionary].
+There are two ways to install the dictionary required by Furigana Inserter.
+ # The first option is to install the dictionary add-on for Firefox.
+  # Download the file `furiganainserter-dictionary.7z` and unpack it with [http://www.7-zip.org 7-Zip] or WinRAR.
+  # Then either drag and drop the resulting file `furiganainserter-dictionary.xpi` into a Firefox window or go the `File` menu in Firefox, choose `Open File...` and select the file `furiganainserter-dictionary.xpi`.
+ # Second option is to install [http://sourceforge.net/projects/mecab/files/ MeCab] instead of the dictionary add-on.
+  # If you are on Windows then download for example [http://sourceforge.net/projects/mecab/files/mecab-win32/0.98/mecab-0.98.exe/download].
+  # During the installation choose the UTF-8 format.
 
 ==How do I change the font size of ruby?==
 The HTML Ruby add-on allows you to change the font size of ruby. Go to the `Tools` menu, select `Add-ons` then select `HTML Ruby` and choose `Options`. There you will find the option `Ruby text size`.
