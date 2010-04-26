@@ -2,7 +2,7 @@
 #labels Featured
 
 = Release Notes =
-==13.01.2009 Furigana Inserter 1.0.14==
+==13.01.2010 Furigana Inserter 1.0.14==
   * Fixed: Was monitoring the clipboard after the tab had been closed.
   * Added: Split text produced by AGTH for some games.
 
