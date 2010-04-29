@@ -7,7 +7,7 @@
   * Changed: Translation popup now has a fixed size
   * Added: Support for installation of other MeCab dictionaries
   * Added: Pressing Shift/Enter will look up the word in the next Rikaichan dictionary
-  * Fixed: Translation popup menu now works with HTML Ruby v6
+  * Fixed: Translation popup menu now works with [http://htmlruby.codeplex.com/ HTML Ruby] v6
 
 ==13.01.2010 Furigana Inserter 1.0.14==
   * Fixed: Was monitoring the clipboard after the tab had been closed.
