@@ -2,6 +2,9 @@
 #labels Featured
 
 = Release Notes =
+==01.05.2010 Furigana Inserter 1.1.1==
+  * Fixed: Now works with Rikaichan 2.0beta4
+
 ==29.04.2010 Furigana Inserter 1.1.0==
   * Changed: [http://www.polarcloud.com/rikaichan/ Rikaichan] 2.0 is required for the popup menu to work
   * Changed: Translation popup now has a fixed size
