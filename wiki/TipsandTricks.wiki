@@ -3,53 +3,25 @@
 
 =Tips and Tricks for using Furigana Inserter=
 
+== Switching dictionaries ==
+When the popup with the translation is displayed, you can press `Shift` or `Enter` to switch to the next dictionary.
+
 == General information ==
-You can customize the style of the dictionary popup and of Japanese words using [http://en.wikipedia.org/wiki/CSS CSS]. You need to put the CSS code either in the file `chrome\userContent.css` or `chrome\userChrome.css` in the Firefox profile directory. On Windows it is located in the directory `%APPDATA%\Mozilla\Firefox\Profiles`. You can copy and paste this path into the Windows Explorer address bar.
+You can customize the style of the dictionary popup and of Japanese words using [http://en.wikipedia.org/wiki/CSS CSS]. You need to put the CSS code either in the file `chrome\userContent.css` in the Firefox profile directory. On Windows it is located in the directory `%APPDATA%\Mozilla\Firefox\Profiles`. You can copy and paste this path into the Windows Explorer address bar.
 
 == Customizing the style of words ==
 The following rules have to be added to `chrome\userContent.css`. This CSS rule will introduce space between Japanese words, if you are using katakana or hiragana:
 {{{
 span.fi {
-    padding-left: 0.3ex !important;
-    padding-right: 0.3ex !important
+    padding-left: 0.2em !important;
+    padding-right: 0.2em !important
 }
 }}}
 If you are using romaji then you need to use the following rule:
 {{{
 ruby {
-    padding-left: 0.3ex !important;
-    padding-right: 0.3ex !important
-}
-}}}
-
-== Customizing the dictionary popup ==
-The following rules have to be added to `chrome\userChrome.css`.
-
-To remove the information about a kanji like the number of strokes etc. use this rule:
-{{{
-#rikaichan-popup .k-abox-tb {
-    display: none;
-}
-}}}
-
-Change the font size of the kanji to 24 pixel:
-{{{
-#rikaichan-popup .k-kanji {
-    font-size: 24px !important;
-}
-}}}
-
-Change the maximum width of the popup to 600 pixel, the height is set to automatic per default:
-{{{
-#rikaichan-popup {
-    max-width: 600px !important;
-}
-}}}
-
-Change the width of the kanji table to 150 pixel:
-{{{
-#rikaichan-popup .k-main-tb {
-    width: 150px !important;
+    padding-left: 0.2em !important;
+    padding-right: 0.2em !important
 }
 }}}
 
