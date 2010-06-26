@@ -3,8 +3,8 @@
 
 =Frequently Asked Questions=
 
-==How do I install the dictionary for Furigana Inserter?==
-There are two ways to install the dictionary required by Furigana Inserter.
+==How do I install a dictionary for Furigana Inserter?==
+There are two ways to install a dictionary required by Furigana Inserter.
  # The first option is to install the dictionary add-on for Firefox.
   # Download the file `furiganainserter-dictionary.7z` and unpack it with [http://www.7-zip.org 7-Zip] or WinRAR.
   # Then either drag and drop the resulting file `furiganainserter-dictionary.xpi` into a Firefox window or go the `File` menu in Firefox, choose `Open File...` and select the file `furiganainserter-dictionary.xpi`.
@@ -12,8 +12,8 @@ There are two ways to install the dictionary required by Furigana Inserter.
   # If you are on Windows then download for example [http://sourceforge.net/projects/mecab/files/mecab-win32/0.98/mecab-0.98.exe/download].
   # During the installation choose the UTF-8 format.
 
-==How do I change the font size of ruby?==
-The HTML Ruby add-on allows you to change the font size of ruby. Go to the `Tools` menu, select `Add-ons` then select `HTML Ruby` and choose `Options`. There you will find the option `Ruby text size`.
+==How do I change the font size of ruby (furigana)?==
+The HTML Ruby add-on allows you to change the font size of ruby (furigana). Go to the `Tools` menu, select `Add-ons` then select `HTML Ruby` and choose `Options`. There you will find the option `Ruby text size`.
 
 ==Why does it take so long for furigana to appear?==
-HTML Ruby version 5.11 and above have a bug, which makes it react very slowly, especially on large web pages. I have created a version of HTML Ruby which fixes this bug. You can find it on the [http://code.google.com/p/itadaki/downloads/list downloads] page. This bug has been finally fixed in [http://htmlruby.codeplex.com/ HTML Ruby] version 6.22.2.
+HTML Ruby version 5.11 and above have a bug, which makes it react very slowly, especially on large web pages. I have created a version of HTML Ruby which fixes this bug. You can find it on the [http://code.google.com/p/itadaki/downloads/list downloads] page. This bug has been finally fixed in [https://addons.mozilla.org/firefox/addon/6812 HTML Ruby] version 6.22.3.
