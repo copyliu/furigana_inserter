@@ -3,6 +3,9 @@
 
 =Frequently Asked Questions=
 
+==Why does all kanji disappear when I remove furigana from a web page?==
+This happens when you use the HTML Ruby add-on 6.22.3. To prevent this problem you should disable the option "Process inserted content" in the options of the HTML Ruby add-on.
+
 ==How do I install a dictionary for Furigana Inserter?==
 There are two ways to install a dictionary required by Furigana Inserter.
  # The first option is to install the dictionary add-on for Firefox.
