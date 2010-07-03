@@ -2,14 +2,14 @@
 #labels Featured
 
 = Screen shots =
-[http://image.bayimg.com/nanggaach.jpg]
+[]
 
 Furigana inserted in a wikipedia page.
 
-[http://ultraxs.com/image-8089_4B0D374B.jpg]
+[]
 
 Furigana Inserter icon in the status bar. Click on it to display a menu.
 
-[http://ultraxs.com/image-B8B9_4B0D374B.jpg]
+[]
 
 Furigana Inserter popup. Shows translation of the Japanese word and information about the kanji. The Rikaichan add-on needs to be installed for this. You can also see the furigana above kanji. Furigana is rendered by the HTML Ruby add-on.
