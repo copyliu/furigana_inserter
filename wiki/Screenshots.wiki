@@ -2,7 +2,7 @@
 #labels Featured
 
 = Screen shots =
-[http://code.google.com/p/itadaki/wiki/wikipedia_part.png]
+[http://code.google.com/p/itadaki/source/browse/wiki/wikipedia_part.png]
 
 Furigana inserted in a wikipedia page.
 
