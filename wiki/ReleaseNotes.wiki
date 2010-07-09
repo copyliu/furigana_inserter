@@ -2,6 +2,10 @@
 #labels Featured
 
 = Release Notes =
+==09.07.2010 Furigana Inserter 1.2==
+  * Added: filter for clipboard text
+  * Added: ability to edit the user dictionary for MeCab
+
 ==01.05.2010 Furigana Inserter 1.1.1==
   * Fixed: Now works with Rikaichan 2.0beta4
 
