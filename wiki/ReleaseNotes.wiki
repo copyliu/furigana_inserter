@@ -2,6 +2,10 @@
 #labels Featured
 
 = Release Notes =
+==18.07.2010 Furigana Inserter 1.2.1==
+  * Changed: separated substitutions and user dictionary
+  * Fixed:  FI didn't correctly switch the dictionary when the user press Shift/Enter
+
 ==09.07.2010 Furigana Inserter 1.2==
   * Added: filter for clipboard text
   * Added: ability to edit the user dictionary for MeCab
