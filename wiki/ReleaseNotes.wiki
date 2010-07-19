@@ -2,6 +2,9 @@
 #labels Featured
 
 = Release Notes =
+==19.07.2010 Furigana Inserter 1.2.2==
+  * Fixed: didn't work when user dictionary was missing
+
 ==18.07.2010 Furigana Inserter 1.2.1==
   * Changed: separated substitutions and user dictionary
   * Fixed:  FI didn't correctly switch the dictionary when the user press Shift/Enter
