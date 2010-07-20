@@ -20,3 +20,6 @@ The HTML Ruby add-on allows you to change the font size of ruby (furigana). Go t
 
 ==Why does it take so long for furigana to appear?==
 HTML Ruby version 5.11 and above have a bug, which makes it react very slowly, especially on large web pages. I have created a version of HTML Ruby which fixes this bug. You can find it on the [http://code.google.com/p/itadaki/downloads/list downloads] page. This bug has been finally fixed in [https://addons.mozilla.org/firefox/addon/6812 HTML Ruby] version 6.22.3.
+
+==What about Linux and Mac OS X?==
+Since version 2.0 Furigana Inserter should work on Linux and Mac OS X. Firefox 4 is required. I have only tested it on Linux and Windows XP. The dictionary add-on didn't work on Linux. On Linux you have to install MeCab and a UTF-8 dictionary. The user dictionary will only work with the IPAdic dictionary.
