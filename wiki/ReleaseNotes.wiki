@@ -2,6 +2,9 @@
 #labels Featured
 
 = Release Notes =
+==20.07.2010 Furigana Inserter 1.2.3==
+  * Fixed: small bug
+
 ==19.07.2010 Furigana Inserter 1.2.2==
   * Fixed: didn't work when user dictionary was missing
 
