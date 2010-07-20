@@ -2,6 +2,13 @@
 #labels Featured
 
 = Release Notes =
+==20.07.2010 Furigana Inserter 2.0==
+  * This version only works with Firefox 4 which is currently beta.
+  * I added support for Linux and Mac OS X. Only tested on Windows XP and Linux.
+  * The dictionary add-on didn't work on Linux. On Linux you have to install MeCab and a UTF-8 dictionary.
+  * The user dictionary only works with the IPAdic dictionary.
+  * On Windows the following dictionary encodings are supported now: UTF-8, SHIFT_JIS and EUC-JP. UTF-16 isn't supported.
+
 ==20.07.2010 Furigana Inserter 1.2.3==
   * Fixed: small bug
 
