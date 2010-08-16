@@ -2,6 +2,10 @@
 #labels Featured
 
 = Release Notes =
+==16.08.2010 Furigana Inserter 2.0.1==
+  * Fixed: splitting into words didn't work correctly
+  * Added: support for encodings other than UTF-8 for Linux and Mac OS X.
+
 ==04.08.2010 Furigana Inserter 1.2.4==
   * Fixed: splitting into words didn't work correctly
 
