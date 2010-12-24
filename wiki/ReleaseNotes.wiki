@@ -5,6 +5,7 @@
 ==24.12.2010 Furigana Inserter 2.0.5==
   * Fixed: user dictionary didn't work
   * Added: keywords mode
+A fixed version of HTML Ruby is required. If you want to have space between ruby elements. It's available from the download page.
 
 ==25.10.2010 Furigana Inserter 2.0.3==
   * Fixed: didn't work with Fx 4.0b6
