@@ -2,6 +2,10 @@
 #labels Featured
 
 = Release Notes =
+==24.12.2010 Furigana Inserter 2.0.5==
+  * Fixed: user dictionary didn't work
+  * Added: keywords mode
+
 ==25.10.2010 Furigana Inserter 2.0.3==
   * Fixed: didn't work with Fx 4.0b6
   * Fixed: couldn't switch dictionary of popup with Enter/Shift
