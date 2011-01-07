@@ -2,23 +2,27 @@
 #labels Featured
 
 = Release Notes =
-==24.12.2010 Furigana Inserter 2.0.5==
+==Furigana Inserter 2.0.6 (07.01.2011)==
+  * Fixed: several problems with substitution
+  * Fixed: when a window is closed all clipboard monitors are unregistered now
+
+==Furigana Inserter 2.0.5 (24.12.2010)==
   * Fixed: user dictionary didn't work
   * Added: keywords mode
 A fixed version of HTML Ruby is required. If you want to have space between ruby elements. It's available from the download page.
 
-==25.10.2010 Furigana Inserter 2.0.3==
+==Furigana Inserter 2.0.3 (25.10.2010)==
   * Fixed: didn't work with Fx 4.0b6
   * Fixed: couldn't switch dictionary of popup with Enter/Shift
 
-==16.08.2010 Furigana Inserter 2.0.1==
+==Furigana Inserter 2.0.1 (16.08.2010)==
   * Fixed: splitting into words didn't work correctly
   * Added: support for encodings other than UTF-8 for Linux and Mac OS X.
 
-==04.08.2010 Furigana Inserter 1.2.4==
+==Furigana Inserter 1.2.4 (04.08.2010)==
   * Fixed: splitting into words didn't work correctly
 
-==20.07.2010 Furigana Inserter 2.0==
+==Furigana Inserter 2.0 (20.07.2010)==
   * This version only works with Firefox 4 which is currently beta.
   * I added support for Linux and Mac OS X. Only tested on Windows XP and Linux.
   * The dictionary add-on didn't work on Linux. On Linux you have to install MeCab and a UTF-8 dictionary.
