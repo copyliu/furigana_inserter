@@ -2,6 +2,10 @@
 #labels Featured
 
 = Release Notes =
+==Furigana Inserter 2.0.8 (23.02.2011)==
+  * Fixed: issue 14
+  * Fixed: toolbar button appeared incorrectly in the toolbar customization dialog
+
 ==Furigana Inserter 2.0.7 (13.01.2011)==
 small improvements
 
