@@ -6,25 +6,6 @@
 == Switching dictionaries ==
 When the popup with the translation is displayed, you can press `Shift` or `Enter` to switch to the next dictionary.
 
-== General information ==
-You can customize the style of the dictionary popup and of Japanese words using [http://en.wikipedia.org/wiki/CSS CSS]. You need to put the CSS code in the file `chrome\userContent.css` in the Firefox profile directory. On Windows it is located in the directory `%APPDATA%\Mozilla\Firefox\Profiles`. You can copy and paste this path into the Windows Explorer address bar.
-
-== Customizing the style of words ==
-The following rules have to be added to `chrome\userContent.css`. This CSS rule will introduce space between Japanese words, if you are using katakana or hiragana:
-{{{
-span.fi {
-    padding-left: 0.2em !important;
-    padding-right: 0.2em !important
-}
-}}}
-If you are using romaji:
-{{{
-ruby {
-    padding-left: 0.2em !important;
-    padding-right: 0.2em !important
-}
-}}}
-
 = Tips and Tricks for using Itadaki =
 
 == Lookup ==
