@@ -2,6 +2,11 @@
 #labels Featured
 
 = Release Notes =
+==Furigana Inserter 2.0.9 (28.05.2011)==
+  * Fixed: keywords didn't work after pressing "Cancel" in the keywords dialog
+  * Added: a mode which allows to insert keywords instead of kanji
+  * Changed: FI uses a worker now. Fx won't freeze any more. Because of some restrictions of the workers only UTF-8 dictionaries are supported on Mac OS X and Linux now.
+
 ==Furigana Inserter 2.0.8 (23.02.2011)==
   * Fixed: issue 14
   * Fixed: toolbar button appeared incorrectly in the toolbar customization dialog
