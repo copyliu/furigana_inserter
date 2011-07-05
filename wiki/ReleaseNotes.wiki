@@ -2,6 +2,9 @@
 #labels Featured
 
 = Release Notes =
+==Furigana Inserter 2.0.10 (05.07.2011)==
+  * Fixed: clipboard monitoring inserted the text into the current tab
+
 ==Furigana Inserter 2.0.9 (28.05.2011)==
   * Fixed: keywords didn't work after pressing "Cancel" in the keywords dialog
   * Added: a mode which allows to insert keywords instead of kanji
