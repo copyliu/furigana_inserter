@@ -1,5 +1,9 @@
 #summary Release notes for Furigana Inserter.
 #labels Featured
+= Release Notes =
+==Furigana Inserter 2.0.11 (27.09.2011)==
+  * Fixed: error message that appears when the dictionary can't be found
+  * Changed: made compatible with Fx 8.0
 
 = Release Notes =
 ==Furigana Inserter 2.0.10 (05.07.2011)==
