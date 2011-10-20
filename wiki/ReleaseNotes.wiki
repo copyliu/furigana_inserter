@@ -2,7 +2,7 @@
 #labels Featured
 = Release Notes =
 ==Furigana Inserter 2.0.12 (19.10.2011)==
-  * Fixed: Error about unknown OS on Linux
+  * Fixed: Issue 20: Error about unknown OS on Linux
 
 ==Furigana Inserter 2.0.11 (27.09.2011)==
   * Fixed: error message that appears when the dictionary can't be found
