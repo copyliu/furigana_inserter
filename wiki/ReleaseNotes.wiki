@@ -1,6 +1,10 @@
 #summary Release notes for Furigana Inserter.
 #labels Featured
 = Release Notes =
+==Furigana Inserter 2.0.13==
+ * Fixed: really made compatible with Fx 8.0
+
+= Release Notes =
 ==Furigana Inserter 2.0.12 (19.10.2011)==
   * Fixed: Issue 20: Error about unknown OS on Linux
 
