@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
+<dialog id="substDialog"
+xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+title="Substitutions"
+buttons="accept,cancel,help"
+ondialogaccept="return doOk()"
+ondialogcancel="return doCancel()"
+ondialoghelp="return doHelp()">
+    <script src="subst.js"/>
+    <commandset>
+        <command id="showFilterHelpCmd" oncommand="showFilterHelp()" />
+        <command id="addSubstCmd" oncommand="addSubst()" />
+        <command id="deleteSubstCmd" oncommand="deleteSubst()" />
+    </commandset>
+
+    <groupbox>
+        <caption label="Add substitution"/>
+        <grid>
+            <columns>
+                <column />
+                <column />
+            </columns>
+            <rows>
+                <row>
+                    <label value="Regular expression:"/>
+                    <label value="Replacement text:"/>
+                </row>
+                <row>
+                    <textbox size="40" id="regexpTextbox"/>
+                    <textbox size="40" id="replacementTextbox"/>
+                </row>
+            </rows>
+        </grid>
+        <vbox align="end">
+            <button label="Add" command="addSubstCmd"/>
+        </vbox>
+    </groupbox>
+    <groupbox>
+        <caption label="Substitutions"/>
+        <listbox id="substListbox" onkeydown="return keydown(event)" onselect="return select(event)">
+            <listhead>
+                <listheader label="Regular expression"/>
+                <listheader label="Replacement text"/>
+            </listhead>
+            <listcols>
+                <listcol />
+                <listcol flex="1"/>
+            </listcols>
+        </listbox>
+        <vbox align="end">
+            <button label="Delete" command="deleteSubstCmd"/>
+        </vbox>
+    </groupbox>
+</dialog>

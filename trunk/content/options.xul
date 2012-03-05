@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<!DOCTYPE prefwindow SYSTEM "chrome://furiganainserter/locale/prefwindow.dtd">
+
+<prefwindow id="furiganainserter-preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+title="&prefwindow.title;">
+    <prefpane id="pane1" label="&pane1.title;">
+        <preferences>
+            <preference id="auto_prcs_all_pages_pref" name="extensions.furiganainserter.auto_process_all_pages" type="bool"/>
+            <preference id="furigana_alphabet_pref" name="extensions.furiganainserter.furigana_alphabet" type="string"/>
+            <preference id="dictionary_pref" name="extensions.furiganainserter.dictionary" type="string"/>
+            <preference id="tokenize_pref" name="extensions.furiganainserter.tokenize" type="bool"/>
+            <preference id="use_token_pref" name="extensions.furiganainserter.use_token" type="bool"/>
+            <preference id="popup_delay_pref" name="extensions.furiganainserter.popup_delay" type="int"/>
+            <preference id="color_scheme_pref" name="extensions.furiganainserter.color_scheme" type="string"/>
+            <preference id="margin_pref" name="extensions.furiganainserter.margin" type="string"/>
+        </preferences>
+        <checkbox preference="auto_prcs_all_pages_pref" label="&autoProcessAllPages.label;"/>
+        <!--<checkbox preference="tokenize_pref" label="&tokenize.label;" tooltiptext="&tokenize.tooltip;"/>-->
+        <!--<checkbox preference="use_token_pref" label="&useToken.label;" tooltiptext="&useToken.tooltip;"/>-->
+        <grid>
+            <columns>
+                <column />
+                <column />
+            </columns>
+            <rows>
+                <row align="center">
+                    <label value="&furiganaAlphabetMenulist.label;" control="furigana_alphabet_menulist"/>
+                    <menulist id="furigana_alphabet_menulist" preference="furigana_alphabet_pref">
+                        <menupopup>
+                            <menuitem label="&furiganaAlphabetHiragana.label;" value="hiragana"/>
+                            <menuitem label="&furiganaAlphabetKatakana.label;" value="katakana"/>
+                            <menuitem label="&furiganaAlphabetRomaji.label;" value="romaji"/>
+                            <menuitem label="&furiganaAlphabetKeywords.label;" value="keywords"/>
+                        </menupopup>
+                    </menulist>
+                </row>
+                <row align="center">
+                    <label value="&popupDelay.label;" control="popup_delay_textbox"/>
+                    <textbox id="popup_delay_textbox" increment="10" type="number" maxlength="4" size="4" preference="popup_delay_pref"/>
+                </row>
+                <row align="center">
+                    <label value="&colorScheme.label;" control="color_scheme_menulist"/>
+                    <menulist id="color_scheme_menulist" preference="color_scheme_pref">
+                        <menupopup>
+                            <menuitem label="&colorSchemeBlue.label;" value="blue"/>
+                            <menuitem label="&colorSchemeLightBlue.label;" value="light-blue"/>
+                            <menuitem label="&colorSchemeBlack.label;" value="black"/>
+                            <menuitem label="&colorSchemeYellow.label;" value="yellow"/>
+                        </menupopup>
+                    </menulist>
+                </row>
+                <row align="center">
+                    <label value="&margin.label;" control="margin_textbox"/>
+                    <textbox id="margin_textbox" increment="0.1" decimalplaces="2" type="number" min="0" max="1" preference="margin_pref"/>
+                </row>
+            </rows>
+        </grid>
+    </prefpane>
+</prefwindow>

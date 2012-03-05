@@ -1,0 +1,8 @@
+resource furiganainserter 	content/
+content	 furiganainserter	content/
+locale	 furiganainserter	en-US	locale/en-US/
+locale	 furiganainserter	de-DE	locale/de-DE/
+locale	 furiganainserter	ru-RU	locale/ru-RU/
+skin	 furiganainserter	classic/1.0	skin/
+overlay	chrome://browser/content/browser.xul	chrome://furiganainserter/content/overlay.xul
+style	chrome://global/content/customizeToolbar.xul	chrome://furiganainserter/skin/overlay.css

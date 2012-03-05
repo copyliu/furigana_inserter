@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Furigana Inserter Test</title>
+        <script type="application/javascript" src="mecab test.js"></script>
+    </head>
+    <body style="background: white">
+        <form action="">
+            <input type="button" value="Version" onclick="getVersion()">
+            <input type="button" value="Dictionary Information" onclick="getDictionaryInfo()">
+            <br>
+            <textarea cols="80" rows="10" id="textarea1" >現在、ウィキペディア日本語版には約 692,286 本の記事があります。</textarea>
+            <!--<input id="textbox1" type="text" size="80" value="現在、ウィキペディア日本語版には約 692,286 本の記事があります。">-->
+            <input type="submit" value="Do it!" onclick="return doit(event)">
+        </form>
+        <p id="status"></p>
+        <table border="0" width="600" cellspacing="1" cellpadding="1" id="table1">
+            <thead>
+                <tr>
+                    <th>Surface</th>
+                    <th>Feature</th>
+                    <th title="Length of Whitespace">Length</th>
+                </tr>
+            </thead>
+            <tbody id="tbody1">
+                <tr><td></td></tr>
+            </tbody>
+        </table>
+    </body>
+</html>

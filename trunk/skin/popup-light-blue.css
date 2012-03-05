@@ -1,0 +1,221 @@
+/* this file is from Rikaichan */
+/* this is to reset almost everything under the popup to a sane value */
+
+#furigana-inserter-window, #furigana-inserter-window * {
+	width: auto;
+	height: auto;
+	background: transparent;
+	color: #000000;
+	border: none !important;
+	border-spacing: 0px;
+	margin: 0px;
+	padding: 0px;
+	letter-spacing: normal;
+	text-align: left;
+	text-decoration: none;
+	text-indent: 0px;
+	text-transform: none;
+	white-space: normal;
+	word-spacing: normal;
+	font: normal 1em sans-serif;
+	visibility: visible;
+}
+
+body {
+	background: #E6F4FF;
+	height: 100%;
+}
+
+#furigana-inserter-window {
+	padding: 4px;
+	background: #E6F4FF;
+	min-width: 100px;
+}
+
+/* used for word definitions */
+
+#furigana-inserter-window .w-kanji {
+	font-size: 1.5em;
+	color: #3082BF;
+	margin-right: 0.7em;
+}
+
+#furigana-inserter-window .w-kana {
+	font-size: 1.5em;
+	color: #00B366;
+}
+
+#furigana-inserter-window .w-conj {
+	color: #808080;
+	font-size: 1em;
+}
+
+#furigana-inserter-window .w-def {
+	font-size: 1em;
+}
+
+#furigana-inserter-window .w-title {
+	font-size: 1em;
+	padding: 2px;
+	background: #BFE4FF;
+	color: #000000;
+}
+
+#furigana-inserter-window .w-na-tb td {
+	vertical-align: top;
+	padding-right: 0.8em;
+}
+
+/* used for kanji information */
+
+#furigana-inserter-window .k-main-tb {
+/*	width: 300px;*/
+}
+
+#furigana-inserter-window .k-kanji {
+	font-family: serif;
+	font-size: 2em;
+	color: #000000;
+}
+
+#furigana-inserter-window .k-eigo {
+	font-size: 1em;
+}
+
+/* kanji: readings */
+
+#furigana-inserter-window .k-yomi {
+	font-size: 1em;
+	color: #00B366;
+	margin: 4px 0px;
+}
+
+#furigana-inserter-window .k-yomi-hi {
+	color: #00868B;
+	border: 1px solid red;
+}
+
+#furigana-inserter-window .k-yomi-ti {
+	font-size: 1em;
+	color: #000000;
+}
+
+/* kanji radical, grade, freq, strokes box */
+
+#furigana-inserter-window .k-abox-tb {
+	display: none;
+	width: 120px;
+	margin-bottom: 4px;
+	float: right;
+	clear: right;
+}
+
+#furigana-inserter-window .k-abox-r {
+	font-size: 1em;
+	text-align: center;
+	padding: 1px 4px;
+	background: #DFF1FF;
+	color: #003D6B;
+}
+
+#furigana-inserter-window .k-abox-g {
+	font-size: 1em;
+	text-align: center;
+	padding: 1px 4px;
+	background: #FFFFFF;
+	color: #003D6B;
+}
+
+#furigana-inserter-window .k-abox-f {
+	font-size: 1em;
+	text-align: center;
+	padding: 1px 4px;
+	background: #FFFFFF;
+	color: #003D6B;
+}
+
+#furigana-inserter-window .k-abox-s {
+	font-size: 1em;
+	text-align: center;
+	padding: 1px 4px;
+	background: #DFF1FF;
+	color: #003D6B;
+}
+
+/* kanji components box */
+
+#furigana-inserter-window .k-bbox-tb {
+	width: 120px;
+	margin-bottom: 4px;
+	float: right;
+	clear: right;
+}
+
+#furigana-inserter-window .k-bbox-0a {
+	vertical-align: top;
+	font-size: 1em;
+	padding: 1px 3px;
+	background: #DFF1FF;
+	color: #003D6B;
+}
+
+#furigana-inserter-window .k-bbox-0b {
+	vertical-align: top;
+	font-size: 1em;
+	padding: 1px 3px;
+	background: #DFF1FF;
+	color: #003D6B;
+}
+
+#furigana-inserter-window .k-bbox-1a {
+	vertical-align: top;
+	font-size: 1em;
+	padding: 1px 3px;
+	background: #FFFFFF;
+	color: #003D6B;
+}
+
+#furigana-inserter-window .k-bbox-1b {
+	vertical-align: top;
+	font-size: 1em;
+	padding: 1px 3px;
+	background: #FFFFFF;
+	color: #003D6B;
+}
+
+
+/* kanji: misc index */
+
+#furigana-inserter-window .k-mix-tb {
+	width: 100%
+}
+
+#furigana-inserter-window .k-mix-td0 {
+	font-size: 1em;
+	background: #DFF1FF;
+	color: #003D6B;
+}
+
+#furigana-inserter-window .k-mix-td1 {
+	font-size: 1em;
+	background: #FFFFFF;
+	color: #003D6B;
+}
+
+
+/* manual query */
+
+#furigana-inserter-window .q-tb td {
+}
+
+#furigana-inserter-window .q-w {
+	border-right: 1px dotted #B0B0B0 !important;
+	padding: 0px 2px;
+	vertical-align: top;
+	min-width: 300px;
+}
+
+#furigana-inserter-window .q-k {
+	padding: 0px 2px;
+	vertical-align: top;
+}

@@ -1,0 +1,21 @@
+<!ENTITY prefwindow.title "Furigana Inserter Einstellungen">
+<!ENTITY pane1.title "Allgemein">
+<!ENTITY autoProcessAllPages.label "Jede Seite automatisch verarbeiten">
+<!ENTITY furiganaAlphabetMenulist.label "Alphabet für Furigana:">
+<!ENTITY furiganaAlphabetHiragana.label "Hiragana">
+<!ENTITY furiganaAlphabetKatakana.label "Katakana">
+<!ENTITY furiganaAlphabetRomaji.label "Romaji">
+<!ENTITY furiganaAlphabetKeywords.label "Schlüsselworte">
+<!ENTITY tokenize.label "Japanisch in Worte unterteilen">
+<!ENTITY tokenize.tooltip "Unterteilt Japanisch in Worte. Dadurch wird es möglich, ein Wort
+nachzuschlagen, wenn man den Mauszeiger irgendwo in das Wort bewegt.">
+<!ENTITY useToken.label "Wörter zum Nachschlagen benutzen">
+<!ENTITY useToken.tooltip "Wenn eingeschaltet, dann wird das Wort unter dem Mauszeiger
+nachgeschlagen, ansonsten wird der Text, der auf den Mauszeiger folgt benutzt.">
+<!ENTITY popupDelay.label "Popup-Verzögerung:">
+<!ENTITY colorScheme.label "Farbschema:">
+<!ENTITY colorSchemeBlue.label "Blau">
+<!ENTITY colorSchemeLightBlue.label "Hellblau">
+<!ENTITY colorSchemeYellow.label "Gelb">
+<!ENTITY colorSchemeBlack.label "Schwarz">
+<!ENTITY margin.label "Wortabstand:">
