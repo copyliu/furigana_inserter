@@ -1,4 +1,0 @@
-#summary Furigana Inserter source code repository.
-
-= Source code repository =
-http://patch-tag.com/r/Zorkzero/furigana_inserter
