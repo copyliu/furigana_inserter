@@ -1,0 +1,31 @@
+<!ENTITY statusbarpanel.tooltip "Furigana Inserter">
+<!ENTITY insertFuriganaCommand.label "Добавить фуригану">
+<!ENTITY insertFuriganaCommand.accesskey "Д">
+<!ENTITY removeFuriganaCommand.label "Убрать фуригану">
+<!ENTITY removeFuriganaCommand.accesskey "У">
+<!ENTITY copyWithoutFuriganaCommand.label "Копировать без фуриганы">
+<!ENTITY copyWithoutFuriganaCommand.accesskey "б">
+
+<!ENTITY openOptionsCommand.label "Настройки…">
+<!ENTITY openOptionsCommand.accesskey "Н">
+<!ENTITY monitorClipboardCommand.label "Следить за буфером обмена">
+<!ENTITY monitorClipboardCommand.accesskey "С">
+<!ENTITY autoLookupCommand.label "Искать слова в словаре">
+<!ENTITY autoLookupCommand.accesskey "И">
+<!ENTITY userDictCommand.label "Словарь пользователя…">
+<!ENTITY userDictCommand.accesskey "П">
+<!ENTITY substCommand.label "Замены…">
+<!ENTITY substCommand.accesskey "З">
+<!ENTITY keywordsDialogCommand.label "Ключевые слова…">
+<!ENTITY keywordsDialogCommand.accesskey "К">
+
+<!ENTITY keywordsCommand.label "Ключевые слова">
+<!ENTITY keywordsCommand.accesskey "С">
+<!ENTITY hiraganaCommand.label "Хирагана">
+<!ENTITY hiraganaCommand.accesskey "Х">
+<!ENTITY katakanaCommand.label "Катакана">
+<!ENTITY katakanaCommand.accesskey "К">
+<!ENTITY romajiCommand.label "Ромадзи">
+<!ENTITY romajiCommand.accesskey "Р">
+
+<!ENTITY furiganaAlphabet.label "Алфавит для фуриганы">

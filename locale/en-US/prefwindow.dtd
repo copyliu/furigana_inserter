@@ -1,0 +1,21 @@
+<!ENTITY prefwindow.title "Furigana Inserter Preferences">
+<!ENTITY pane1.title "General">
+<!ENTITY autoProcessAllPages.label "Process every page automatically">
+<!ENTITY furiganaAlphabetMenulist.label "Furigana alphabet:">
+<!ENTITY furiganaAlphabetHiragana.label "Hiragana">
+<!ENTITY furiganaAlphabetKatakana.label "Katakana">
+<!ENTITY furiganaAlphabetRomaji.label "Romaji">
+<!ENTITY furiganaAlphabetKeywords.label "Keywords">
+<!ENTITY tokenize.label "Split Japanese into words">
+<!ENTITY tokenize.tooltip "Splits Japanese text into words. Makes it possible to
+ look up a word in a dictionary by pointing anywhere in a word.">
+<!ENTITY useToken.label "Use Words for Lookup">
+<!ENTITY useToken.tooltip "If turned on, then the word under cursor is looked up
+ in the dictionary. If turned off, then the text that follows the cursor is used for lookup.">
+<!ENTITY popupDelay.label "Popup delay:">
+<!ENTITY colorScheme.label "Color scheme:">
+<!ENTITY colorSchemeBlue.label "Blue">
+<!ENTITY colorSchemeLightBlue.label "Light Blue">
+<!ENTITY colorSchemeYellow.label "Yellow">
+<!ENTITY colorSchemeBlack.label "Black">
+<!ENTITY margin.label "Word Margin:">

@@ -1,0 +1,31 @@
+<!ENTITY statusbarpanel.tooltip "Furigana Inserter">
+<!ENTITY insertFuriganaCommand.label "Insert Furigana">
+<!ENTITY insertFuriganaCommand.accesskey "I">
+<!ENTITY removeFuriganaCommand.label "Remove Furigana">
+<!ENTITY removeFuriganaCommand.accesskey "R">
+<!ENTITY copyWithoutFuriganaCommand.label "Copy Without Furigana">
+<!ENTITY copyWithoutFuriganaCommand.accesskey "C">
+
+<!ENTITY openOptionsCommand.label "Options…">
+<!ENTITY openOptionsCommand.accesskey "O">
+<!ENTITY monitorClipboardCommand.label "Monitor Clipboard">
+<!ENTITY monitorClipboardCommand.accesskey "M">
+<!ENTITY autoLookupCommand.label "Look up Words in Dictionary">
+<!ENTITY autoLookupCommand.accesskey "L">
+<!ENTITY userDictCommand.label "User Dictionary…">
+<!ENTITY userDictCommand.accesskey "U">
+<!ENTITY substCommand.label "Substitutions…">
+<!ENTITY substCommand.accesskey "S">
+<!ENTITY keywordsDialogCommand.label "Keywords…">
+<!ENTITY keywordsDialogCommand.accesskey "K">
+
+<!ENTITY keywordsCommand.label "Keywords">
+<!ENTITY keywordsCommand.accesskey "K">
+<!ENTITY hiraganaCommand.label "Hiragana">
+<!ENTITY hiraganaCommand.accesskey "H">
+<!ENTITY katakanaCommand.label "Katakana">
+<!ENTITY katakanaCommand.accesskey "K">
+<!ENTITY romajiCommand.label "Romaji">
+<!ENTITY romajiCommand.accesskey "R">
+
+<!ENTITY furiganaAlphabet.label "Furigana alphabet">
