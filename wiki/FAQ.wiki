@@ -6,31 +6,25 @@
 == What is the keywords mode?==
 The keywords mode introduced in FI 2.0 allows inserting a keywords for a kanji instead of the reading. A list of english keywords is available for download. You have to copy and paste the list into the keywords dialog. You can find it in "Tools->Furigana Inserter->Keywords...".
 
-== How do I access FI in Firefox 4? ==
-In Fx 4 I have added a toolbar button for FI. To access it see http://support.mozilla.com/en-US/kb/How%20to%20customize%20the%20toolbar .
-
 ==Why does all kanji disappear when I remove furigana from a web page?==
-This happens when you use the HTML Ruby add-on 6.22.3. To prevent this problem you should disable the option "Process inserted content" in the options of the HTML Ruby add-on.
+This happens when you use the HTML Ruby add-on 6. To prevent this problem you should disable the option "Process inserted content" of the HTML Ruby add-on.
 
 ==How do I install a dictionary for Furigana Inserter?==
 There are two ways to install a dictionary required by Furigana Inserter.
  # The first option is to install the dictionary add-on for Firefox.
-  # Download the file `furiganainserter-dictionary.7z` and unpack it with [http://www.7-zip.org 7-Zip] or WinRAR.
-  # Then either drag and drop the resulting file `furiganainserter-dictionary.xpi` into a Firefox window or go the `File` menu in Firefox, choose `Open File...` and select the file `furiganainserter-dictionary.xpi`.
- # Second option is to install [http://sourceforge.net/projects/mecab/files/ MeCab] instead of the dictionary add-on.
-  # If you are on Windows then download for example [http://sourceforge.net/projects/mecab/files/mecab-win32/0.98/mecab-0.98.exe/download].
+  # Download the file `furiganainserter-dictionary-<version>.7z` and unpack it with [http://www.7-zip.org 7-Zip] or WinRAR.
+  # Then either drag and drop the unpacked file `furiganainserter-dictionary.xpi` into a Firefox window or go the `File` menu in Firefox, choose `Open File...` and select the file `furiganainserter-dictionary.xpi`.
+ # Second option is to install [http://code.google.com/p/mecab/downloads/list MeCab] instead of the dictionary add-on.
+  # If you are on Windows then download `mecab-<version>.exe` where `<version>` is the version number.
   # During the installation choose the UTF-8 format.
 
 ==How do I change the font size of ruby (furigana)?==
 The HTML Ruby add-on allows you to change the font size of ruby (furigana). Go to the `Tools` menu, select `Add-ons` then select `HTML Ruby` and choose `Options`. There you will find the option `Ruby text size`.
 
-==Why does it take so long for furigana to appear?==
-HTML Ruby version 5.11 and above have a bug, which makes it react very slowly, especially on large web pages. This bug has been finally fixed in [https://addons.mozilla.org/firefox/addon/6812 HTML Ruby] version 6.22.3.
-
 ==What about Linux and Mac OS X?==
 Since version 2.0 Furigana Inserter should work on Linux and Mac OS X. Firefox version 4 or higher is required. The dictionary add-on should also work. I have only tested it on Linux and Windows.
   * The user dictionary will only work with the IPAdic dictionary.
-  * You have to install either !MeCab with a dictionary or !MeCab and the dictionary add-on.
+  * You have to install either !MeCab with a dictionary or !MeCab and the dictionary add-on for Firefox.
   * You should use the UTF-8 encoding for the !MeCab dictionary.
 
 [http://akitaonrails.com/2012/05/08/off-topic-reading-with-subtitles-over-kanjis-in-japanese-webpages Blog entry] explaining how to install Furigana Inserter on Mac OS X.
