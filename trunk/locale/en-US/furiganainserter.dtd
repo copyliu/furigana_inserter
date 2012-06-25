@@ -10,8 +10,8 @@
 <!ENTITY openOptionsCommand.accesskey "O">
 <!ENTITY monitorClipboardCommand.label "Monitor Clipboard">
 <!ENTITY monitorClipboardCommand.accesskey "M">
-<!ENTITY autoLookupCommand.label "Look up Words in Dictionary">
-<!ENTITY autoLookupCommand.accesskey "L">
+<!ENTITY autoLookupCommand.label "Show Dictionary Popup">
+<!ENTITY autoLookupCommand.accesskey "P">
 <!ENTITY userDictCommand.label "User Dictionary…">
 <!ENTITY userDictCommand.accesskey "U">
 <!ENTITY substCommand.label "Substitutions…">

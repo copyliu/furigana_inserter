@@ -10,8 +10,8 @@
 <!ENTITY openOptionsCommand.accesskey "E">
 <!ENTITY monitorClipboardCommand.label "Zwischenablage überwachen">
 <!ENTITY monitorClipboardCommand.accesskey "ü">
-<!ENTITY autoLookupCommand.label "Wörter nachschlagen">
-<!ENTITY autoLookupCommand.accesskey "n">
+<!ENTITY autoLookupCommand.label "Wörterbuch-Popup anzeigen">
+<!ENTITY autoLookupCommand.accesskey "P">
 <!ENTITY userDictCommand.label "Benutzerwörterbuch…">
 <!ENTITY userDictCommand.accesskey "B">
 <!ENTITY substCommand.label "Ersetzungen…">

@@ -6,9 +6,9 @@ title="User Dictionary"
 width="600" height="400" screenX="0" screenY="0"
 persist="width height screenX screenY"
 buttons="extra1,accept,cancel,help"
-ondialogaccept="return doOK()"
-ondialogcancel="return doCancel()"
-ondialoghelp="return doHelp()"
+ondialogaccept="doOK()"
+ondialogcancel="doCancel()"
+ondialoghelp="doHelp()"
 buttonlabelextra1="Update"
 ondialogextra1="return doUpdate()">
     <script src="userdict.js"/>

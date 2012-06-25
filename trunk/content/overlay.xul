@@ -1,164 +1,178 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="chrome://furiganainserter/skin/overlay.css" type="text/css"?>
 <!DOCTYPE overlay SYSTEM "chrome://furiganainserter/locale/furiganainserter.dtd">
-<overlay id="furigana-inserter-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+id="furigana-inserter-overlay" >
     <script type="application/javascript;version=1.8" src="chrome://furiganainserter/content/furiganainserter.js"/>
-    <script encoding="UTF-8" src="chrome://furiganainserter/content/romaji.js"/>
+
+    <keyset id="mainKeyset">
+        <key id="fi-lookup-word-key" modifiers="alt" keycode="VK_DELETE"
+        oncommand="FuriganaInserter.lookupWord(event);" />
+        <!--<key id="fi-next-dictionary-key" keycode="VK_RETURN"
+        oncommand="FuriganaInserter.nextDictionary(event);" />-->
+    </keyset>
 
     <toolbarpalette id="BrowserToolbarPalette">
-        <toolbarbutton id="furigana-inserter-toolbarbutton" class="toolbarbutton-1"
-		label="Furigana Inserter" tooltiptext="Furigana Inserter"
-                type="menu">
+        <toolbarbutton id="furigana-inserter-toolbarbutton"
+                       class="toolbarbutton-1"
+                       label="Furigana Inserter"
+                       tooltiptext="Furigana Inserter"
+                       type="menu-button"
+                       oncommand="FuriganaInserter.togglePopup(event);">
             <menupopup>
                 <menuitem id="fi-open-options-tb"
-                label="&openOptionsCommand.label;"
-                accesskey="&openOptionsCommand.accesskey;"
-                oncommand="FuriganaInserter.Main.openOptionsWindow()"/>
+                          label="&openOptionsCommand.label;"
+                          accesskey="&openOptionsCommand.accesskey;"
+                          oncommand="FuriganaInserter.openOptionsWindow(event);"/>
                 <menuitem id="fi-auto-lookup-tb"
-                type="checkbox"
-                command="fi-auto-lookup-command"/>
+                          type="checkbox"
+                          command="fi-auto-lookup-command"/>
                 <menuitem id="fi-user-dict-tb"
-                command="fi-user-dict-command"/>
+                          command="fi-user-dict-command"/>
                 <menuitem id="fi-subst-tb"
-                command="fi-subst-command"/>
+                          command="fi-subst-command"/>
                 <menuitem id="fi-keywords-dialog-tb"
-                command="fi-keywords-dialog-command"/>
-                <menu id="fi-furigana-alphabet-menu-tm" label="&furiganaAlphabet.label;">
+                          command="fi-keywords-dialog-command"/>
+                <menu id="fi-furigana-alphabet-menu-tm"
+                      label="&furiganaAlphabet.label;">
                     <menupopup id="fi-furigana-alphabet-menupopup-tm">
                         <menuitem id="fi-hiragana-tb"
-                        command="fi-hiragana-cmd"
-                        type="radio"
-                        name="alphabet-tb"
+                                  command="fi-hiragana-cmd"
+                                  type="radio"
+                                  name="alphabet-tb"
                         />
                         <menuitem id="fi-katakana-tb"
-                        command="fi-katakana-cmd"
-                        type="radio"
-                        name="alphabet-tb"
+                                  command="fi-katakana-cmd"
+                                  type="radio"
+                                  name="alphabet-tb"
                         />
                         <menuitem id="fi-romaji-tb"
-                        command="fi-romaji-cmd"
-                        type="radio"
-                        name="alphabet-tb"
+                                  command="fi-romaji-cmd"
+                                  type="radio"
+                                  name="alphabet-tb"
                         />
                         <menuitem id="fi-keywords-tb"
-                        command="fi-keywords-cmd"
-                        type="radio"
-                        name="alphabet-tb"
+                                  command="fi-keywords-cmd"
+                                  type="radio"
+                                  name="alphabet-tb"
                         />
                     </menupopup>
                 </menu>
                 <menuitem id="fi-monitor-clipboard-tb"
-                type="checkbox"
-                command="fi-monitor-clipboard-command"/>
+                          type="checkbox"
+                          command="fi-monitor-clipboard-command"/>
             </menupopup>
         </toolbarbutton>
     </toolbarpalette>
 
     <stringbundleset id='stringbundleset'>
-        <stringbundle id="furiganainserter-strings" src="chrome://furiganainserter/locale/furiganainserter.properties"/>
+        <stringbundle id="furiganainserter-strings"
+                      src="chrome://furiganainserter/locale/furiganainserter.properties"/>
     </stringbundleset>
 
-    <popupset id='mainPopupSet'>
-        <panel id='furigana-inserter-popup'
-        context='contentAreaContextMenu'>
+    <popupset id="mainPopupSet">
+        <panel id="furigana-inserter-popup"
+               context="contentAreaContextMenu">
             <iframe id="furigana-inserter-iframe"
-                type="content"
-                src="chrome://furiganainserter/content/popup.html">
+                    type="content"
+                    src="chrome://furiganainserter/content/popup.html">
             </iframe>
         </panel>
-        <panel id='furigana-inserter-auto-popup'
+<!--        <panel id='furigana-inserter-auto-popup'
         context='contentAreaContextMenu'>
             <div id="furigana-inserter-auto-div" xmlns="http://www.w3.org/1999/xhtml"></div>
-        </panel>
+        </panel>-->
     </popupset>
 
     <commandset id="mainCommandSet"><!-- "mainCommandSet" is a merge point -->
         <command id="fi-auto-lookup-command"
-        label="&autoLookupCommand.label;"
-        accesskey="&autoLookupCommand.accesskey;"
-        oncommand="FuriganaInserter.Main.togglePopup()"/>
+                 label="&autoLookupCommand.label;"
+                 accesskey="&autoLookupCommand.accesskey;"
+                 oncommand="FuriganaInserter.togglePopup(event);"/>
         <command id="fi-monitor-clipboard-command"
-        label="&monitorClipboardCommand.label;"
-        accesskey="&monitorClipboardCommand.accesskey;"
-        oncommand="FuriganaInserter.Main.monitorClipboard()"/>
+                 label="&monitorClipboardCommand.label;"
+                 accesskey="&monitorClipboardCommand.accesskey;"
+                 oncommand="FuriganaInserter.toggleClipboardMonitoring(event);"/>
         <command id="fi-user-dict-command"
-        label="&userDictCommand.label;"
-        accesskey="&userDictCommand.accesskey;"
-        oncommand="FuriganaInserter.Main.openUserDictionary()"/>
+                 label="&userDictCommand.label;"
+                 accesskey="&userDictCommand.accesskey;"
+                 oncommand="FuriganaInserter.openUserDictionary(event);"/>
         <command id="fi-subst-command"
-        label="&substCommand.label;"
-        accesskey="&substCommand.accesskey;"
-        oncommand="FuriganaInserter.Main.openSubstitutions()"/>
+                 label="&substCommand.label;"
+                 accesskey="&substCommand.accesskey;"
+                 oncommand="FuriganaInserter.openSubstitutions(event);"/>
         <command id="fi-keywords-dialog-command"
-        label="&keywordsDialogCommand.label;"
-        accesskey="&keywordsDialogCommand.accesskey;"
-        oncommand="FuriganaInserter.Main.openKeywords()"/>
+                 label="&keywordsDialogCommand.label;"
+                 accesskey="&keywordsDialogCommand.accesskey;"
+                 oncommand="FuriganaInserter.openKeywords(event);"/>
 
         <command id="fi-hiragana-cmd"
-        label="&hiraganaCommand.label;"
-        accesskey="&hiraganaCommand.accesskey;"
-        oncommand="FuriganaInserter.Main.switchAlphabet('hiragana')"
+                 label="&hiraganaCommand.label;"
+                 accesskey="&hiraganaCommand.accesskey;"
+                 oncommand="FuriganaInserter.switchAlphabet(event);"
         />
         <command id="fi-katakana-cmd"
-        label="&katakanaCommand.label;"
-        accesskey="&katakanaCommand.accesskey;"
-        oncommand="FuriganaInserter.Main.switchAlphabet('katakana')"
+                 label="&katakanaCommand.label;"
+                 accesskey="&katakanaCommand.accesskey;"
+                 oncommand="FuriganaInserter.switchAlphabet(event);"
         />
         <command id="fi-romaji-cmd"
-        label="&romajiCommand.label;"
-        accesskey="&romajiCommand.accesskey;"
-        oncommand="FuriganaInserter.Main.switchAlphabet('romaji')"
+                 label="&romajiCommand.label;"
+                 accesskey="&romajiCommand.accesskey;"
+                 oncommand="FuriganaInserter.switchAlphabet(event);"
         />
         <command id="fi-keywords-cmd"
-        label="&keywordsCommand.label;"
-        accesskey="&keywordsCommand.accesskey;"
-        oncommand="FuriganaInserter.Main.switchAlphabet('keywords')"
+                 label="&keywordsCommand.label;"
+                 accesskey="&keywordsCommand.accesskey;"
+                 oncommand="FuriganaInserter.switchAlphabet(event);"
         />
     </commandset>
 
     <menupopup id="menu_ToolsPopup">
-        <menu label="&statusbarpanel.tooltip;" insertafter="devToolsSeparator">
+        <menu label="&statusbarpanel.tooltip;"
+              insertafter="devToolsSeparator">
             <menupopup>
                 <menuitem id="fi-open-options-tm"
-                label="&openOptionsCommand.label;"
-                accesskey="&openOptionsCommand.accesskey;"
-                oncommand="FuriganaInserter.Main.openOptionsWindow()"/>
+                          label="&openOptionsCommand.label;"
+                          accesskey="&openOptionsCommand.accesskey;"
+                          oncommand="FuriganaInserter.openOptionsWindow(event);"/>
                 <menuitem id="fi-auto-lookup-tm"
-                type="checkbox"
-                command="fi-auto-lookup-command"/>
+                          type="checkbox"
+                          command="fi-auto-lookup-command"/>
                 <menuitem id="fi-user-dict-tm"
-                command="fi-user-dict-command"/>
+                          command="fi-user-dict-command"/>
                 <menuitem id="fi-subst-tm"
-                command="fi-subst-command"/>
+                          command="fi-subst-command"/>
                 <menuitem id="fi-keywords-dialog-tm"
-                command="fi-keywords-dialog-command"/>
-                <menu id="fi-furigana-alphabet-menu-tm" label="&furiganaAlphabet.label;">
+                          command="fi-keywords-dialog-command"/>
+                <menu id="fi-furigana-alphabet-menu-tm"
+                      label="&furiganaAlphabet.label;">
                     <menupopup id="fi-furigana-alphabet-menupopup-tm">
                         <menuitem id="fi-hiragana-tm"
-                        command="fi-hiragana-cmd"
-                        type="radio"
-                        name="alphabet-tm"
+                                  command="fi-hiragana-cmd"
+                                  type="radio"
+                                  name="alphabet-tm"
                         />
                         <menuitem id="fi-katakana-tm"
-                        command="fi-katakana-cmd"
-                        type="radio"
-                        name="alphabet-tm"
+                                  command="fi-katakana-cmd"
+                                  type="radio"
+                                  name="alphabet-tm"
                         />
                         <menuitem id="fi-romaji-tm"
-                        command="fi-romaji-cmd"
-                        type="radio"
-                        name="alphabet-tm"
+                                  command="fi-romaji-cmd"
+                                  type="radio"
+                                  name="alphabet-tm"
                         />
                         <menuitem id="fi-keywords-tm"
-                        command="fi-keywords-cmd"
-                        type="radio"
-                        name="alphabet-tm"
+                                  command="fi-keywords-cmd"
+                                  type="radio"
+                                  name="alphabet-tm"
                         />
                     </menupopup>
                 </menu>
                 <menuitem id="fi-monitor-clipboard-tm"
-                type="checkbox"
-                command="fi-monitor-clipboard-command"/>
+                          type="checkbox"
+                          command="fi-monitor-clipboard-command"/>
             </menupopup>
         </menu>
     </menupopup>
@@ -166,16 +180,36 @@
     <popup id="contentAreaContextMenu"><!-- "contentAreaContextMenu" is a merge point -->
         <menuseparator id="furigana-inserter-separator-cm"/>
         <menuitem id="fi-insert-furigana-cm"
-        oncommand="FuriganaInserter.Main.insertRubys(event)"
-        label="&insertFuriganaCommand.label;"
-        accesskey="&insertFuriganaCommand.accesskey;"/>
+                  oncommand="FuriganaInserter.insertFurigana(event);"
+                  label="&insertFuriganaCommand.label;"
+                  accesskey="&insertFuriganaCommand.accesskey;"/>
         <menuitem id="fi-remove-furigana-cm"
-        oncommand="FuriganaInserter.Main.revertRubys(event)"
-        label="&removeFuriganaCommand.label;"
-        accesskey="&removeFuriganaCommand.accesskey;"/>
+                  oncommand="FuriganaInserter.removeFurigana(event);"
+                  label="&removeFuriganaCommand.label;"
+                  accesskey="&removeFuriganaCommand.accesskey;"/>
         <menuitem id="fi-copy-without-furigana-cm"
-        label="&copyWithoutFuriganaCommand.label;"
-        accesskey="&copyWithoutFuriganaCommand.accesskey;"
-        oncommand="FuriganaInserter.Main.copyWithoutFurigana(event)"/>
+                  label="&copyWithoutFuriganaCommand.label;"
+                  accesskey="&copyWithoutFuriganaCommand.accesskey;"
+                  oncommand="FuriganaInserter.copyWithoutFurigana(event);"/>
     </popup>
+
+    <toolbox id="navigator-toolbox">
+        <toolbar id="fi-toolbar"
+                 hidden="true"
+                 align="center"
+                 fullscreentoolbar="true"
+                 position="1000"
+                 ordinal="1000"
+                 onkeydown="FuriganaInserter.toolbarOnKeyDown(event);">
+            <toolbarbutton id="fi-toolbar-close"
+                oncommand="FuriganaInserter.toolbarClose(event)" />
+
+            <textbox id="fi-toolbar-textbox"
+                     size="30" maxlength="30"
+                     placeholder="Furigana Inserter"
+                     oncommand="FuriganaInserter.textboxSearch(event);"
+                     type="search"
+                     searchbutton="true"/>
+        </toolbar>
+    </toolbox>
 </overlay>

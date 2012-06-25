@@ -1,5 +1,5 @@
 Furigana Inserter - Firefox add-on that inserts furigana into a web page
-Copyright (C) 2008-2011 <zorkzero@hotmail.com>
+Copyright (C) 2008-2012 <zorkzero@hotmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
