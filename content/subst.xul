@@ -1,25 +1,24 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
-<dialog id="substDialog"
-xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-title="Substitutions"
-buttons="accept,cancel,help"
-ondialogaccept="return doOk()"
-ondialogcancel="return doCancel()"
-ondialoghelp="return doHelp()">
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        id="substDialog"
+        title="Substitutions"
+        buttons="accept,cancel,help"
+        ondialogaccept="doOk()"
+        ondialogcancel="doCancel()"
+        ondialoghelp="doHelp()">
     <script src="subst.js"/>
     <commandset>
-        <command id="showFilterHelpCmd" oncommand="showFilterHelp()" />
-        <command id="addSubstCmd" oncommand="addSubst()" />
-        <command id="deleteSubstCmd" oncommand="deleteSubst()" />
+        <command id="showFilterHelpCmd" oncommand="showFilterHelp()"/>
+        <command id="addSubstCmd" oncommand="addSubst()"/>
+        <command id="deleteSubstCmd" oncommand="deleteSubst()"/>
     </commandset>
-
     <groupbox>
         <caption label="Add substitution"/>
         <grid>
             <columns>
-                <column />
-                <column />
+                <column flex="1"/>
+                <column flex="1"/>
             </columns>
             <rows>
                 <row>
@@ -38,13 +37,15 @@ ondialoghelp="return doHelp()">
     </groupbox>
     <groupbox>
         <caption label="Substitutions"/>
-        <listbox id="substListbox" onkeydown="return keydown(event)" onselect="return select(event)">
+        <listbox id="substListbox"
+                 onkeydown="return keydown(event)"
+                 onselect="return select(event)">
             <listhead>
                 <listheader label="Regular expression"/>
                 <listheader label="Replacement text"/>
             </listhead>
             <listcols>
-                <listcol />
+                <listcol/>
                 <listcol flex="1"/>
             </listcols>
         </listbox>

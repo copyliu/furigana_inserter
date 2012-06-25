@@ -37,7 +37,7 @@ title="&prefwindow.title;">
                 </row>
                 <row align="center">
                     <label value="&popupDelay.label;" control="popup_delay_textbox"/>
-                    <textbox id="popup_delay_textbox" increment="10" type="number" maxlength="4" size="4" preference="popup_delay_pref"/>
+                    <textbox id="popup_delay_textbox" increment="50" type="number" maxlength="4" size="4" preference="popup_delay_pref"/>
                 </row>
                 <row align="center">
                     <label value="&colorScheme.label;" control="color_scheme_menulist"/>

@@ -1,33 +1,23 @@
 #furigana-inserter-popup {
     -moz-border-radius: 5px;
-    -moz-user-select: text;
-    -moz-user-focus: normal;
+    border-radius: 5px;
     border: 1px solid #D0D0D0 !important;
-    /*
-        width: 600px;
-        height: 400px;
-    */
 }
 
-#furigana-inserter-auto-popup {
+#furigana-inserter-iframe {
+}
+
+/*#furigana-inserter-auto-popup {
     -moz-border-radius: 5px;
     -moz-user-select: text;
     -moz-user-focus: normal;
     border: 1px solid #D0D0D0 !important;
 }
 
-#furigana-inserter-iframe {
-    /*    margin: 5px;*/
-    /*
-        width: 600px;
-        height: 400px;
-    */
-}
-
 #furigana-inserter-auto-div {
     font-size: 16px;
     background: #FFFFBF;
-}
+}*/
 
 #furigana-inserter-toolbarbutton {
     list-style-image: url("chrome://furiganainserter/skin/fu_big.png");
@@ -35,4 +25,9 @@
 
 toolbar[iconsize="small"] #furigana-inserter-toolbarbutton {
     list-style-image: url("chrome://furiganainserter/skin/fu_small.png");
+}
+
+#fi-toolbar-close {
+    list-style-image: url("chrome://global/skin/icons/close.png");
+    -moz-image-region: rect(0px, 16px, 16px, 0px);
 }

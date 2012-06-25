@@ -10,8 +10,8 @@
 <!ENTITY openOptionsCommand.accesskey "Н">
 <!ENTITY monitorClipboardCommand.label "Следить за буфером обмена">
 <!ENTITY monitorClipboardCommand.accesskey "С">
-<!ENTITY autoLookupCommand.label "Искать слова в словаре">
-<!ENTITY autoLookupCommand.accesskey "И">
+<!ENTITY autoLookupCommand.label "Показывать всплывающее окно словаря">
+<!ENTITY autoLookupCommand.accesskey "В">
 <!ENTITY userDictCommand.label "Словарь пользователя…">
 <!ENTITY userDictCommand.accesskey "П">
 <!ENTITY substCommand.label "Замены…">
