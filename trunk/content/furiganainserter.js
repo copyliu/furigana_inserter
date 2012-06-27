@@ -12,6 +12,8 @@ var FuriganaInserter = {};
     Components.utils["import"]("resource://furiganainserter/dict.js", Imports);
     Components.utils["import"]("resource://furiganainserter/parse.js", Imports);
     Components.utils["import"]("resource://furiganainserter/ruby.js", Imports);
+    var Ci = Components.interfaces;
+
     var log = Imports.log;
     var time = Imports.time;
     var splitTextNode = Imports.splitTextNode;
@@ -128,6 +130,38 @@ var FuriganaInserter = {};
         var dict = new DictionarySearcher();
         dict.init(rcxDicList);
         popup = createPopup(dict);
+        var panel = document.getElementById("furigana-inserter-popup");
+        panel.addEventListener("DOMMouseScroll", panelOnMouseScroll, false);
+        changeKeys();
+    }
+
+    function changeKeys () {
+        var pref = prefs.getPref("lookup_key");
+        var keyCodes = pref.split("+");
+        var keyCode = keyCodes.pop();
+        var modifiers = keyCodes.join(" ");
+        var keyElement = document.getElementById("fi-lookup-word-key");
+        keyElement.setAttribute("oncommand", "FuriganaInserter.lookupWord(event);");
+        // doesn't work for some reason
+//        keyelement.addEventListener("command", lookupWord, false);
+        keyElement.setAttribute("modifiers", modifiers);
+        keyElement.setAttribute("keycode", keyCode);
+        // remove the keyset and add it again
+        var keySet = keyElement.parentNode;
+        var keySetParent = keySet.parentNode;
+        keySetParent.removeChild(keySet);
+        keySetParent.appendChild(keySet);
+    }
+
+    function panelOnMouseScroll (event) {
+        var iframe = document.getElementById("furigana-inserter-iframe");
+        var contentViewer = iframe.docShell.contentViewer;
+        var docViewer = contentViewer.QueryInterface(Ci.nsIMarkupDocumentViewer);
+        if (event.axis === event.VERTICAL_AXIS && event.ctrlKey) {
+            docViewer.fullZoom += event.detail < 0 ? 0.1 : -0.1;
+            event.preventDefault();
+            event.stopPropagation();
+        }
     }
 
     function onunload () {
@@ -225,7 +259,7 @@ var FuriganaInserter = {};
                 "checked", "false");
     }
 
-    function toggleClipboardMonitoring () {
+    function toggleClipboardMonitoring (event) {
         var data = getBrowserData();
         var browser = gBrowser.selectedBrowser;
         if (!data.clipboard) {
@@ -259,6 +293,7 @@ var FuriganaInserter = {};
     function registerPreferencesObserver () {
         var observer = new PreferencesObserver(function (event) {
             if (event.data === "color_scheme") changePopupStyle();
+            else if (event.data === "lookup_key") changeKeys();
         });
         prefs.register(observer);
     }
@@ -472,7 +507,7 @@ var FuriganaInserter = {};
         });
     }
 
-    // nodes: nodes from Mecab, node: the text node from the document
+    // taggerNodes: nodes from Mecab, node: the text node from the document
     Inserter.prototype.doitRight = function (taggerNodes, node, start, end) {
         var data = node.data.substring(start, end);
         var doc = node.ownerDocument;
@@ -495,52 +530,75 @@ var FuriganaInserter = {};
     }
 
     function showPopup (word) {
+        if (word === "") return;
         if (popup.isVisible() && popup.word === word) {
             popup.showNext();
             return;
         }
 
-        var Ci = Components.interfaces;
         var windowUtils = content.QueryInterface(Ci.nsIInterfaceRequestor)
         .getInterface(Ci.nsIDOMWindowUtils);
+        var x = content.mozInnerScreenX;
+        var y = content.mozInnerScreenY;
         var screenPixelsPerCSSPixel = windowUtils.screenPixelsPerCSSPixel;
-        popup.show2(word, content.mozInnerScreenX * screenPixelsPerCSSPixel,
-        content.mozInnerScreenY * screenPixelsPerCSSPixel);
+        popup.lookupAndShowAt(word, x * screenPixelsPerCSSPixel,
+        y * screenPixelsPerCSSPixel);
     }
 
     function toolbarOnKeyDown (event) {
-        var textbox;
-        if (event.keyCode === KeyEvent.DOM_VK_ESCAPE) {
-            textbox = document.getElementById("fi-toolbar-textbox");
-            textbox.value = "";
-            event.currentTarget.hidden = true;
+        var textbox = document.getElementById("fi-toolbar-textbox");
+        var win = document.getElementById("furigana-inserter-iframe").contentWindow;
+        var windowUtils = win.QueryInterface(Ci.nsIInterfaceRequestor)
+        .getInterface(Ci.nsIDOMWindowUtils);
+        if (event.keyCode === KeyEvent.DOM_VK_RETURN) {
+            showPopup(textbox.value);
+            textbox.focus();
         }
-//        else if (event.keyCode === KeyEvent.DOM_VK_RETURN) {
-//            var textbox = document.getElementById("fi-toolbar-textbox");
-//            showPopup(textbox.value);
-//            textbox.focus();
-//        }
+        else if (event.keyCode === KeyEvent.DOM_VK_ESCAPE) {
+            if (popup.isVisible())
+                popup.hide();
+            else event.currentTarget.hidden = true;
+        }
+        else if (!popup.isVisible()) return;
+        else if (event.keyCode === KeyEvent.DOM_VK_PAGE_DOWN)
+            windowUtils.sendMouseScrollEvent("DOMMouseScroll", 0, 0, 0,
+                1 /* full page */, 1, 0);
+        else if (event.keyCode === KeyEvent.DOM_VK_PAGE_UP)
+            windowUtils.sendMouseScrollEvent("DOMMouseScroll", 0, 0, 0,
+                1 /* full page */, -1, 0);
+        else if (event.keyCode === KeyEvent.DOM_VK_DOWN) {
+            windowUtils.sendMouseScrollEvent("DOMMouseScroll", 0, 0, 0,
+                0 /* full page */, 1, 0);
+            event.preventDefault();
+        }
+        else if (event.keyCode === KeyEvent.DOM_VK_UP) {
+            windowUtils.sendMouseScrollEvent("DOMMouseScroll", 0, 0, 0,
+                0 /* full page */, -1, 0);
+            event.preventDefault();
+        }
     }
 
-    function textboxSearch (event) {
+    function searchButtonOnCommand (event) {
         var textbox = document.getElementById("fi-toolbar-textbox");
         showPopup(textbox.value);
         textbox.focus();
     }
 
+    function closeButtonOnCommand (event) {
+        var textbox = document.getElementById("fi-toolbar-textbox");
+        textbox.reset();
+        document.getElementById('fi-toolbar').hidden = true;
+    }
+
     function lookupWord (event) {
         var text = getTextWithoutFurigana(content);
         var textbox = document.getElementById("fi-toolbar-textbox");
-        textbox.value = text;
+        textbox.reset();
+        if (text !== "") textbox.value = text;
         var toolbar = document.getElementById('fi-toolbar');
         if (toolbar.hidden) toolbar.hidden = false;
         showPopup(text);
         textbox.focus();
-    }
-
-    function toolbarClose (event) {
-        document.getElementById("fi-toolbar-textbox").value = "";
-        document.getElementById('fi-toolbar').hidden = true;
     }
 
     FuriganaInserter.openOptionsWindow = openOptionsWindow;
@@ -554,11 +612,11 @@ var FuriganaInserter = {};
     FuriganaInserter.insertFurigana = insertFurigana;
     FuriganaInserter.removeFurigana = removeFurigana;
     FuriganaInserter.copyWithoutFurigana = copyWithoutFurigana;
-    FuriganaInserter.toolbarOnKeyDown = toolbarOnKeyDown;
-//    FuriganaInserter.toolbarSearch = toolbarSearch;
-    FuriganaInserter.toolbarClose = toolbarClose;
     FuriganaInserter.lookupWord = lookupWord;
-    FuriganaInserter.textboxSearch = textboxSearch;
+
+    FuriganaInserter.toolbarOnKeyDown = toolbarOnKeyDown;
+    FuriganaInserter.closeButtonOnCommand = closeButtonOnCommand;
+    FuriganaInserter.searchButtonOnCommand = searchButtonOnCommand;
 
     window.addEventListener("load", onload, false);
     window.addEventListener("unload", onunload, false);

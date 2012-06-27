@@ -19,3 +19,4 @@ nachgeschlagen, ansonsten wird der Text, der auf den Mauszeiger folgt benutzt.">
 <!ENTITY colorSchemeYellow.label "Gelb">
 <!ENTITY colorSchemeBlack.label "Schwarz">
 <!ENTITY margin.label "Wortabstand:">
+<!ENTITY lookupKey.label "Taste zum Nachschlagen:">

@@ -139,6 +139,7 @@ Popup.prototype.sameElement = function (event) {
 
 Popup.prototype.hide = function () {
     var panel = this.panel;
+    if (panel.hasAttribute("noautohide")) return;
     if (panel.state === "open") panel.hidePopup();
     this.dict.moveToTop(this.currentDictionary);
     this.currentDictionary = 0;
@@ -147,10 +148,10 @@ Popup.prototype.hide = function () {
 Popup.prototype.show1 = function (event) {
     var text = "";
     text = this.getBasicForm(event.target);
-    this.show2(text, event.screenX, event.screenY);
+    this.lookupAndShowAt(text, event.screenX, event.screenY);
 }
 
-Popup.prototype.show2 = function (word, screenX, screenY) {
+Popup.prototype.lookupAndShowAt = function (word, screenX, screenY) {
     this.word = word;
     this.hide();
     if (word === "") return;
@@ -172,7 +173,7 @@ Popup.prototype.showTextAt = function (text, screenX, screenY) {
     var iframe = win.document.getElementById("furigana-inserter-iframe");
     iframe.width = "600";
     iframe.height = "400";
-    panel.width = "600";
+    panel.width = "610";
     panel.height = "400";
     var x = screenX;
     var y = screenY;
