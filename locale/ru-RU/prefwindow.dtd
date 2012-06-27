@@ -19,3 +19,4 @@
 <!ENTITY colorSchemeYellow.label "Желтый">
 <!ENTITY colorSchemeBlack.label "Черный">
 <!ENTITY margin.label "Расстояние между словами:">
+<!ENTITY lookupKey.label "Клавиша для поиска:">

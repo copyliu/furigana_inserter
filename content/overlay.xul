@@ -5,12 +5,12 @@
 id="furigana-inserter-overlay" >
     <script type="application/javascript;version=1.8" src="chrome://furiganainserter/content/furiganainserter.js"/>
 
-    <keyset id="mainKeyset">
-        <key id="fi-lookup-word-key" modifiers="alt" keycode="VK_DELETE"
-        oncommand="FuriganaInserter.lookupWord(event);" />
-        <!--<key id="fi-next-dictionary-key" keycode="VK_RETURN"
-        oncommand="FuriganaInserter.nextDictionary(event);" />-->
-    </keyset>
+    <window id="main-window">
+        <keyset id="fi-keyset">
+            <key id="fi-lookup-word-key" modifiers="alt" keycode="VK_DELETE"
+             oncommand="FuriganaInserter.lookupWord(event);" />
+        </keyset>
+    </window>
 
     <toolbarpalette id="BrowserToolbarPalette">
         <toolbarbutton id="furigana-inserter-toolbarbutton"
@@ -72,7 +72,11 @@ id="furigana-inserter-overlay" >
 
     <popupset id="mainPopupSet">
         <panel id="furigana-inserter-popup"
-               context="contentAreaContextMenu">
+               context="contentAreaContextMenu"
+               backdrag="true">
+            <!--<toolbar>
+                <toolbarbutton label="→" oncommand="FuriganaInserter.makePopupSticky(event)"/>
+            </toolbar>-->
             <iframe id="furigana-inserter-iframe"
                     type="content"
                     src="chrome://furiganainserter/content/popup.html">
@@ -202,14 +206,12 @@ id="furigana-inserter-overlay" >
                  ordinal="1000"
                  onkeydown="FuriganaInserter.toolbarOnKeyDown(event);">
             <toolbarbutton id="fi-toolbar-close"
-                oncommand="FuriganaInserter.toolbarClose(event)" />
-
+                oncommand="FuriganaInserter.closeButtonOnCommand(event)"/>
             <textbox id="fi-toolbar-textbox"
                      size="30" maxlength="30"
-                     placeholder="Furigana Inserter"
-                     oncommand="FuriganaInserter.textboxSearch(event);"
-                     type="search"
-                     searchbutton="true"/>
+                     placeholder="Furigana Inserter"/>
+            <toolbarbutton id="fi-toolbar-search"
+                oncommand="FuriganaInserter.searchButtonOnCommand(event)"/>
         </toolbar>
     </toolbox>
 </overlay>

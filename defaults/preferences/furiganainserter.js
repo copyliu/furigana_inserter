@@ -5,3 +5,4 @@ pref("extensions.furiganainserter.popup_delay", 150);
 pref("extensions.furiganainserter.color_scheme", "blue");
 pref("extensions.furiganainserter.margin", "0.2");
 pref("extensions.furiganainserter.toolbar_button_added", false);
+pref("extensions.furiganainserter.lookup_key", "alt+VK_DELETE");

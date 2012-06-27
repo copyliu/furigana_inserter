@@ -1,7 +1,4 @@
 #furigana-inserter-popup {
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    border: 1px solid #D0D0D0 !important;
 }
 
 #furigana-inserter-iframe {
@@ -28,6 +25,9 @@ toolbar[iconsize="small"] #furigana-inserter-toolbarbutton {
 }
 
 #fi-toolbar-close {
-    list-style-image: url("chrome://global/skin/icons/close.png");
-    -moz-image-region: rect(0px, 16px, 16px, 0px);
+    list-style-image: url("chrome://furiganainserter/skin/cross.png");
+}
+
+#fi-toolbar-search {
+	list-style-image: url("chrome://furiganainserter/skin/zoom.png");
 }

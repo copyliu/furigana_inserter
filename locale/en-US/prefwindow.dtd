@@ -19,3 +19,4 @@
 <!ENTITY colorSchemeYellow.label "Yellow">
 <!ENTITY colorSchemeBlack.label "Black">
 <!ENTITY margin.label "Word Margin:">
+<!ENTITY lookupKey.label "Lookup Shortcut:">
