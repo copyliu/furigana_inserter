@@ -1,6 +1,17 @@
 #summary Release notes for Furigana Inserter.
 #labels Featured
 = Release Notes =
+==Furigana Inserter 2.1 (27.06.2012)==
+  * Changed: doesn't use Rikaichan anymore, Rikaichan's dictionaries are still required
+  * Changed: latest MeCab for Windows v0.994 is included
+  * Fixed: small bugs
+  * Added: ability to zoom the popup window with ctrl+mouse wheel
+  * Added: a tool bar for looking words up
+  * Added: ability to lookup words by pressing a shortcut key
+  * Added: ability to customize the shortcut key
+  * Added: automatically adds a button to the tool bar
+  * Added: clicking the tool bar button enables the popup
+
 ==Furigana Inserter 2.0.14 (06.03.2012)==
   * Fixed: it wasn't always possible to compile a new user dictionary
   * Removed: some options and functions that I don't use
@@ -9,7 +20,7 @@
   * Fixed: really made compatible with Fx 8.0
 
 ==Furigana Inserter 2.0.12 (19.10.2011)==
-  * Fixed: Issue 20: Error about unknown OS on Linux
+  * Fixed: issue 20: Error about unknown OS on Linux
 
 ==Furigana Inserter 2.0.11 (27.09.2011)==
   * Fixed: error message that appears when the dictionary can't be found
