@@ -9,7 +9,7 @@
     <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="furiganainserter@zorkzero.net"
                    em:name="Furigana Inserter"
-                   em:version="2.1"
+                   em:version="2.2"
                    em:creator="zorkzero@hotmail.com"
                    em:description="Automatically inserts furigana for words written in kanji. Uses MeCab."
                    em:homepageURL="http://code.google.com/p/itadaki/"
