@@ -1,5 +1,4 @@
 Components.utils["import"]("resource://gre/modules/AddonManager.jsm");
-Components.utils["import"]("resource://gre/modules/ctypes.jsm");
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
 var worker = null;
@@ -27,13 +26,15 @@ function addRow (cells) {
     doc.getElementById("tbody1").appendChild(row);
 }
 
-function getVersion () {
+function getVersion (event) {
+    initWorker();
     worker.postMessage({
         request: "getVersion"
     });
 }
 
-function getDictionaryInfo () {
+function getDictionaryInfo (event) {
+    initWorker();
     worker.postMessage({
         request: "getDictionaryInfo",
         userDicPath: getUserDictionaryPath(),
@@ -66,6 +67,7 @@ function parseAndGetAll () {
 }
 
 function doit (event) {
+    initWorker();
     parseAndGetAll();
     return false;
 }
@@ -85,19 +87,6 @@ function clearPage () {
     })
 }
 
-function createTagger () {
-    var mecab = getMeCab();
-    var tagger = null;
-    var usdPath = getUserDictionaryPath();
-    var dPath = getDictionaryPath();
-    try {
-        tagger = mecab.createTagger(dPath, usdPath);
-    } catch (e) {
-        tagger = mecab.createTagger(dPath, "");
-    }
-    return tagger;
-}
-
 window.addEventListener("load", function (event) {
     worker = new ChromeWorker("../my_worker.js");
     worker.onerror = function (event) {
@@ -106,23 +95,20 @@ window.addEventListener("load", function (event) {
     worker.onmessage = function (event) {
         var nodes;
         switch (event.data.reply) {
-            case "getNodes": {
+            case "getNodes":
                 nodes = event.data.nodes[0];
                 nodes.forEach(function (node) {
                     addRow([node.surface, node.feature, node.length]);
                 });
                 break;
-            }
-            case "getDictionaryInfo": {
+            case "getDictionaryInfo":
                 alert(event.data.info);
                 break;
-            }
-            case "getVersion": {
+            case "getVersion":
                 alert(event.data.version);
-                break
-            }
-            default:throw new Error("unknown message: " + event.data.reply);
+                break;
+            default:
+                throw new Error("unknown message: " + event.data.reply);
         }
     }
-    initWorker();
 }, false)

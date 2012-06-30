@@ -1,7 +1,7 @@
 "use strict";
 
 var EXPORTED_SYMBOLS = ["HiraganaComplex", "KatakanaComplex", "RomajiComplex",
-        "Keywords", "setKeywords", "RomajiSimple", "HiraganaSimple", "KatakanaSimple"];
+"Keywords", "setKeywords", "RomajiSimple", "HiraganaSimple", "KatakanaSimple"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
@@ -39,9 +39,8 @@ Simple.prototype.createRuby = function (data, readings) {
 }
 
 Simple.prototype.createRubyHtml = function (reading) {
-    return "<ruby class='fi'><rb>".concat(reading.word,
-        "</rb><rp>(</rp><rt>", reading.reading,
-        "</rt><rp>)</rp></ruby>");
+    return "<ruby class='fi'><rb>".concat(reading.word, "</rb><rp>(</rp><rt>",
+    reading.reading, "</rt><rp>)</rp></ruby>");
 }
 
 function KatakanaSimple () {
@@ -50,9 +49,8 @@ function KatakanaSimple () {
 KatakanaSimple.prototype = new Simple()
 
 KatakanaSimple.prototype.createRubyHtml = function (reading) {
-    return "<ruby class='fi'><rb>".concat(reading.word,
-        "</rb><rp>(</rp><rt>", hiraganaToKatakana(reading.reading),
-        "</rt><rp>)</rp></ruby>");
+    return "<ruby class='fi'><rb>".concat(reading.word, "</rb><rp>(</rp><rt>",
+    hiraganaToKatakana(reading.reading), "</rt><rp>)</rp></ruby>");
 }
 
 function RomajiSimple () {
@@ -115,9 +113,8 @@ Complex.prototype.createRuby = function (data, readings) {
 }
 
 Complex.prototype.createRubyHtml = function (reading) {
-    return "<ruby class='fi'><rb>".concat(reading.word,
-            "</rb><rp>(</rp><rt>", reading.reading,
-            "</rt><rp>)</rp></ruby>");
+    return "<ruby class='fi'><rb>".concat(reading.word, "</rb><rp>(</rp><rt>",
+    reading.reading, "</rt><rp>)</rp></ruby>");
 }
 
 var HiraganaComplex = Complex;
@@ -128,9 +125,8 @@ function KatakanaComplex () {
 KatakanaComplex.prototype = new Complex()
 
 KatakanaComplex.prototype.createRubyHtml = function (reading) {
-    return "<ruby class='fi'><rb>".concat(reading.word,
-            "</rb><rp>(</rp><rt>", hiraganaToKatakana(reading.reading),
-            "</rt><rp>)</rp></ruby>");
+    return "<ruby class='fi'><rb>".concat(reading.word, "</rb><rp>(</rp><rt>",
+    hiraganaToKatakana(reading.reading), "</rt><rp>)</rp></ruby>");
 }
 
 function RomajiComplex () {
@@ -157,8 +153,8 @@ Keywords.prototype.createRubyHtml = function (reading) {
         rt = reading.reading;
     else rt = this.toKeywords(reading.word, keywords);
     return "<ruby class='fi'><rb>".concat(reading.word,
-            "</rb><rp>(</rp><rt lang='en' title='", reading.reading,
-            "'>", rt, "</rt><rp>)</rp></ruby>");
+        "</rb><rp>(</rp><rt lang='en' title='", reading.reading, "'>", rt,
+        "</rt><rp>)</rp></ruby>");
 }
 
 Keywords.prototype.toKeywords = function (word, table) {

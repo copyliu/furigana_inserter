@@ -63,29 +63,35 @@ function Popup (panel, dict) {
 }
 
 Popup.prototype.showNext = function () {
-    if (this.searchResults.length === 0) return;
+    if (this.searchResults.length === 0)
+        return;
     this.currentDictionary++;
     this.currentDictionary %= this.searchResults.length;
     var searchResult = this.searchResults[this.currentDictionary];
     var word = this.word.substring(0, searchResult.matchLen);
     var text = this.dict.makeHtml(searchResult);
     text += this.kanjiSearch(word);
-    if (text === "") return;
+    if (text === "")
+        return;
     var iframe = this.panel.ownerDocument.getElementById("furigana-inserter-iframe");
     var div = iframe.contentDocument.getElementById("furigana-inserter-window");
     div.innerHTML = text;
 }
 
 Popup.prototype.show = function (event) {
-    if (event.shiftKey || event.ctrlKey) return;
-    if (!this.dict) return;
-    if (this.sameElement(event) || this.inRange(event)) return;
+    if (event.shiftKey || event.ctrlKey)
+        return;
+    if (!this.dict)
+        return;
+    if (this.sameElement(event) || this.inRange(event))
+        return;
     var that = this;
     this.rangeParent = event.rangeParent;
     this.rangeOffset = event.rangeOffset;
     this.target = event.target;
     var window = this.panel.ownerDocument.defaultView;
-    if (this.timer) window.clearTimeout(this.timer);
+    if (this.timer)
+        window.clearTimeout(this.timer);
     this.timer = window.setTimeout(function () {
         that.show1(event);
     }, prefs.getPref("popup_delay"));
@@ -94,7 +100,8 @@ Popup.prototype.show = function (event) {
 Popup.prototype.inRange = function (event) {
     var win = event.view;
     var selection = win.getSelection();
-    if (selection.rangeCount === 0 || selection.isCollapsed) return false;
+    if (selection.rangeCount === 0 || selection.isCollapsed)
+        return false;
     var curRange = selection.getRangeAt(0);
     var newRange = win.document.createRange();
     newRange.setStart(event.rangeParent, event.rangeOffset);
@@ -107,13 +114,15 @@ Popup.prototype.kanjiSearch = function (word) {
     var text = "", searchResult = null, result, c, i;
     for (i = 0; i < word.length; ++i) {
         c = word.charAt(i);
-        if (c < "\u3400" || c > "\u9FCF") continue;
+        if (c < "\u3400" || c > "\u9FCF")
+            continue;
         result = this.dict.kanjiSearch(c);
         if (searchResult)
             Array.prototype.push.apply(searchResult.entries, result.entries);
         else searchResult = result;
     }
-    if (searchResult) text = this.dict.makeHtml(searchResult);
+    if (searchResult)
+        text = this.dict.makeHtml(searchResult);
     return text;
 }
 
@@ -126,7 +135,8 @@ Popup.prototype.getBasicForm = function (target) {
     var expr = "ancestor-or-self::rt";
     var type = XPathResult.BOOLEAN_TYPE;
     var isInRT = doc.evaluate(expr, target, null, type, null).booleanValue;
-    if (isInRT) return "";
+    if (isInRT)
+        return "";
     expr = "ancestor-or-self::*[(self::ruby or self::span) and @bf and @class='fi']";
     type = XPathResult.FIRST_ORDERED_NODE_TYPE;
     var node = doc.evaluate(expr, target, null, type, null).singleNodeValue;
@@ -154,7 +164,8 @@ Popup.prototype.show1 = function (event) {
 Popup.prototype.lookupAndShowAt = function (word, screenX, screenY) {
     this.word = word;
     this.hide();
-    if (word === "") return;
+    if (word === "")
+        return;
     var text = "";
     var searchResult = null;
     this.searchResults = this.dict.wordSearch(word);
@@ -173,7 +184,7 @@ Popup.prototype.showTextAt = function (text, screenX, screenY) {
     var iframe = win.document.getElementById("furigana-inserter-iframe");
     iframe.width = "600";
     iframe.height = "400";
-    panel.width = "610";
+    panel.width = "600";
     panel.height = "400";
     var x = screenX;
     var y = screenY;

@@ -9,40 +9,44 @@ function getOS () {
 
 function GetACP () {
     return ctypes.open("kernel32").declare("GetACP", ctypes.default_abi,
-            ctypes.unsigned_int)();
+        ctypes.unsigned_int)();
 }
 
 function WideCharToMultiByte (data, cp) {
     var lib = ctypes.open("kernel32");
     var func = lib.declare("WideCharToMultiByte", ctypes.default_abi,
-            ctypes["int"], ctypes.unsigned_int, ctypes.unsigned_long,
-            ctypes.jschar.array(), ctypes["int"], ctypes["char"].ptr,
-            ctypes["int"], ctypes["char"].ptr, ctypes.bool.ptr);
+        ctypes["int"], ctypes.unsigned_int, ctypes.unsigned_long,
+        ctypes.jschar.array(), ctypes["int"], ctypes["char"].ptr,
+        ctypes["int"], ctypes["char"].ptr, ctypes.bool.ptr);
     var cdata_length = func(cp, 0, data, -1, null, 0, null, null);
-    if (cdata_length === 0) return null;
+    if (cdata_length === 0)
+        return null;
     var cdata = ctypes["char"].array(cdata_length)();
     var error_code = func(cp, 0, data, -1, cdata, cdata_length, null, null);
-    if (error_code === 0) return null;
+    if (error_code === 0)
+        return null;
     return cdata;
 }
 
 function MultiByteToWideChar (cdata, cp) {
     var lib = ctypes.open("kernel32");
-    var func = lib
-            .declare("MultiByteToWideChar", ctypes.default_abi, ctypes["int"],
-                    ctypes.unsigned_int, ctypes.unsigned_long,
-                    ctypes["char"].ptr, ctypes["int"], ctypes.jschar.ptr,
-                    ctypes["int"]);
+    var func = lib.declare("MultiByteToWideChar", ctypes.default_abi, ctypes["int"],
+        ctypes.unsigned_int, ctypes.unsigned_long,
+        ctypes["char"].ptr, ctypes["int"], ctypes.jschar.ptr,
+        ctypes["int"]);
     var data_length = func(cp, 0, cdata, -1, null, 0);
-    if (data_length === 0) return null;
+    if (data_length === 0)
+        return null;
     var data = ctypes.jschar.array(data_length)();
     var error_code = func(cp, 0, cdata, -1, data, data_length);
-    if (error_code === 0) return null;
+    if (error_code === 0)
+        return null;
     return data.readString();
 }
 
 function convertToUnicode (cdata, charset) {
-    if (charset === "UTF-8" || charset === "utf8") return cdata.readString();
+    if (charset === "UTF-8" || charset === "utf8")
+        return cdata.readString();
     var OS = getOS();
     if (OS === "WINNT") {
         if (charset === "utf8" || charset === "UTF-8")
@@ -91,7 +95,8 @@ MeCab.prototype.getError = function () {
 }
 
 MeCab.prototype.init = function (dllPath) {
-    if (this.lib) return this;
+    if (this.lib)
+        return this;
     try {
         if (dllPath === "") throw new Error();
         this.lib = ctypes.open(dllPath);
@@ -119,20 +124,20 @@ MeCab.prototype.init = function (dllPath) {
     }]);
     this.mecab_dictionary_info_t = mecab_dictionary_info_t;
     this.mecab_new = this.lib.declare("mecab_new", ctypes.default_abi, mecab_t,
-            ctypes["int"], ctypes["char"].ptr.array());
+        ctypes["int"], ctypes["char"].ptr.array());
     this.mecab_new2 = this.lib.declare("mecab_new2", ctypes.default_abi,
-            mecab_t, ctypes["char"].ptr);
+        mecab_t, ctypes["char"].ptr);
     this.mecab_sparse_tostr = this.lib
-            .declare("mecab_sparse_tostr", ctypes.default_abi,
-                    ctypes["char"].ptr, mecab_t, ctypes["char"].ptr);
+    .declare("mecab_sparse_tostr", ctypes.default_abi,
+        ctypes["char"].ptr, mecab_t, ctypes["char"].ptr);
     this.mecab_destroy = this.lib.declare("mecab_destroy", ctypes.default_abi,
-            ctypes.void_t, mecab_t);
+        ctypes.void_t, mecab_t);
     this.mecab_dictionary_info = this.lib.declare("mecab_dictionary_info",
-            ctypes.default_abi, mecab_dictionary_info_t.ptr, mecab_t);
+        ctypes.default_abi, mecab_dictionary_info_t.ptr, mecab_t);
     this.mecab_version = this.lib.declare("mecab_version", ctypes.default_abi,
-            ctypes["char"].ptr);
+        ctypes["char"].ptr);
     this.mecab_strerror = this.lib.declare("mecab_strerror",
-            ctypes.default_abi, ctypes["char"].ptr, mecab_t);
+        ctypes.default_abi, ctypes["char"].ptr, mecab_t);
     return this;
 }
 
@@ -147,7 +152,8 @@ MeCab.prototype.getDllName = function () {
 }
 
 MeCab.prototype.createTagger = function (dicPath, userDicPath) {
-    if (!this.lib) throw new Error("MeCab not initialized");
+    if (!this.lib)
+        throw new Error("MeCab not initialized");
     if (getOS() === "WINNT") {
         dicPath = WideCharToMultiByte(dicPath, GetACP());
         userDicPath = WideCharToMultiByte(userDicPath, GetACP());
@@ -173,7 +179,8 @@ MeCab.prototype.createTagger = function (dicPath, userDicPath) {
 }
 
 MeCab.prototype.getVersion = function () {
-    if (!this.lib) throw new Error("MeCab not initialized");
+    if (!this.lib)
+        throw new Error("MeCab not initialized");
     return this.mecab_version().readString();
 }
 
@@ -198,7 +205,8 @@ Tagger.prototype.destroyTagger = function () {
 }
 
 Tagger.prototype.getDictionaryInfo = function () {
-    if (!this.tagger) throw new Error("tagger not initialized");
+    if (!this.tagger)
+        throw new Error("tagger not initialized");
     var info, filename;
     var retval = "";
     info = this.mecab.mecab_dictionary_info(this.tagger);
@@ -207,20 +215,22 @@ Tagger.prototype.getDictionaryInfo = function () {
             filename = MultiByteToWideChar(info.contents.filename, GetACP());
         else filename = info.contents.filename.readString();
         retval += "filename=" + filename + ";charset="
-                + info.contents.charset.readString() + ";size="
-                + info.contents.size + ";type=" + info.contents.type
-                + ";lsize=" + info.contents.lsize + ";rsize="
-                + info.contents.rsize + ";version=" + info.contents.version
-                + "\n";
+        + info.contents.charset.readString() + ";size="
+        + info.contents.size + ";type=" + info.contents.type
+        + ";lsize=" + info.contents.lsize + ";rsize="
+        + info.contents.rsize + ";version=" + info.contents.version
+        + "\n";
         info = info.contents.next;
     }
     return retval;
 }
 
 Tagger.prototype.getAll = function (text) {
-    if (!this.tagger) throw new Error("tagger not initialized");
+    if (!this.tagger)
+        throw new Error("tagger not initialized");
     var info = this.mecab.mecab_dictionary_info(this.tagger);
-    if (info.isNull()) throw new Error("couldn't get dictionary information");
+    if (info.isNull())
+        throw new Error("couldn't get dictionary information");
     var charset = info.contents.charset.readString();
     var ctext = null;
     ctext = convertFromUnicode(text, charset);
@@ -229,7 +239,8 @@ Tagger.prototype.getAll = function (text) {
     var lines = text.split("\n");
     var nodes = [];
     lines.forEach(function (line) {
-        if (line === "") return;
+        if (line === "")
+            return;
         var fields = line.split("\t");
         var EOS = (line === "EOS");
         var pl = parseInt(fields[2]);
@@ -245,7 +256,8 @@ Tagger.prototype.getAll = function (text) {
 
 function createTagger (dicPath, userDicPath) {
     var tagger;
-    if (!mecab) throw new Error("MeCab not initialized");
+    if (!mecab)
+        throw new Error("MeCab not initialized");
     try {
         tagger = mecab.createTagger(dicPath, userDicPath);
         return tagger;
@@ -264,7 +276,8 @@ function init (data) {
 function getNodes (data) {
     var tagger, texts, nodes = [];
     tagger = createTagger(data.dicPath, data.userDicPath);
-    if (!tagger) throw new Error("couldn't create tagger");
+    if (!tagger)
+        throw new Error("couldn't create tagger");
     texts = data.text;
     texts.forEach(function (text) {
         var taggerNodes = tagger.getAll(text);
@@ -280,7 +293,8 @@ function getNodes (data) {
 function getDictionaryInfo (data) {
     var tagger, info;
     tagger = createTagger(data.dicPath, data.userDicPath);
-    if (!tagger) throw new Error("couldn't create tagger");
+    if (!tagger)
+        throw new Error("couldn't create tagger");
     info = tagger.getDictionaryInfo();
     tagger.destroyTagger();
     postMessage({
@@ -291,26 +305,22 @@ function getDictionaryInfo (data) {
 
 onmessage = function (event) {
     switch (event.data.request) {
-    case "init": {
-        init(event.data);
-        break;
-    }
-    case "getNodes": {
-        getNodes(event.data);
-        break;
-    }
-    case "getDictionaryInfo": {
-        getDictionaryInfo(event.data);
-        break;
-    }
-    case "getVersion": {
-        postMessage({
-            reply : "getVersion",
-            version : mecab.getVersion()
-        });
-        break;
-    }
-    default:
-        throw new Error("unknown request: " + event.data.request);
+        case "init":
+            init(event.data);
+            break;
+        case "getNodes":
+            getNodes(event.data);
+            break;
+        case "getDictionaryInfo":
+            getDictionaryInfo(event.data);
+            break;
+        case "getVersion":
+            postMessage({
+                reply : "getVersion",
+                version : mecab.getVersion()
+            });
+            break;
+        default:
+            throw new Error("unknown request: " + event.data.request);
     }
 }

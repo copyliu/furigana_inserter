@@ -1,15 +1,15 @@
 "use strict";
 
 var EXPORTED_SYMBOLS = ["escapeHTML", "log", "time", "printOwnProperties",
-        "printProperties", "getNodesByXPath", "Timer", "Preferences",
-        "PreferencesObserver", "ClipboardMonitor", "getURI",
-        "RangeNodeIterator", "splitTextNode", "katakanaToRomaji",
-        "katakanaToHiragana", "hiraganaToKatakana", "open", "read", "write",
-        "getDictionaryPath", "logError", "getOS", "getExtension",
-        "getKeywordsFile", "getFilterFile", "getFilterFunction",
-        "getKeywordsObject", "getFilterArray", "getUserDictionaryPath",
-        "getDllPath", "readUri", "getMecabWorker", "groupBy",
-        "copyTextToClipboard", "getTextFromClipboard", "getChromeWindow"];
+"printProperties", "getNodesByXPath", "Timer", "Preferences",
+"PreferencesObserver", "ClipboardMonitor", "getURI",
+"RangeNodeIterator", "splitTextNode", "katakanaToRomaji",
+"katakanaToHiragana", "hiraganaToKatakana", "open", "read", "write",
+"getDictionaryPath", "logError", "getOS", "getExtension",
+"getKeywordsFile", "getFilterFile", "getFilterFunction",
+"getKeywordsObject", "getFilterArray", "getUserDictionaryPath",
+"getDllPath", "readUri", "getMecabWorker", "groupBy",
+"copyTextToClipboard", "getTextFromClipboard", "getChromeWindow"];
 
 Components.utils["import"]("resource://gre/modules/AddonManager.jsm");
 
@@ -25,13 +25,13 @@ var MecabWorkerInstance = null;
 
 function init () {
     AddonManager.getAddonByID("furiganainserter@zorkzero.net",
-            function (addon) {
-                MyExtension = addon;
-            });
+        function (addon) {
+            MyExtension = addon;
+        });
     AddonManager.getAddonByID("furiganainserter-dictionary@zorkzero.net",
-            function (addon) {
-                DictionaryExtension = addon;
-            });
+        function (addon) {
+            DictionaryExtension = addon;
+        });
 }
 
 function groupBy (list, func) {
@@ -89,9 +89,10 @@ function hiraganaToKatakana (str) {
 var loadRomaji = (function () {
     var romajiTable = null;
     return function () {
-        if (romajiTable) return romajiTable;
+        if (romajiTable)
+            return romajiTable;
         var string = readUri("chrome://furiganainserter/content/romaji.json",
-                "UTF-8");
+            "UTF-8");
         var JSON = Cc["@mozilla.org/dom/json;1"].createInstance(Ci.nsIJSON);
         romajiTable = JSON.decode(string);
         return romajiTable;
@@ -124,22 +125,22 @@ function katakanaToRomaji (string) {
 
 function getURI (spec) {
     return Cc['@mozilla.org/network/io-service;1'].getService(Ci.nsIIOService)
-            .newURI(spec, null, null);
+    .newURI(spec, null, null);
 }
 
 function escapeHTML (text) {
     return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g,
-            '&gt;');
+        '&gt;');
 }
 
 function log (msg) {
     Cc["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService)
-            .logStringMessage(msg);
+    .logStringMessage(msg);
 }
 
 function logError (e) {
     var str = e.message + ", file name: " + e.fileName + ", line number: "
-            + e.lineNumber;
+    + e.lineNumber;
     Components.utils.reportError(str);
 }
 
@@ -161,7 +162,8 @@ function printProperties (obj) {
 function printOwnProperties (obj) {
     var props = [];
     for ( var prop in obj)
-        if (obj.hasOwnProperty(prop)) props.push(prop);
+        if (obj.hasOwnProperty(prop))
+            props.push(prop);
     log(props.join(", "));
 }
 
@@ -169,7 +171,7 @@ function getNodesByXPath (elem, expr) {
     var doc = elem.ownerDocument;
     var nodes = [], node;
     var result = doc.evaluate(expr, elem, null,
-            XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+        XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
     while ((node = result.iterateNext()))
         nodes.push(node);
     return nodes;
@@ -194,26 +196,26 @@ function splitTextNode (node, startOffset, endOffset) {
 
 function write (file, data, charset, append) {
     var fos = Cc['@mozilla.org/network/file-output-stream;1']
-            .createInstance(Ci.nsIFileOutputStream);
+    .createInstance(Ci.nsIFileOutputStream);
     var flags = 0x02 | 0x08 | 0x20; // wronly | create | truncate
     if (append) flags = 0x02 | 0x10; // wronly | append
     fos.init(file, flags, -1, 0);
     var cos = Cc["@mozilla.org/intl/converter-output-stream;1"]
-            .createInstance(Ci.nsIConverterOutputStream);
+    .createInstance(Ci.nsIConverterOutputStream);
     cos.init(fos, charset, -1, 0x0000);
     cos.writeString(data);
     cos.close();
 }
 
 function readUri (uri, charset) {
-    var inp = Cc["@mozilla.org/network/io-service;1"].getService(
-            Ci.nsIIOService).newChannel(uri, null, null).open();
+    var inp = Cc["@mozilla.org/network/io-service;1"].
+    getService(Ci.nsIIOService).newChannel(uri, null, null).open();
     return readStream(inp, charset);
 }
 
 function read (file, charset) {
     var fis = Cc['@mozilla.org/network/file-input-stream;1']
-            .createInstance(Ci.nsIFileInputStream);
+    .createInstance(Ci.nsIFileInputStream);
     fis.init(file, -1, -1, 0);
     return readStream(fis, charset);
 }
@@ -221,7 +223,7 @@ function read (file, charset) {
 function readStream (is, charset) {
     var retval = "";
     var cis = Cc['@mozilla.org/intl/converter-input-stream;1']
-            .createInstance(Ci.nsIConverterInputStream);
+    .createInstance(Ci.nsIConverterInputStream);
     cis.init(is, charset, -1, 0x0000);
     var str = {};
     while (cis.readString(-1, str) > 0)
@@ -239,7 +241,7 @@ function open (path) {
 function RangeNodeIterator (range) {
     var start = range.startContainer;
     var startOffset = start.nodeType === Node.TEXT_NODE ? range.startOffset
-            : -1;
+    : -1;
     var end = range.endContainer;
     var endOffset = end.nodeType === Node.TEXT_NODE ? range.endOffset : -1;
     if (!range.collapsed && start.nodeType === Node.ELEMENT_NODE) {
@@ -270,7 +272,7 @@ function RangeNodeIterator (range) {
 
     var doc = start.ownerDocument;
     this._walker = doc.createTreeWalker(start, NodeFilter.SHOW_ELEMENT
-            | NodeFilter.SHOW_TEXT, null, false);
+        | NodeFilter.SHOW_TEXT, null, false);
 
     this._START = 0;
     this._END = 1;
@@ -285,36 +287,33 @@ RangeNodeIterator.prototype.nextNode = function () {
     }
 
     switch (this._state) {
-    case 0: { // START
-        this._state = this._DOWN;
-        this._currentNode = this._start;
-        return this._currentNode;
-    }
-    case 1: // END
-        return null;
-    case 2: { // DOWN
-        this._currentNode = this._walker.nextNode();
-        if (!this._currentNode)
-            this._state = this._RIGHT_OR_UP; // fall through!
-        else return this._currentNode;
-    }
-    case 3: { // RIGHT_OR_UP
-        this._currentNode = this._topNode.nextSibling;
-        if (!this._currentNode) {
-            this._topNode = this._topNode.parentNode;
-            this._currentNode = this._topNode;
-            if (!this._currentNode)
-                throw new Error("this shouldn't happen");
-            else return this._currentNode;
-        } else {
+        case 0: // START
             this._state = this._DOWN;
-            this._topNode = this._currentNode;
-            this._walker.currentNode = this._topNode;
+            this._currentNode = this._start;
             return this._currentNode;
-        }
-    }
-    default:
-        throw new Error("this shouldn't happen");
+        case 1: // END
+            return null;
+        case 2: // DOWN
+            this._currentNode = this._walker.nextNode();
+            if (!this._currentNode)
+                this._state = this._RIGHT_OR_UP; // fall through!
+            else return this._currentNode;
+        case 3:// RIGHT_OR_UP
+            this._currentNode = this._topNode.nextSibling;
+            if (!this._currentNode) {
+                this._topNode = this._topNode.parentNode;
+                this._currentNode = this._topNode;
+                if (!this._currentNode)
+                    throw new Error("this shouldn't happen");
+                else return this._currentNode;
+            } else {
+                this._state = this._DOWN;
+                this._topNode = this._currentNode;
+                this._walker.currentNode = this._topNode;
+                return this._currentNode;
+            }
+        default:
+            throw new Error("this shouldn't happen");
     }
 }
 
@@ -383,8 +382,8 @@ Timer.prototype.cancel = function () {
 
 function Preferences (branchName) {
     // nsIPrefBranch
-    this._prefs = Cc["@mozilla.org/preferences-service;1"].getService(
-            Ci.nsIPrefService).getBranch(branchName);
+    this._prefs = Cc["@mozilla.org/preferences-service;1"].
+    getService(Ci.nsIPrefService).getBranch(branchName);
 }
 
 Preferences.prototype.unregister = function (observer) {
@@ -404,7 +403,7 @@ Preferences.prototype.setPref = function (name, val) {
         this._prefs.setIntPref(name, val);
     else {
         var str = Cc["@mozilla.org/supports-string;1"]
-                .createInstance(Ci.nsISupportsString);
+        .createInstance(Ci.nsISupportsString);
         str.data = val;
         this._prefs.setComplexValue(name, Ci.nsISupportsString, str);
     }
@@ -444,9 +443,9 @@ PreferencesObserver.prototype.observe = function (subject, topic, data) {
 function getTextFromClipboard () {
     try {
         var clip = Cc["@mozilla.org/widget/clipboard;1"]
-                .getService(Ci.nsIClipboard);
+        .getService(Ci.nsIClipboard);
         var trans = Cc["@mozilla.org/widget/transferable;1"]
-                .createInstance(Ci.nsITransferable);
+        .createInstance(Ci.nsITransferable);
         trans.addDataFlavor("text/unicode");
         clip.getData(trans, clip.kGlobalClipboard);
         var str = {};
@@ -462,12 +461,12 @@ function getTextFromClipboard () {
 function copyTextToClipboard (text) {
     try {
         var clip = Cc["@mozilla.org/widget/clipboard;1"]
-                .getService(Ci.nsIClipboard);
+        .getService(Ci.nsIClipboard);
         var str = Cc["@mozilla.org/supports-string;1"]
-                .createInstance(Ci.nsISupportsString);
+        .createInstance(Ci.nsISupportsString);
         str.data = text;
         var trans = Cc["@mozilla.org/widget/transferable;1"]
-                .createInstance(Ci.nsITransferable);
+        .createInstance(Ci.nsITransferable);
         trans.addDataFlavor("text/unicode");
         trans.setTransferData("text/unicode", str, text.length * 2);
         clip.setData(trans, null, clip.kGlobalClipboard);
@@ -499,7 +498,7 @@ function getExtension () {
 function getDictionaryPath () {
     if (DictionaryExtension)
         return DictionaryExtension.getResourceURI("chrome/content/etc/mecabrc")
-                .QueryInterface(Ci.nsIFileURL).file.path;
+        .QueryInterface(Ci.nsIFileURL).file.path;
     else return "";
 }
 
@@ -521,8 +520,8 @@ function getDllPath () {
 }
 
 function getUserDictionaryFile (extension) {
-    var file = Cc["@mozilla.org/file/directory_service;1"].getService(
-            Ci.nsIProperties).get("ProfD", Ci.nsIFile);
+    var file = Cc["@mozilla.org/file/directory_service;1"].
+    getService(Ci.nsIProperties).get("ProfD", Ci.nsIFile);
     file.append("furigana_inserter_user_dictionary." + extension);
     return file;
 }
@@ -532,15 +531,15 @@ function getOS () {
 }
 
 function getKeywordsFile () {
-    var file = Cc["@mozilla.org/file/directory_service;1"].getService(
-            Ci.nsIProperties).get("ProfD", Ci.nsIFile);
+    var file = Cc["@mozilla.org/file/directory_service;1"].
+    getService(Ci.nsIProperties).get("ProfD", Ci.nsIFile);
     file.append("furigana_inserter_keywords.txt");
     return file;
 }
 
 function getFilterFile () {
-    var file = Cc["@mozilla.org/file/directory_service;1"].getService(
-            Ci.nsIProperties).get("ProfD", Ci.nsIFile);
+    var file = Cc["@mozilla.org/file/directory_service;1"].
+    getService(Ci.nsIProperties).get("ProfD", Ci.nsIFile);
     file.append("furigana_inserter_filter.js");
     return file;
 }
@@ -585,8 +584,8 @@ function getFilterArray () {
 }
 
 function showErrorDialog () {
-    var msg = document.getElementById("furiganainserter-strings").getString(
-        "createTaggerError");
+    var msg = document.getElementById("furiganainserter-strings").
+    getString("createTaggerError");
     var promptService = Cc["@mozilla.org/embedcomp/prompt-service;1"]
     .getService(Ci.nsIPromptService);
 }
@@ -595,8 +594,7 @@ function MecabWorker () {
     var that = this;
     this.initialized = false;
     this.queue = [];
-    this.worker = new ChromeWorker(
-            "chrome://furiganainserter/content/my_worker.js");
+    this.worker = new ChromeWorker("chrome://furiganainserter/content/my_worker.js");
     this.worker.onmessage = function (event) {
         var f = that.queue.shift();
         f(event.data);
@@ -612,7 +610,8 @@ function MecabWorker () {
 }
 
 MecabWorker.prototype.init = function () {
-    if (this.initialized) return;
+    if (this.initialized)
+        return;
     this.worker.postMessage({
         request : "init",
         OS : getOS(),

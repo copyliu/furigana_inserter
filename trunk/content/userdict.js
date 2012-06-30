@@ -53,21 +53,21 @@ function createName (kanji, kana) {
     kana = hiraganaToKatakana(kana);
     var id = "1291";
     return kanji.concat(",", id, ",", id, ",1000,名詞,固有名詞,人名,名,*,*,", kanji,
-            ",", kana, ",", kana, ",,");
+        ",", kana, ",", kana, ",,");
 }
 
 function createSurname (kanji, kana) {
     kana = hiraganaToKatakana(kana)
     var id = "1290"
     return kanji.concat(",", id, ",", id, ",1000,名詞,固有名詞,人名,姓,*,*,", kanji,
-            ",", kana + ",", kana, ",,")
+        ",", kana + ",", kana, ",,")
 }
 
 function createNoun (kanji, kana) {
     kana = hiraganaToKatakana(kana);
     var id = "1285";
     return kanji.concat(",", id, ",", id, ",1000,名詞,一般,*,*,*,*,", kanji, ",",
-            kana, ",", kana, ",,");
+        kana, ",", kana, ",,");
 }
 
 function loadDictionary () {
@@ -99,7 +99,7 @@ function doUpdate () {
     write(csvFile, csvText);
 
     // 4. get the dictionary directory from a tagger
-//    var worker = new MecabWorker(opener.document);
+    //    var worker = new MecabWorker(opener.document);
     var worker = getMecabWorker();
     worker.send({
         request : "getDictionaryInfo",
@@ -122,13 +122,12 @@ function runMecabDictIndex (data) {
     // 5. create user directory with a tagger
     var userDicFile = getUserDictionaryFile("dic");
     var charset = dictionaryInfo.split(/\n/)[0].split(/;/)[1]
-            .substring("charset=".length);
+    .substring("charset=".length);
     runMecabDictIndex2(userDicFile, dicDir, csvFile, charset);
 }
 
 function runMecabDictIndex2 (userDicFile, dicDir, csvFile, charset) {
-    var process = Cc["@mozilla.org/process/util;1"]
-            .createInstance(Ci.nsIProcess);
+    var process = Cc["@mozilla.org/process/util;1"].createInstance(Ci.nsIProcess);
     var file = null;
     if (getOS() === "WINNT") {
         file = getExtension().getResourceURI("mecab/mecab-dict-index.exe");
@@ -138,13 +137,13 @@ function runMecabDictIndex2 (userDicFile, dicDir, csvFile, charset) {
     // "UTF-8", "-t", charset, csvFile.path].join(" "))
     process.init(file);
     var args = ["-u", userDicFile.path, "-d", dicDir.path, "-f", "UTF-8", "-t",
-            charset, csvFile.path];
+    charset, csvFile.path];
     process.runw(false, args, args.length);
 }
 
 function getUserDictionaryFile (extension) {
-    var file = Cc["@mozilla.org/file/directory_service;1"].getService(
-            Ci.nsIProperties).get("ProfD", Ci.nsIFile);
+    var file = Cc["@mozilla.org/file/directory_service;1"].
+    getService(Ci.nsIProperties).get("ProfD", Ci.nsIFile);
     file.append("furigana_inserter_user_dictionary." + extension);
     return file;
 }
@@ -160,10 +159,10 @@ function doOK () {
 
 function doHelp () {
     var ps = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-            .getService(Ci.nsIPromptService);
+    .getService(Ci.nsIPromptService);
     var win = window.opener;
     var text = win.document.getElementById("furiganainserter-strings")
-            .getString("userDictionaryHelp");
+    .getString("userDictionaryHelp");
     ps.alert(window, "User Dictionary Help", text);
     return true;
 }
