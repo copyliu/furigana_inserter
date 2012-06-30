@@ -55,8 +55,8 @@ function featureToReading (feature) {
     var obj = new Reading()
     var fields = feature.split(",")
     if (fields.length > 7 && (katRegex.test(fields[7]))
-            && !/[\uFF01-\uFF5E]/.test(fields[6])) // not an ASCII char
-    {
+        && !/[\uFF01-\uFF5E]/.test(fields[6])) // not an ASCII char
+        {
         obj.reading = katakanaToHiragana(fields[7])
         obj.basicForm = fields[6];
         obj.isName = (fields[2] === "人名")

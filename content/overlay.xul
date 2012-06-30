@@ -72,11 +72,7 @@ id="furigana-inserter-overlay" >
 
     <popupset id="mainPopupSet">
         <panel id="furigana-inserter-popup"
-               context="contentAreaContextMenu"
-               backdrag="true">
-            <!--<toolbar>
-                <toolbarbutton label="→" oncommand="FuriganaInserter.makePopupSticky(event)"/>
-            </toolbar>-->
+               context="contentAreaContextMenu">
             <iframe id="furigana-inserter-iframe"
                     type="content"
                     src="chrome://furiganainserter/content/popup.html">

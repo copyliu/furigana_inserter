@@ -7,7 +7,7 @@ Components.utils["import"]('resource://gre/modules/AddonManager.jsm');
 var Ci = Components.interfaces;
 var Cc = Components.classes;
 
-function Dic (file) {
+function Dictionary (file) {
     this.name = "";
     this.isName = false;
     this.file = file;
@@ -16,22 +16,24 @@ function Dic (file) {
     this.hasIndex = false;
 }
 
-Dic.prototype.findWord = function (word) {
+Dictionary.prototype.findWord = function (word) {
     var db = null, entries = [];
     // open db
     // get entries
     // close db
     try {
         db = this.openDatabase();
-        if (!this.hasIndex) this.createIndex(db);
+        if (!this.hasIndex)
+            this.createIndex(db);
         entries = this.getEntries(db, word);
     } finally {
-        if (db) db.close();
+        if (db)
+            db.close();
     }
     return entries;
 }
 
-Dic.prototype.createIndex = function (db) {
+Dictionary.prototype.createIndex = function (db) {
     if (!db.indexExists("ix_kana"))
         db.executeSimpleSQL("CREATE INDEX ix_kana ON dict (kana ASC)");
     if (!db.indexExists("ix_kanji"))
@@ -39,17 +41,18 @@ Dic.prototype.createIndex = function (db) {
     this.hasIndex = true;
 }
 
-Dic.prototype.openDatabase = function () {
+Dictionary.prototype.openDatabase = function () {
     var file = this.file;
     // The files may get installed as read-only, breaking
     // index creation. Try changing the file permission.
-    if (!file.isWritable()) file.permissions |= 0x180;
+    if (!file.isWritable())
+        file.permissions |= 0x180;
     var service = Components.classes['@mozilla.org/storage/service;1']
-            .getService(Components.interfaces.mozIStorageService);
+    .getService(Components.interfaces.mozIStorageService);
     return service.openDatabase(file);
 }
 
-Dic.prototype.getEntries = function (db, word) {
+Dictionary.prototype.getEntries = function (db, word) {
     var result = [], entry;
     var stm = "SELECT * FROM dict WHERE kanji=:kanji OR kana=:kana";
     var st = db.createStatement(stm);
@@ -69,7 +72,7 @@ Dic.prototype.getEntries = function (db, word) {
     return result;
 }
 
-Dic.prototype.getResults = function (st) {
+Dictionary.prototype.getResults = function (st) {
     var results = [], result = {}, key;
     while (st.step()) {
         result = {};
@@ -103,34 +106,35 @@ function Variant (word) {
     this.reason = "";
 }
 
-/**
- * from Rikaichan
- */
 function DictionarySearcher () {
-    this._dif = new Dif();
-    this._dicList = [];
+    this.deinflector = getDeinflector();
+    this.dictionaries = [];
+    this.kanjiDictionaries = [];
 }
 
 DictionarySearcher.prototype.init = function (rcxDicList) {
     var ids = [], id;
     var that = this;
     for (id in rcxDicList)
-        if (rcxDicList.hasOwnProperty(id)) ids.push(id);
+        if (rcxDicList.hasOwnProperty(id))
+            ids.push(id);
 
     AddonManager.getAddonsByIDs(ids, function (addons) {
-        that._dicList = [];
+        that.dictionaries = [];
         var uri, file, i, dic, rcxDic, addon;
         for (i = 0; i < addons.length; ++i) {
             addon = addons[i];
             uri = addon.getResourceURI("dict.sqlite");
             file = uri.QueryInterface(Ci.nsIFileURL).file;
-            dic = new Dic(file);
+            dic = new Dictionary(file);
             rcxDic = rcxDicList[addon.id];
             dic.isName = rcxDic.isName;
             dic.isKanji = rcxDic.isKanji;
             dic.hasType = rcxDic.hasType;
             dic.name = rcxDic.name;
-            that._dicList.push(dic);
+            if (dic.isKanji)
+                that.kanjiDictionaries.push(dic)
+            else that.dictionaries.push(dic);
         }
     })
 }
@@ -145,14 +149,14 @@ DictionarySearcher.prototype._wordSearch = function (word, dic) {
     while (word.length > 0) {
         if (dic.isName)
             variants = [new Variant(word)];
-        else variants = this._dif.deinflect(word);
+        else variants = this.deinflector.deinflect(word);
         for (i = 0; i < variants.length; ++i) {
             variant = variants[i];
             entries = dic.findWord(variant.word);
             for (j = 0; j < entries.length; ++j) {
                 entry = entries[j];
                 // > 0 a de-inflected word
-                if (dic.hasType && this._checkType(variant.type, entry.entry)
+                if (dic.hasType && this.checkType(variant.type, entry.entry)
                     || !dic.hasType) {
                     if (result.matchLen === 0) result.matchLen = word.length;
                     if (variant.reason === '')
@@ -174,9 +178,8 @@ DictionarySearcher.prototype._wordSearch = function (word, dic) {
 
 DictionarySearcher.prototype.wordSearch = function (word) {
     var retval = [], i;
-    for (i = 0; i < this._dicList.length; ++i) {
-        var dic = this._dicList[i];
-        if (dic.isKanji) continue;
+    for (i = 0; i < this.dictionaries.length; ++i) {
+        var dic = this.dictionaries[i];
         var e = this._wordSearch(word, dic);
         if (e) retval.push(e);
     }
@@ -186,7 +189,7 @@ DictionarySearcher.prototype.wordSearch = function (word) {
     return retval;
 }
 
-DictionarySearcher.prototype._checkType = function (type, entry) {
+DictionarySearcher.prototype.checkType = function (type, entry) {
     var i;
     if (type === 0xFF) return true;
 
@@ -211,7 +214,9 @@ DictionarySearcher.prototype._checkType = function (type, entry) {
 DictionarySearcher.prototype.makeHtml = function (searchResult) {
     var result = "<div class='w-title'>" + searchResult.title + "</div>";
     var groupedEntries = groupBy(searchResult.entries,
-            function (entry) {return entry.entry;});
+        function (entry) {
+            return entry.entry;
+        });
     result += groupedEntries.map(function (group) {
         var result = [];
         group.forEach(function (entry) {
@@ -230,9 +235,8 @@ DictionarySearcher.prototype.makeHtml = function (searchResult) {
 
 DictionarySearcher.prototype.kanjiSearch = function (c) {
     var searchResult = new SearchResult(), i;
-    for (i = 0; i < this._dicList.length; ++i) {
-        var dic = this._dicList[i];
-        if (!dic.isKanji) continue;
+    for (i = 0; i < this.kanjiDictionaries.length; ++i) {
+        var dic = this.kanjiDictionaries[i];
         searchResult.entries = dic.findWord(c);
         searchResult.kanji = true;
         searchResult.title = dic.name;
@@ -243,8 +247,8 @@ DictionarySearcher.prototype.kanjiSearch = function (c) {
 
 DictionarySearcher.prototype.moveToTop = function (index) {
     if (index === 0) return;
-    var removed = this._dicList.splice(index, 1);
-    this._dicList.unshift(removed[0]);
+    var removed = this.dictionaries.splice(index, 1);
+    this.dictionaries.unshift(removed[0]);
 }
 
 function Rule () {
@@ -254,7 +258,16 @@ function Rule () {
     this.reason = 0;
 }
 
-function Dif () {
+var getDeinflector = (function () {
+    var deinflector = null;
+    return function () {
+        if (deinflector) return deinflector;
+        deinflector = new Deinflector();
+        return deinflector;
+    }
+})();
+
+function Deinflector () {
     var i, line, lines, fields, rule;
     this.reasons = [];
     this.rules = [];
@@ -276,7 +289,7 @@ function Dif () {
     }
 }
 
-Dif.prototype.deinflect = function (word) {
+Deinflector.prototype.deinflect = function (word) {
     var i, j, index, end, rule, newWord, newVariant;
     var variant = new Variant(word);
     var cache = {};
@@ -286,11 +299,13 @@ Dif.prototype.deinflect = function (word) {
     for (i = 0; i < variants.length; ++i) {
         variant = variants[i]
         for (j = 0; j < rules.length; ++j) {
-            rule = rules[j]
-            if (rule.from.length >= variant.word.length) continue;
+            rule = rules[j];
+            if (rule.from.length >= variant.word.length)
+                continue;
             index = variant.word.length - rule.from.length;
             end = variant.word.substring(index);
-            if ((variant.type & rule.type) === 0 || end !== rule.from) continue;
+            if ((variant.type & rule.type) === 0 || end !== rule.from)
+                continue;
             newWord = variant.word.substring(0, index) + rule.to;
             // update cache
             if (cache.hasOwnProperty(newWord)) {
@@ -305,9 +320,9 @@ Dif.prototype.deinflect = function (word) {
                     newVariant.reason = this.reasons[rule.reason];
                 else newVariant.reason = this.reasons[rule.reason] + ' &lt; '
                     + variant.reason;
+                cache[newWord] = newVariant;
+                variants.push(newVariant);
             }
-            cache[newWord] = newVariant;
-            variants.push(newVariant);
         }
     }
     return variants;

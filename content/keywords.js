@@ -29,10 +29,10 @@ function doCancel () {
 
 function showHelp () {
     var ps = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-            .getService(Ci.nsIPromptService);
+    .getService(Ci.nsIPromptService);
     var win = window.opener;
     var text = win.document.getElementById("furiganainserter-strings")
-            .getString("keywordsHelp");
+    .getString("keywordsHelp");
     ps.alert(window, "Keywords Help", text);
 }
 

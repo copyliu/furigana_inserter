@@ -49,7 +49,8 @@ var FuriganaInserter = {};
 
     // browser is optional, the default is the selected browser
     function getBrowserData (browser) {
-        if (arguments.length === 0) browser = gBrowser.selectedBrowser;
+        if (arguments.length === 0)
+            browser = gBrowser.selectedBrowser;
         return browser.furiganaInserter;
     }
 
@@ -170,7 +171,8 @@ var FuriganaInserter = {};
         for (i = 0; i < browsers.length; ++i) {
             browser = browsers[i];
             data = getBrowserData(browser);
-            if (!data) continue;
+            if (!data)
+                continue;
             if (data.clipboard)
                 data.clipboard.cancel();
             data.clipboard = null;
@@ -178,15 +180,18 @@ var FuriganaInserter = {};
     }
 
     function onMouseDown (event) {
-        if (event.button === 0) mouseDown = true;
+        if (event.button === 0)
+            mouseDown = true;
     }
 
     function onMouseUp (event) {
-        if (event.button === 0) mouseDown = false;
+        if (event.button === 0)
+            mouseDown = false;
     }
 
     function onMouseMove (event) {
-        if (mouseDown) return;
+        if (mouseDown)
+            return;
         var ev = {
             rangeParent : event.rangeParent,
             rangeOffset : event.rangeOffset,
@@ -231,7 +236,8 @@ var FuriganaInserter = {};
         var alphabet = data.alphabet;
         var inserter = createInserter(alphabet);
         var doc = event.originalTarget;
-        if (!(doc instanceof HTMLDocument)) return;
+        if (!(doc instanceof HTMLDocument))
+            return;
         if (prefs.getPref("auto_process_all_pages"))
             inserter.doElement(doc.body, function () {});
     }
@@ -270,8 +276,8 @@ var FuriganaInserter = {};
             data.clipboard.cancel();
             data.clipboard = null;
         }
-        document.getElementById("fi-monitor-clipboard-command").setAttribute(
-                "checked", data.clipboard != null);
+        document.getElementById("fi-monitor-clipboard-command").
+        setAttribute("checked", data.clipboard != null);
     }
 
     function createInserter (alphabet) {
@@ -279,21 +285,23 @@ var FuriganaInserter = {};
         var tokenize = prefs.getPref("tokenize");
         if (alphabet === "hiragana")
             inserter = tokenize ? new Inserter(new HiraganaComplex())
-                    : new Inserter(new HiraganaSimple());
+            : new Inserter(new HiraganaSimple());
         else if (alphabet === "katakana")
             inserter = tokenize ? new Inserter(new KatakanaComplex())
-                    : new Inserter(new KatakanaSimple());
+            : new Inserter(new KatakanaSimple());
         else if (alphabet === "romaji")
             inserter = tokenize ? new Inserter(new RomajiComplex())
-                    : new Inserter(new RomajiSimple());
+            : new Inserter(new RomajiSimple());
         else inserter = new Inserter(new Keywords());
         return inserter;
     }
 
     function registerPreferencesObserver () {
         var observer = new PreferencesObserver(function (event) {
-            if (event.data === "color_scheme") changePopupStyle();
-            else if (event.data === "lookup_key") changeKeys();
+            if (event.data === "color_scheme")
+                changePopupStyle();
+            else if (event.data === "lookup_key")
+                changeKeys();
         });
         prefs.register(observer);
     }
@@ -338,10 +346,8 @@ var FuriganaInserter = {};
             var doc = gBrowser.contentDocument;
             var range = getSelectedRange(content);
             if (range)
-                inserter.doRange(range, function () {
-                });
-            else inserter.doElement(doc.body, function () {
-            });
+                inserter.doRange(range, function () {});
+            else inserter.doElement(doc.body, function () {});
         });
     }
 
@@ -376,7 +382,8 @@ var FuriganaInserter = {};
         };
         window.openDialog("chrome://furiganainserter/content/keywords.xul", "",
                 "modal,resizable,centerscreen", arg);
-        if (arg.keywords) setKeywords(arg.keywords);
+        if (arg.keywords)
+            setKeywords(arg.keywords);
     }
 
     function switchAlphabet (event) {
@@ -400,11 +407,13 @@ var FuriganaInserter = {};
 
     function appendText (text, browser) {
         var inserter;
-        if (!jRegex.test(text)) return;
+        if (!jRegex.test(text))
+            return;
         var win = browser.contentWindow;
         var doc = win.document;
         text = escapeHTML(text);
-        if (filterFunction) text = filterFunction(text);
+        if (filterFunction)
+            text = filterFunction(text);
         var p = doc.createElement("p");
         var lines = text.split(/\r\n|\n/);
         p.innerHTML = lines.join("<br>");
@@ -432,7 +441,8 @@ var FuriganaInserter = {};
         var nodes = [];
         var iter = new RangeNodeIterator(range);
         while ((node = iter.nextNode())) {
-            if (!pred(node)) continue;
+            if (!pred(node))
+                continue;
             start = iter.getStartTextOffset();
             end = iter.getEndTextOffset();
             nodes.push({
@@ -454,7 +464,7 @@ var FuriganaInserter = {};
         if (node.data === "" || !jRegex.test(node.data))
             return false;
         else return doc.evaluate(expr, node, null, XPathResult.BOOLEAN_TYPE,
-                null).booleanValue;
+            null).booleanValue;
     }
 
     function isTextNotInRt (node) {
@@ -462,12 +472,13 @@ var FuriganaInserter = {};
         if (node.data === "")
             return false;
         else return node.ownerDocument.evaluate(expr, node, null,
-                XPathResult.BOOLEAN_TYPE, null).booleanValue;
+            XPathResult.BOOLEAN_TYPE, null).booleanValue;
     }
 
     function getTextWithoutFurigana (win) {
         var selection = win.getSelection();
-        if (selection.rangeCount === 0 || selection.isCollapsed) return "";
+        if (selection.rangeCount === 0 || selection.isCollapsed)
+            return "";
         var range = selection.getRangeAt(0);
         var node, text = "";
         var iter = new RangeNodeIterator(range);
@@ -512,7 +523,8 @@ var FuriganaInserter = {};
         var data = node.data.substring(start, end);
         var doc = node.ownerDocument;
         var readings = getReadings(taggerNodes);
-        if (readings.length === 0) return;
+        if (readings.length === 0)
+            return;
         var rubyHtml = this.creator.createRuby(data, readings);
         var div = doc.createElement("div");
         div.innerHTML = rubyHtml;
@@ -530,7 +542,8 @@ var FuriganaInserter = {};
     }
 
     function showPopup (word) {
-        if (word === "") return;
+        if (word === "")
+            return;
         if (popup.isVisible() && popup.word === word) {
             popup.showNext();
             return;
@@ -559,7 +572,8 @@ var FuriganaInserter = {};
                 popup.hide();
             else event.currentTarget.hidden = true;
         }
-        else if (!popup.isVisible()) return;
+        else if (!popup.isVisible())
+            return;
         else if (event.keyCode === KeyEvent.DOM_VK_PAGE_DOWN)
             windowUtils.sendMouseScrollEvent("DOMMouseScroll", 0, 0, 0,
                 1 /* full page */, 1, 0);
@@ -594,9 +608,11 @@ var FuriganaInserter = {};
         var text = getTextWithoutFurigana(content);
         var textbox = document.getElementById("fi-toolbar-textbox");
         textbox.reset();
-        if (text !== "") textbox.value = text;
+        if (text !== "")
+            textbox.value = text;
         var toolbar = document.getElementById('fi-toolbar');
-        if (toolbar.hidden) toolbar.hidden = false;
+        if (toolbar.hidden)
+            toolbar.hidden = false;
         showPopup(text);
         textbox.focus();
     }

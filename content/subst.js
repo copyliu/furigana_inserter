@@ -13,7 +13,7 @@ function loadFilter () {
 
 function saveFilter () {
     var JSON = Components.classes["@mozilla.org/dom/json;1"]
-            .createInstance(Components.interfaces.nsIJSON);
+    .createInstance(Components.interfaces.nsIJSON);
     var obj = getListboxAsObj();
     var text = JSON.encode(obj);
     var file = getFilterFile();
@@ -27,7 +27,7 @@ function getListboxAsObj () {
     for ( var i = 0; i < len; ++i) {
         var item = listbox.getItemAtIndex(i);
         obj.push([item.firstChild.getAttribute("label"),
-                item.lastChild.getAttribute("label")]);
+            item.lastChild.getAttribute("label")]);
     }
     return obj;
 }
@@ -35,7 +35,8 @@ function getListboxAsObj () {
 function addSubst () {
     var regexp = document.getElementById("regexpTextbox").value;
     var text = document.getElementById("replacementTextbox").value;
-    if (regexp === "") return;
+    if (regexp === "")
+        return;
     addRow(regexp, text);
 }
 
@@ -54,14 +55,16 @@ function addRow (regexp, text) {
 function deleteSubst () {
     var listbox = document.getElementById("substListbox");
     var i = listbox.selectedIndex;
-    if (i === -1) return;
+    if (i === -1)
+        return;
     listbox.removeItemAt(i);
     if (i === listbox.getRowCount()) i--;
     listbox.selectedIndex = i;
 }
 
 function keydown (event) {
-    if (event.keyCode === KeyEvent["DOM_VK_DELETE"]) deleteSubst();
+    if (event.keyCode === KeyEvent["DOM_VK_DELETE"])
+        deleteSubst();
     return true;
 }
 
@@ -70,14 +73,16 @@ function select (event) {
     var textbox2 = document.getElementById("replacementTextbox");
     var listbox = document.getElementById("substListbox");
     var item = listbox.selectedItem;
-    if (!item) return true;
+    if (!item)
+        return true;
     textbox1.value = item.firstChild.getAttribute("label");
     textbox2.value = item.lastChild.getAttribute("label");
     return true;
 }
 
 function onload (event) {
-    if (initialized) return;
+    if (initialized)
+        return;
     loadFilter();
     initialized = true;
 }
@@ -96,10 +101,10 @@ function doCancel () {
 
 function doHelp () {
     var ps = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-            .getService(Components.interfaces.nsIPromptService);
+    .getService(Components.interfaces.nsIPromptService);
     var win = window.opener;
     var text = win.document.getElementById("furiganainserter-strings")
-            .getString("filterHelp");
+    .getString("filterHelp");
     ps.alert(window, "Filter Help", text);
     return true;
 }

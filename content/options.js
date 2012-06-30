@@ -50,11 +50,14 @@ function isModifier (keyCode) {
 
 function getModifierName (keyCode) {
     switch (keyCode) {
-        case KeyEvent.DOM_VK_SHIFT:return "shift";
-        case KeyEvent.DOM_VK_ALT:return "alt";
-        case KeyEvent.DOM_VK_META:return "meta";
-        case KeyEvent.DOM_VK_CONTROL:return "control";
-            return true;
+        case KeyEvent.DOM_VK_SHIFT:
+            return "shift";
+        case KeyEvent.DOM_VK_ALT:
+            return "alt";
+        case KeyEvent.DOM_VK_META:
+            return "meta";
+        case KeyEvent.DOM_VK_CONTROL:
+            return "control";
         default:
             return false;
     }
