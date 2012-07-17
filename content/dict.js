@@ -23,8 +23,8 @@ Dictionary.prototype.findWord = function (word) {
     // close db
     try {
         db = this.openDatabase();
-        if (!this.hasIndex)
-            this.createIndex(db);
+//        if (!this.hasIndex)
+//            this.createIndex(db);
         entries = this.getEntries(db, word);
     } finally {
         if (db)
@@ -33,13 +33,13 @@ Dictionary.prototype.findWord = function (word) {
     return entries;
 }
 
-Dictionary.prototype.createIndex = function (db) {
-    if (!db.indexExists("ix_kana"))
-        db.executeSimpleSQL("CREATE INDEX ix_kana ON dict (kana ASC)");
-    if (!db.indexExists("ix_kanji"))
-        db.executeSimpleSQL("CREATE INDEX ix_kanji ON dict (kanji ASC)");
-    this.hasIndex = true;
-}
+//Dictionary.prototype.createIndex = function (db) {
+//    if (!db.indexExists("ix_kana"))
+//        db.executeSimpleSQL("CREATE INDEX ix_kana ON dict (kana ASC)");
+//    if (!db.indexExists("ix_kanji"))
+//        db.executeSimpleSQL("CREATE INDEX ix_kanji ON dict (kanji ASC)");
+//    this.hasIndex = true;
+//}
 
 Dictionary.prototype.openDatabase = function () {
     var file = this.file;
@@ -212,7 +212,7 @@ DictionarySearcher.prototype.checkType = function (type, entry) {
 }
 
 DictionarySearcher.prototype.makeHtml = function (searchResult) {
-    var result = "<div class='w-title'>" + searchResult.title + "</div>";
+    var result = "<div class='w-title'>" + escapeHTML(searchResult.title) + "</div>";
     var groupedEntries = groupBy(searchResult.entries,
         function (entry) {
             return entry.entry;
@@ -220,14 +220,16 @@ DictionarySearcher.prototype.makeHtml = function (searchResult) {
     result += groupedEntries.map(function (group) {
         var result = [];
         group.forEach(function (entry) {
-            if (entry.kanji !== "")
-                result.push("<span class='w-kanji'>", entry.kanji, "</span>");
-            result.push("<span class='w-kana'>", entry.kana, "</span>");
+            if (entry.kanji !== "" && entry.kanji !== null)
+                result.push("<span class='w-kanji'>", escapeHTML(entry.kanji), "</span>");
+            result.push("<span class='w-kana'>", escapeHTML(entry.kana), "</span>");
             if (entry.reason !== "")
-                result.push("<span class='w-conj'>", entry.reason, "</span>");
+                result.push("<span class='w-conj'>", escapeHTML(entry.reason), "</span>");
             result.push("<br>");
         });
-        result.push("<span class='w-def'>", group[0].entry.replace(/\//g, "; "), "</span>");
+        result.push("<span class='w-def'>",
+        escapeHTML(group[0].entry).replace(/\n/g, "<br>").replace(/\//g, "; "),
+        "</span>");
         return result.join("");
     }).join("<br>");
     return result;

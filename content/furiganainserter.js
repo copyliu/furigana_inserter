@@ -129,7 +129,9 @@ var FuriganaInserter = {};
         changePopupStyle();
         loadFilter();
         var dict = new DictionarySearcher();
-        dict.init(rcxDicList);
+        if (!window.rcxDicList)
+            dict.init([]);
+        else dict.init(window.rcxDicList);
         popup = createPopup(dict);
         var panel = document.getElementById("furigana-inserter-popup");
         panel.addEventListener("DOMMouseScroll", panelOnMouseScroll, false);

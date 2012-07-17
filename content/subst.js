@@ -12,10 +12,8 @@ function loadFilter () {
 }
 
 function saveFilter () {
-    var JSON = Components.classes["@mozilla.org/dom/json;1"]
-    .createInstance(Components.interfaces.nsIJSON);
     var obj = getListboxAsObj();
-    var text = JSON.encode(obj);
+    var text = JSON.stringify(obj);
     var file = getFilterFile();
     write(file, text);
 }

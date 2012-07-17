@@ -93,8 +93,7 @@ var loadRomaji = (function () {
             return romajiTable;
         var string = readUri("chrome://furiganainserter/content/romaji.json",
             "UTF-8");
-        var JSON = Cc["@mozilla.org/dom/json;1"].createInstance(Ci.nsIJSON);
-        romajiTable = JSON.decode(string);
+        romajiTable = JSON.parse(string);
         return romajiTable;
     }
 })();
@@ -571,13 +570,12 @@ function getFilterFunction (obj) {
 }
 
 function getFilterArray () {
-    var JSON = Cc["@mozilla.org/dom/json;1"].createInstance(Ci.nsIJSON);
     var textFile = getFilterFile();
     if (!textFile.exists()) return [];
     var text = read(textFile, "UTF-8");
     var obj = null;
     try {
-        obj = JSON.decode(text);
+        obj = JSON.parse(text);
     } catch (e) {
     }
     return obj;
