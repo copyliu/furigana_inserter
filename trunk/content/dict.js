@@ -18,13 +18,8 @@ function Dictionary (file) {
 
 Dictionary.prototype.findWord = function (word) {
     var db = null, entries = [];
-    // open db
-    // get entries
-    // close db
     try {
         db = this.openDatabase();
-//        if (!this.hasIndex)
-//            this.createIndex(db);
         entries = this.getEntries(db, word);
     } finally {
         if (db)
@@ -33,20 +28,8 @@ Dictionary.prototype.findWord = function (word) {
     return entries;
 }
 
-//Dictionary.prototype.createIndex = function (db) {
-//    if (!db.indexExists("ix_kana"))
-//        db.executeSimpleSQL("CREATE INDEX ix_kana ON dict (kana ASC)");
-//    if (!db.indexExists("ix_kanji"))
-//        db.executeSimpleSQL("CREATE INDEX ix_kanji ON dict (kanji ASC)");
-//    this.hasIndex = true;
-//}
-
 Dictionary.prototype.openDatabase = function () {
     var file = this.file;
-    // The files may get installed as read-only, breaking
-    // index creation. Try changing the file permission.
-    if (!file.isWritable())
-        file.permissions |= 0x180;
     var service = Components.classes['@mozilla.org/storage/service;1']
     .getService(Components.interfaces.mozIStorageService);
     return service.openDatabase(file);
