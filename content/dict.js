@@ -207,7 +207,7 @@ DictionarySearcher.prototype.makeHtml = function (searchResult) {
                 result.push("<span class='w-kanji'>", escapeHTML(entry.kanji), "</span>");
             result.push("<span class='w-kana'>", escapeHTML(entry.kana), "</span>");
             if (entry.reason !== "")
-                result.push("<span class='w-conj'>", escapeHTML(entry.reason), "</span>");
+                result.push("<span class='w-conj'>", entry.reason, "</span>");
             result.push("<br>");
         });
         result.push("<span class='w-def'>",

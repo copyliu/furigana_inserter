@@ -327,13 +327,14 @@ var FuriganaInserter = {};
     }
 
     function copyWithoutFurigana (event) {
-        copyWithoutFurigana(gBrowser.selectedBrowser);
+        copyWithoutFurigana();
     }
 
     function removeFurigana () {
         time(function () {
-            var doc = content.document;
-            var range = getSelectedRange(content);
+            var win = getFocusedWindow();
+            var doc = win.document;
+            var range = getSelectedRange(win);
             if (range)
                 revertRange(range);
             else revertElement(doc.body);
@@ -345,8 +346,9 @@ var FuriganaInserter = {};
         var alphabet = data.alphabet;
         var inserter = createInserter(alphabet);
         time(function () {
-            var doc = gBrowser.contentDocument;
-            var range = getSelectedRange(content);
+            var win = getFocusedWindow();
+            var doc = win.document;
+            var range = getSelectedRange(win);
             if (range)
                 inserter.doRange(range, function () {});
             else inserter.doElement(doc.body, function () {});
@@ -457,7 +459,7 @@ var FuriganaInserter = {};
     }
 
     function copyWithoutFurigana () {
-        copyTextToClipboard(getTextWithoutFurigana(content));
+        copyTextToClipboard(getTextWithoutFurigana());
     }
 
     function isTextNotInRuby (node) {
@@ -477,7 +479,15 @@ var FuriganaInserter = {};
             XPathResult.BOOLEAN_TYPE, null).booleanValue;
     }
 
-    function getTextWithoutFurigana (win) {
+    function getFocusedWindow () {
+        if (content.document.activeElement instanceof HTMLFrameElement)
+            return content.document.activeElement.contentWindow;
+        else
+            return content
+    }
+
+    function getTextWithoutFurigana () {
+        var win = getFocusedWindow();
         var selection = win.getSelection();
         if (selection.rangeCount === 0 || selection.isCollapsed)
             return "";
@@ -607,7 +617,7 @@ var FuriganaInserter = {};
     }
 
     function lookupWord (event) {
-        var text = getTextWithoutFurigana(content);
+        var text = getTextWithoutFurigana();
         var textbox = document.getElementById("fi-toolbar-textbox");
         textbox.reset();
         if (text !== "")
