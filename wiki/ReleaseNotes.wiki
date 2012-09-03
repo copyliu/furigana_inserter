@@ -1,6 +1,10 @@
 #summary Release notes for Furigana Inserter.
 #labels Featured
 = Release Notes =
+==Furigana Inserter 2.4==
+  * Fixed: Issue 1. FI didn't work on pages with frames.
+  * Fixed: small bugs
+
 ==Furigana Inserter 2.1 (27.06.2012)==
   * Changed: doesn't use Rikaichan anymore, Rikaichan's dictionaries are still required
   * Changed: latest MeCab for Windows v0.994 is included
