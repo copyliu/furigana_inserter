@@ -127,9 +127,8 @@ MeCab.prototype.init = function (dllPath) {
         ctypes["int"], ctypes["char"].ptr.array());
     this.mecab_new2 = this.lib.declare("mecab_new2", ctypes.default_abi,
         mecab_t, ctypes["char"].ptr);
-    this.mecab_sparse_tostr = this.lib
-    .declare("mecab_sparse_tostr", ctypes.default_abi,
-        ctypes["char"].ptr, mecab_t, ctypes["char"].ptr);
+    this.mecab_sparse_tostr = this.lib.declare("mecab_sparse_tostr",
+        ctypes.default_abi, ctypes["char"].ptr, mecab_t, ctypes["char"].ptr);
     this.mecab_destroy = this.lib.declare("mecab_destroy", ctypes.default_abi,
         ctypes.void_t, mecab_t);
     this.mecab_dictionary_info = this.lib.declare("mecab_dictionary_info",

@@ -9,49 +9,6 @@ var Node = Components.interfaces.nsIDOMNode;
 
 var prefs = new Preferences("extensions.furiganainserter.");
 
-var inlineNames = {
-    // text node
-    "#text" : true,
-
-    // fontstyle
-    "TT" : true,
-    "I" : true,
-    "B" : true,
-    "BIG" : true,
-    "SMALL" : true,
-    // deprecated
-    "STRIKE" : true,
-    "S" : true,
-    "U" : true,
-
-    // phrase
-    "EM" : true,
-    "STRONG" : true,
-    "DFN" : true,
-    "CODE" : true,
-    "SAMP" : true,
-    "KBD" : true,
-    "VAR" : true,
-    "CITE" : true,
-    "ABBR" : true,
-    "ACRONYM" : true,
-
-    // special, not included IMG, OBJECT, BR, SCRIPT, MAP, BDO
-    "A" : true,
-    "Q" : true,
-    "SUB" : true,
-    "SUP" : true,
-    "SPAN" : true,
-
-    // ruby
-    "RUBY" : true,
-    "RBC" : true,
-    "RTC" : true,
-    "RB" : true,
-    "RT" : true,
-    "RP" : true
-}
-
 function Popup (panel, dict) {
     this.timer = null;
     this.panel = panel;

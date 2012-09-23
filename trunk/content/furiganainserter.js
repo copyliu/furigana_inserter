@@ -218,8 +218,6 @@ var FuriganaInserter = {};
     }
 
     function onKeyDown (event) {
-        //        if (popup.isVisible())
-        //            popup.showNext();
         if ((event.keyCode === KeyEvent.DOM_VK_SHIFT ||
             event.keyCode === KeyEvent.DOM_VK_RETURN) &&  popup.isVisible())
             popup.showNext();

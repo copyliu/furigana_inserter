@@ -145,8 +145,8 @@ DictionarySearcher.prototype._wordSearch = function (word, dic) {
                     if (variant.reason === '')
                         entry.reason = '';
                     else if (origWord === word)
-                        entry.reason = '&lt; ' + variant.reason;
-                    else entry.reason = '&lt; ' + variant.reason + ' &lt; ' + word;
+                        entry.reason = '< ' + variant.reason;
+                    else entry.reason = '< ' + variant.reason + ' < ' + word;
                     result.entries.push(entry);
                 }
             } // for j < entries.length
@@ -207,7 +207,7 @@ DictionarySearcher.prototype.makeHtml = function (searchResult) {
                 result.push("<span class='w-kanji'>", escapeHTML(entry.kanji), "</span>");
             result.push("<span class='w-kana'>", escapeHTML(entry.kana), "</span>");
             if (entry.reason !== "")
-                result.push("<span class='w-conj'>", entry.reason, "</span>");
+                result.push("<span class='w-conj'>", escapeHTML(entry.reason), "</span>");
             result.push("<br>");
         });
         result.push("<span class='w-def'>",
@@ -303,7 +303,7 @@ Deinflector.prototype.deinflect = function (word) {
                 newVariant.type = rule.type >> 8;
                 if (variant.reason === "")
                     newVariant.reason = this.reasons[rule.reason];
-                else newVariant.reason = this.reasons[rule.reason] + ' &lt; '
+                else newVariant.reason = this.reasons[rule.reason] + ' < '
                     + variant.reason;
                 cache[newWord] = newVariant;
                 variants.push(newVariant);
