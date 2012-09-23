@@ -251,7 +251,8 @@ function RangeNodeIterator (range) {
         startOffset = (start.nodeType === Node.TEXT_NODE) ? 0 : -1;
     }
     if (!range.collapsed && end.nodeType === Node.ELEMENT_NODE) {
-        if (range.endOffset > 0) end = end.childNodes[range.endOffset - 1];
+        if (range.endOffset > 0)
+            end = end.childNodes[range.endOffset - 1];
         while (end.lastChild)
             end = end.lastChild;
         endOffset = (end.nodeType === Node.TEXT_NODE) ? end.data.length : -1;

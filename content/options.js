@@ -19,9 +19,12 @@ function makeKeyFunction () {
     var pressedModifiers = {};
     return function (event) {
         event.preventDefault();
-        if (event.target.readOnly) return;
-        if (pressedModifiers.hasOwnProperty(event.keyCode)) return;
-        if (!keyCodes.hasOwnProperty(event.keyCode)) return;
+        if (event.target.readOnly)
+            return;
+        if (pressedModifiers.hasOwnProperty(event.keyCode))
+            return;
+        if (!keyCodes.hasOwnProperty(event.keyCode))
+            return;
         // if modifier then add key and wait for the next
         if (isModifier(event.keyCode)) {
             addKey(event.target, getModifierName(event.keyCode));
@@ -79,11 +82,13 @@ function setKey (event) {
 function resetKey (event) {
     var textbox = document.getElementById('lookup_key_textbox');
     textbox.value = prefs.getPref("lookup_key");
+    textbox.readOnly = true;
 }
 
 function deleteKey (event) {
     var textbox = document.getElementById('lookup_key_textbox');
     textbox.reset();
+    textbox.readOnly = true;
 }
 
 function saveHotkeys (event) {
