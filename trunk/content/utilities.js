@@ -446,6 +446,8 @@ function getTextFromClipboard () {
         .getService(Ci.nsIClipboard);
         var trans = Cc["@mozilla.org/widget/transferable;1"]
         .createInstance(Ci.nsITransferable);
+        if (trans.init)
+            trans.init(null);
         trans.addDataFlavor("text/unicode");
         clip.getData(trans, clip.kGlobalClipboard);
         var str = {};
@@ -467,6 +469,8 @@ function copyTextToClipboard (text) {
         str.data = text;
         var trans = Cc["@mozilla.org/widget/transferable;1"]
         .createInstance(Ci.nsITransferable);
+        if (trans.init)
+            trans.init(null);
         trans.addDataFlavor("text/unicode");
         trans.setTransferData("text/unicode", str, text.length * 2);
         clip.setData(trans, null, clip.kGlobalClipboard);

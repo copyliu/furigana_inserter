@@ -5,7 +5,7 @@
     <RDF:Description RDF:about="rdf:#$a+7ge2"
                    em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                    em:minVersion="8.0"
-                   em:maxVersion="17.*"/>
+                   em:maxVersion="99.*"/>
     <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="furiganainserter@zorkzero.net"
                    em:name="Furigana Inserter"
