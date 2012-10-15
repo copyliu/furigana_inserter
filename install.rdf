@@ -5,11 +5,11 @@
     <RDF:Description RDF:about="rdf:#$a+7ge2"
                    em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                    em:minVersion="8.0"
-                   em:maxVersion="99.*"/>
+                   em:maxVersion="18.*"/>
     <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="furiganainserter@zorkzero.net"
                    em:name="Furigana Inserter"
-                   em:version="2.5"
+                   em:version="2.6"
                    em:creator="zorkzero@hotmail.com"
                    em:description="Automatically inserts furigana for words written in kanji. Uses MeCab."
                    em:homepageURL="http://code.google.com/p/itadaki/"
