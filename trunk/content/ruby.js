@@ -43,6 +43,8 @@ Simple.prototype.createRubyHtml = function (reading) {
     reading.reading, "</rt><rp>)</rp></ruby>");
 }
 
+var HiraganaSimple = Simple;
+
 function KatakanaSimple () {
 }
 
