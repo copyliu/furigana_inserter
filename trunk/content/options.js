@@ -2,7 +2,7 @@
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
-var prefs = new Preferences("extensions.furiganainserter.")
+var prefs = new Preferences("extensions.furiganainserter.");
 
 var keyCodes = {};
 
@@ -36,7 +36,7 @@ function makeKeyFunction () {
             event.target.readOnly = true;
             pressedModifiers = {};
         }
-    }
+    };
 }
 
 function isModifier (keyCode) {
@@ -73,7 +73,7 @@ function addKey (target, key) {
 }
 
 function setKey (event) {
-    var textbox = document.getElementById('lookup_key_textbox')
+    var textbox = document.getElementById('lookup_key_textbox');
     textbox.reset();
     textbox.readOnly = false;
     textbox.focus();

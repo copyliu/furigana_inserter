@@ -37,6 +37,7 @@ var FuriganaInserter = {};
     var revertElement = Imports.revertElement;
     var copyTextToClipboard = Imports.copyTextToClipboard;
     var setKeywords = Imports.setKeywords;
+    var getSessionStore = Imports.getSessionStore;
 
     var kPat = "\u3005\u3400-\u9FCF"; // "\u3005" is "々" - CJK iteration mark
     var hPat = "\u3041-\u3096"; // Hiragana
@@ -47,64 +48,61 @@ var FuriganaInserter = {};
     var filterFunction = null;
     var popup = null;
 
-    // browser is optional, the default is the selected browser
-    function getBrowserData (browser) {
-        if (arguments.length === 0)
-            browser = gBrowser.selectedBrowser;
-        return browser.furiganaInserter;
-    }
-
     function BrowserData () {
-        this.clipboard = null;
-        this.popup = false;
+        this.isClipboardMonitoringEnabled = false;
+        this.isPopupEnabled = false;
         this.alphabet = "";
     }
 
+    function getTabData(tab) {
+        // tab is optional, the default is the selected browser
+        if (arguments.length === 0)
+            tab = gBrowser.selectedTab;
+        var ss =  getSessionStore();
+        var data = new BrowserData();
+        data.isClipboardMonitoringEnabled = ss.getTabValue(tab, "fiIsClipboardMonitoringEnabled") === "true";
+        data.isPopupEnabled = ss.getTabValue(tab, "fiIsPopupEnabled") === "true";
+        data.alphabet = ss.getTabValue(tab, "fiFuriganaAlphabet");
+        return data;
+    }
+
+    function setTabData(tab, data) {
+        var ss = getSessionStore();
+        ss.setTabValue(tab, "fiIsClipboardMonitoringEnabled", data.isClipboardMonitoringEnabled);
+        ss.setTabValue(tab, "fiIsPopupEnabled", data.isPopupEnabled);
+        ss.setTabValue(tab, "fiFuriganaAlphabet", data.alphabet);
+    }
+
     function onTabSelect (event) {
-        var data;
-        var browser = gBrowser.selectedBrowser;
-        if (!browser.hasOwnProperty("furiganaInserter")) {
-            data = new BrowserData();
+        var data = getTabData(event.target);
+        if (data.alphabet === "") {
             data.alphabet = prefs.getPref("furigana_alphabet");
-            browser.furiganaInserter = data;
-        } else {
-            data = browser.furiganaInserter;
+            setTabData(gBrowser.selectedTab, data);
         }
 
         document.getElementById("fi-auto-lookup-command").setAttribute(
-                "checked", data.popup);
+                "checked", data.isPopupEnabled);
         document.getElementById("fi-monitor-clipboard-command").setAttribute(
-                "checked", data.clipboard != null);
+                "checked", data.isClipboardMonitoringEnabled);
 
         ["keywords", "katakana", "hiragana", "romaji"].forEach(function (
                 alphabet) {
             document.getElementById("fi-" + alphabet + "-cmd").setAttribute(
-                    "checked", false)
+                    "checked", false);
         });
         document.getElementById("fi-" + data.alphabet + "-cmd").setAttribute(
                 "checked", true);
     }
 
-    function installButton (toolbarId, id, afterId) {
-        var elem, before = null, toolbar;
-
-        if (!document.getElementById(id)) {
-            toolbar = document.getElementById(toolbarId);
-
-            // If no afterId is given, then append the item to the toolbar
-            if (afterId) {
-                elem = document.getElementById(afterId);
-                if (elem && elem.parentNode == toolbar)
-                    before = elem.nextElementSibling;
-            }
-
-            toolbar.insertItem(id, before);
-            toolbar.setAttribute("currentset", toolbar.currentSet);
-            document.persist(toolbar.id, "currentset");
+    function onTabOpen(event) {
+        var data = getTabData(event.target);
+        if (data.alphabet === "") {
+            data.alphabet = prefs.getPref("furigana_alphabet");
+            setTabData(gBrowser.selectedTab, data);
         }
     }
-
-    function onload () {
+    
+    function onload (event) {
         prefs = new Preferences("extensions.furiganainserter.");
         var toolbarButtonAdded = prefs.getPref("toolbar_button_added");
         if (!toolbarButtonAdded) {
@@ -112,8 +110,8 @@ var FuriganaInserter = {};
             prefs.setPref("toolbar_button_added", true);
         }
 
-        onTabSelect();
         gBrowser.tabContainer.addEventListener("TabSelect", onTabSelect, false);
+        gBrowser.tabContainer.addEventListener("TabOpen", onTabOpen, false);
         gBrowser.tabContainer.addEventListener("TabClose", onTabClose, false);
 
         // The 'load' event doesn't bubble, so it only works with a capturing
@@ -167,17 +165,41 @@ var FuriganaInserter = {};
         }
     }
 
+    function Pair(first, second) {
+        this.first = first;
+        this.second = second;
+    }
+
+    // contains pairs of tab and clipboard monitor
+    var clipboardMonitors = [];
+
+    function addClipboardMonitor(tab, monitor) {
+        for (var i = 0; i < clipboardMonitors.length; ++i) {
+            if (clipboardMonitors[i].first === tab) {
+                clipboardMonitors[i].second = monitor;
+                return;
+            }
+        }
+        clipboardMonitors.push(new Pair(tab, monitor));
+    }
+
+    function getClipboardMonitor(tab) {
+        for (var i = 0; i < clipboardMonitors.length; ++i)
+            if (clipboardMonitors[i].first === tab)
+                return clipboardMonitors[i].second;
+        return null;
+    }
+
     function onunload () {
-        var browsers = gBrowser.browsers;
-        var i, browser, data;
-        for (i = 0; i < browsers.length; ++i) {
-            browser = browsers[i];
-            data = getBrowserData(browser);
-            if (!data)
-                continue;
-            if (data.clipboard)
-                data.clipboard.cancel();
-            data.clipboard = null;
+        var tabs = gBrowser.tabs;
+        var i, tab, data;
+        for (i = 0; i < tabs.length; ++i) {
+            tab = tabs[i];
+            data = getTabData(tab);
+            if (data.isClipboardMonitoringEnabled)
+                getClipboardMonitor(tab).cancel();
+            data.isClipboardMonitoringEnabled = null;
+            setTabData(tab, data);
         }
     }
 
@@ -224,15 +246,17 @@ var FuriganaInserter = {};
     }
 
     function onTabClose () {
-        var data = getBrowserData();
-        if (data.clipboard)
-            data.clipboard.cancel();
-        data.clipboard = null;
-        data.popup = null;
+        var tab = gBrowser.selectedTab;
+        var data = getTabData(tab);
+        if (data.isClipboardMonitoringEnabled)
+            getClipboardMonitor(tab).cancel();
+        data.isClipboardMonitoringEnabled = false;
+        data.isPopupEnabled = false;
+        setTabData(tab, data);
     }
 
     function onPageLoad (event) {
-        var data = getBrowserData();
+        var data = getTabData();
         var alphabet = data.alphabet;
         var inserter = createInserter(alphabet);
         var doc = event.originalTarget;
@@ -243,41 +267,51 @@ var FuriganaInserter = {};
     }
 
     function togglePopup () {
-        var data = getBrowserData();
-        if (data.popup)
-            disablePopup(gBrowser.selectedBrowser);
-        else enablePopup(gBrowser.selectedBrowser);
+        var data = getTabData();
+        if (data.isPopupEnabled)
+            disablePopup(gBrowser.selectedTab);
+        else enablePopup(gBrowser.selectedTab);
     }
 
-    function enablePopup (browser) {
-        browser.addEventListener("mousemove", onMouseMove, false);
-        browser.addEventListener("keydown", onKeyDown, false);
-        getBrowserData(browser).popup = true;
+    function enablePopup (tab) {
+        tab.addEventListener("mousemove", onMouseMove, false);
+        tab.addEventListener("keydown", onKeyDown, false);
+        var data = getTabData(tab);
+        data.isPopupEnabled = true;
+        setTabData(data, tab);
         document.getElementById("fi-auto-lookup-command").setAttribute(
                 "checked", "true");
     }
 
-    function disablePopup (browser) {
-        browser.removeEventListener("mousemove", onMouseMove, false);
-        browser.removeEventListener("keydown", onKeyDown, false);
-        getBrowserData(browser).popup = false;
+    function disablePopup (tab) {
+        tab.removeEventListener("mousemove", onMouseMove, false);
+        tab.removeEventListener("keydown", onKeyDown, false);
+        var data = getTabData(tab);
+        data.isPopupEnabled = false;
+        setTabData(data, tab);
         document.getElementById("fi-auto-lookup-command").setAttribute(
                 "checked", "false");
     }
 
     function toggleClipboardMonitoring (event) {
-        var data = getBrowserData();
+        var monitor;
+        var tab = gBrowser.selectedTab;
         var browser = gBrowser.selectedBrowser;
-        if (!data.clipboard) {
-            data.clipboard = new ClipboardMonitor(150, function (text) {
-                appendText(text, browser);
+        var data = getTabData(tab);
+        if (!data.isClipboardMonitoringEnabled) {
+            monitor = new ClipboardMonitor(150, function (text) {
+                appendText(text, tab, browser);
             });
+            data.isClipboardMonitoringEnabled = true;
+            addClipboardMonitor(tab, monitor);
         } else {
-            data.clipboard.cancel();
-            data.clipboard = null;
+            monitor = getClipboardMonitor(tab);
+            monitor.cancel();
+            data.isClipboardMonitoringEnabled = false;
         }
+        setTabData(tab, data);
         document.getElementById("fi-monitor-clipboard-command").
-        setAttribute("checked", data.clipboard != null);
+        setAttribute("checked", data.isClipboardMonitoringEnabled);
     }
 
     function createInserter (alphabet) {
@@ -340,7 +374,7 @@ var FuriganaInserter = {};
     }
 
     function insertFurigana (event) {
-        var data = getBrowserData();
+        var data = getTabData();
         var alphabet = data.alphabet;
         var inserter = createInserter(alphabet);
         time(function () {
@@ -391,7 +425,7 @@ var FuriganaInserter = {};
     function switchAlphabet (event) {
         var id = event.target.id;
         var alphabet = id.substring(3, id.length - 4);
-        var data = getBrowserData();
+        var data = getTabData();
         data.alphabet = alphabet;
         ["keywords", "katakana", "hiragana", "romaji"].forEach(function (
                 alphabet) {
@@ -400,6 +434,7 @@ var FuriganaInserter = {};
         });
         document.getElementById("fi-" + alphabet + "-cmd").setAttribute(
                 "checked", true);
+        setTabData(gBrowser.selectedTab, data);
     }
 
     function loadFilter () {
@@ -407,7 +442,7 @@ var FuriganaInserter = {};
         filterFunction = Imports.getFilterFunction(obj);
     }
 
-    function appendText (text, browser) {
+    function appendText (text, tab, browser) {
         var inserter;
         if (!jRegex.test(text))
             return;
@@ -420,7 +455,7 @@ var FuriganaInserter = {};
         var lines = text.split(/\r\n|\n/);
         p.innerHTML = lines.join("<br>");
         doc.body.appendChild(p);
-        var alphabet = getBrowserData(browser).alphabet;
+        var alphabet = getTabData(tab).alphabet;
         inserter = createInserter(alphabet);
         inserter.doElement(p, function () {
             win.scrollTo(0, win.scrollMaxY);
@@ -442,7 +477,7 @@ var FuriganaInserter = {};
         var node, start, end;
         var nodes = [];
         var iter = new RangeNodeIterator(range);
-        while ((node = iter.nextNode())) {
+        while (node = iter.nextNode()) {
             if (!pred(node))
                 continue;
             start = iter.getStartTextOffset();
@@ -481,7 +516,7 @@ var FuriganaInserter = {};
         if (content.document.activeElement instanceof HTMLFrameElement)
             return content.document.activeElement.contentWindow;
         else
-            return content
+            return content;
     }
 
     function getTextWithoutFurigana () {
@@ -492,7 +527,7 @@ var FuriganaInserter = {};
         var range = selection.getRangeAt(0);
         var node, text = "";
         var iter = new RangeNodeIterator(range);
-        while ((node = iter.nextNode())) {
+        while (node = iter.nextNode()) {
             var start = iter.getStartTextOffset();
             var end = iter.getEndTextOffset();
             if (isTextNotInRt(node))
@@ -509,7 +544,7 @@ var FuriganaInserter = {};
         var textNodes = getTextNodesFromRange(range, isTextNotInRuby);
         var that = this;
         var strings = textNodes.map(function (node) {
-            return node.node.data.substring(node.start, node.end)
+            return node.node.data.substring(node.start, node.end);
         });
         var msg = {
             request : "getNodes",
@@ -526,7 +561,7 @@ var FuriganaInserter = {};
             });
             k();
         });
-    }
+    };
 
     // taggerNodes: nodes from Mecab, node: the text node from the document
     Inserter.prototype.doitRight = function (taggerNodes, node, start, end) {
@@ -542,14 +577,14 @@ var FuriganaInserter = {};
         while (div.firstChild)
             fragment.appendChild(div.firstChild);
         node.parentNode.replaceChild(fragment, splitTextNode(node, start, end));
-    }
+    };
 
     Inserter.prototype.doElement = function (elem, k) {
         var doc = elem.ownerDocument;
         var range = doc.createRange();
         range.selectNode(elem);
         this.doRange(range, k);
-    }
+    };
 
     function showPopup (word) {
         if (word === "")
@@ -585,19 +620,35 @@ var FuriganaInserter = {};
         else if (!popup.isVisible())
             return;
         else if (event.keyCode === KeyEvent.DOM_VK_PAGE_DOWN)
-            windowUtils.sendMouseScrollEvent("DOMMouseScroll", 0, 0, 0,
-                1 /* full page */, 1, 0);
+            windowUtils.sendWheelEvent(0, 0, //X, Y
+            0, 1, 0, // deltaX, deltaY, deltaZ
+            WheelEvent.DOM_DELTA_PAGE, // deltaMode
+            0, // modifiers
+            0, 0, // lineOrPageDeltaX, lineOrPageDeltaY
+            windowUtils.WHEEL_EVENT_CUSTOMIZED_BY_USER_PREFS); // options
         else if (event.keyCode === KeyEvent.DOM_VK_PAGE_UP)
-            windowUtils.sendMouseScrollEvent("DOMMouseScroll", 0, 0, 0,
-                1 /* full page */, -1, 0);
+            windowUtils.sendWheelEvent(0, 0, //X, Y
+            0, -1, 0, // deltaX, deltaY, deltaZ
+            WheelEvent.DOM_DELTA_PAGE, // deltaMode
+            0, // modifiers
+            0, 0, // lineOrPageDeltaX, lineOrPageDeltaY
+            windowUtils.WHEEL_EVENT_CUSTOMIZED_BY_USER_PREFS); // options
         else if (event.keyCode === KeyEvent.DOM_VK_DOWN) {
-            windowUtils.sendMouseScrollEvent("DOMMouseScroll", 0, 0, 0,
-                0 /* full page */, 1, 0);
+            windowUtils.sendWheelEvent(0, 0, //X, Y
+            0, 1, 0, // deltaX, deltaY, deltaZ
+            WheelEvent.DOM_DELTA_LINE, // deltaMode
+            0, // modifiers
+            0, 0, // lineOrPageDeltaX, lineOrPageDeltaY
+            windowUtils.WHEEL_EVENT_CUSTOMIZED_BY_USER_PREFS); // options
             event.preventDefault();
         }
         else if (event.keyCode === KeyEvent.DOM_VK_UP) {
-            windowUtils.sendMouseScrollEvent("DOMMouseScroll", 0, 0, 0,
-                0 /* full page */, -1, 0);
+            windowUtils.sendWheelEvent(0, 0, //X, Y
+            0, -1, 0, // deltaX, deltaY, deltaZ
+            WheelEvent.DOM_DELTA_LINE, // deltaMode
+            0, // modifiers
+            0, 0, // lineOrPageDeltaX, lineOrPageDeltaY
+            0); // options
             event.preventDefault();
         }
     }
@@ -625,6 +676,25 @@ var FuriganaInserter = {};
             toolbar.hidden = false;
         showPopup(text);
         textbox.focus();
+    }
+
+    function installButton (toolbarId, id, afterId) {
+        var elem, before = null, toolbar;
+
+        if (!document.getElementById(id)) {
+            toolbar = document.getElementById(toolbarId);
+
+            // If no afterId is given, then append the item to the toolbar
+            if (afterId) {
+                elem = document.getElementById(afterId);
+                if (elem && elem.parentNode === toolbar)
+                    before = elem.nextElementSibling;
+            }
+
+            toolbar.insertItem(id, before);
+            toolbar.setAttribute("currentset", toolbar.currentSet);
+            document.persist(toolbar.id, "currentset");
+        }
     }
 
     FuriganaInserter.openOptionsWindow = openOptionsWindow;

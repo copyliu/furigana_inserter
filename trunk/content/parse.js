@@ -45,23 +45,23 @@ function getReadings (nodes) {
         readings.push(reading);
         // move to the end of the surface
         start += node.surface.length;
-    })
+    });
     return readings;
 }
 
 // Juman: (現在) (名詞,時相名詞,*,*,現在,げんざい,代表表記:現在)
 // IPADic: (現在) (名詞,副詞可能,*,*,*,*,現在,ゲンザイ,ゲンザイ)
 function featureToReading (feature) {
-    var obj = new Reading()
-    var fields = feature.split(",")
+    var obj = new Reading();
+    var fields = feature.split(",");
     if (fields.length > 7 && (katRegex.test(fields[7]))
         && !/[\uFF01-\uFF5E]/.test(fields[6])) // not an ASCII char
         {
-        obj.reading = katakanaToHiragana(fields[7])
+        obj.reading = katakanaToHiragana(fields[7]);
         obj.basicForm = fields[6];
-        obj.isName = (fields[2] === "人名")
+        obj.isName = (fields[2] === "人名");
     } else if (fields.length === 7 && hRegex.test(fields[5])) {
-        obj.reading = fields[5]
+        obj.reading = fields[5];
         obj.basicForm = fields[4];
         obj.isName = (fields[2] === "人名");
     }
@@ -74,13 +74,13 @@ function parseReading (reading) {
     return result;
 }
 
-// PEG grammar Word := !Kanji | Hiragana? KanjiHiragana
+// PEG grammar
+// Word := Hiragana? KanjiHiragana
 // KanjiHiragana := Kanji !Hiragana | Kanji Word
-// Kanji := * [\u3005\u3400-\u9FCF]+
+// Kanji := [\u3005\u3400-\u9FCF]+
 // Hiragana := [\u3040-\u309F]+
 function parseWord (word, reading, start, result) {
     var match = word.match(hkRegex);
-    // !Kanji
     if (!match) return;
     var hiragana = match[1];
     // Hiragana KanjiHiragana

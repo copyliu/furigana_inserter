@@ -12,7 +12,7 @@ function revertElementSimple (elem) {
 function revertRangeSimple (range) {
     var rubys = [], node;
     var iter = new RangeNodeIterator(range);
-    while ((node = iter.nextNode()))
+    while (node = iter.nextNode())
         if (node.nodeName === "RUBY" && node.getAttribute("class") === 'fi')
             rubys.push(node);
 
@@ -40,7 +40,7 @@ function revertElement (elem) {
 function revertRange (range) {
     var nodes = [], node;
     var iter = new RangeNodeIterator(range);
-    while ((node = iter.nextNode()))
+    while (node = iter.nextNode())
         if (node.nodeName === 'SPAN' && node.getAttribute("class") === 'fi')
             nodes.push(node);
     nodes.forEach(function (node) {

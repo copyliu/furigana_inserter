@@ -26,14 +26,14 @@ Dictionary.prototype.findWord = function (word) {
             db.close();
     }
     return entries;
-}
+};
 
 Dictionary.prototype.openDatabase = function () {
     var file = this.file;
     var service = Components.classes['@mozilla.org/storage/service;1']
     .getService(Components.interfaces.mozIStorageService);
     return service.openDatabase(file);
-}
+};
 
 Dictionary.prototype.getEntries = function (db, word) {
     var result = [], entry;
@@ -53,7 +53,7 @@ Dictionary.prototype.getEntries = function (db, word) {
         st.finalize();
     }
     return result;
-}
+};
 
 Dictionary.prototype.getResults = function (st) {
     var results = [], result = {}, key;
@@ -65,7 +65,7 @@ Dictionary.prototype.getResults = function (st) {
         results.push(result);
     }
     return results;
-}
+};
 
 function Entry () {
     this.kanji = "";
@@ -116,11 +116,11 @@ DictionarySearcher.prototype.init = function (rcxDicList) {
             dic.hasType = rcxDic.hasType;
             dic.name = rcxDic.name;
             if (dic.isKanji)
-                that.kanjiDictionaries.push(dic)
+                that.kanjiDictionaries.push(dic);
             else that.dictionaries.push(dic);
         }
-    })
-}
+    });
+};
 
 DictionarySearcher.prototype._wordSearch = function (word, dic) {
     var variants, variant, i, j, entries, entry, origWord = word;
@@ -157,7 +157,7 @@ DictionarySearcher.prototype._wordSearch = function (word, dic) {
     if (result.entries.length === 0)
         return null;
     else return result;
-}
+};
 
 DictionarySearcher.prototype.wordSearch = function (word) {
     var retval = [], i;
@@ -168,9 +168,9 @@ DictionarySearcher.prototype.wordSearch = function (word) {
     }
     retval.sort(function (a, b) {
         return (b.matchLen - a.matchLen);
-    })
+    });
     return retval;
-}
+};
 
 DictionarySearcher.prototype.checkType = function (type, entry) {
     var i;
@@ -192,7 +192,7 @@ DictionarySearcher.prototype.checkType = function (type, entry) {
         if ((type & 8) && (entryPart === 'vk')) return true;
     }
     return false;
-}
+};
 
 DictionarySearcher.prototype.makeHtml = function (searchResult) {
     var result = "<div class='w-title'>" + escapeHTML(searchResult.title) + "</div>";
@@ -216,7 +216,7 @@ DictionarySearcher.prototype.makeHtml = function (searchResult) {
         return result.join("");
     }).join("<br>");
     return result;
-}
+};
 
 DictionarySearcher.prototype.kanjiSearch = function (c) {
     var searchResult = new SearchResult(), i;
@@ -228,13 +228,13 @@ DictionarySearcher.prototype.kanjiSearch = function (c) {
         break; // only one kanji dictionary allowed
     }
     return searchResult;
-}
+};
 
 DictionarySearcher.prototype.moveToTop = function (index) {
     if (index === 0) return;
     var removed = this.dictionaries.splice(index, 1);
     this.dictionaries.unshift(removed[0]);
-}
+};
 
 function Rule () {
     this.from = "";
@@ -249,7 +249,7 @@ var getDeinflector = (function () {
         if (deinflector) return deinflector;
         deinflector = new Deinflector();
         return deinflector;
-    }
+    };
 })();
 
 function Deinflector () {
@@ -282,7 +282,7 @@ Deinflector.prototype.deinflect = function (word) {
     var variants = [variant];
     var rules = this.rules;
     for (i = 0; i < variants.length; ++i) {
-        variant = variants[i]
+        variant = variants[i];
         for (j = 0; j < rules.length; ++j) {
             rule = rules[j];
             if (rule.from.length >= variant.word.length)
@@ -311,4 +311,4 @@ Deinflector.prototype.deinflect = function (word) {
         }
     }
     return variants;
-}
+};

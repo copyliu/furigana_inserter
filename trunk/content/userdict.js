@@ -11,7 +11,7 @@ var initialized = false;
 var sectionNames = {
     "name" : "name",
     "noun" : "noun"
-}
+};
 
 function convertToCsv (text) {
     var lines = text.split(/\n/);
@@ -45,7 +45,7 @@ function convertToCsv (text) {
             kana = fields[1];
             retval.push(createNoun(kanji, kana));
         }
-    })
+    });
     return retval.join("\n");
 }
 
@@ -57,10 +57,10 @@ function createName (kanji, kana) {
 }
 
 function createSurname (kanji, kana) {
-    kana = hiraganaToKatakana(kana)
-    var id = "1290"
+    kana = hiraganaToKatakana(kana);
+    var id = "1290";
     return kanji.concat(",", id, ",", id, ",1000,名詞,固有名詞,人名,姓,*,*,", kanji,
-        ",", kana + ",", kana, ",,")
+        ",", kana + ",", kana, ",,");
 }
 
 function createNoun (kanji, kana) {
@@ -105,7 +105,7 @@ function doUpdate () {
         request : "getDictionaryInfo",
         userDicPath : "",
         dicPath : getDictionaryPath()
-    }, runMecabDictIndex)
+    }, runMecabDictIndex);
 }
 
 function runMecabDictIndex (data) {

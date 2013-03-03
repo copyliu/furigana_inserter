@@ -47,8 +47,7 @@ function MultiByteToWideChar (cdata, cp) {
 function convertToUnicode (cdata, charset) {
     if (charset === "UTF-8" || charset === "utf8")
         return cdata.readString();
-    var OS = getOS();
-    if (OS === "WINNT") {
+    if (getOS() === "WINNT") {
         if (charset === "utf8" || charset === "UTF-8")
             return MultiByteToWideChar(cdata, 65001);
         if (charset === "SHIFT-JIS")
@@ -92,7 +91,7 @@ MeCab.prototype.getError = function () {
     if (retval.isNull())
         return "";
     else return retval.readString();
-}
+};
 
 MeCab.prototype.init = function (dllPath) {
     if (this.lib)
@@ -138,7 +137,7 @@ MeCab.prototype.init = function (dllPath) {
     this.mecab_strerror = this.lib.declare("mecab_strerror",
         ctypes.default_abi, ctypes["char"].ptr, mecab_t);
     return this;
-}
+};
 
 MeCab.prototype.getDllName = function () {
     if (getOS() === "Linux")
@@ -148,7 +147,7 @@ MeCab.prototype.getDllName = function () {
     else if (getOS() === "WINNT")
         return "libmecab.dll";
     else throw new Error("unsupported OS: " + getOS());
-}
+};
 
 MeCab.prototype.createTagger = function (dicPath, userDicPath) {
     if (!this.lib)
@@ -166,22 +165,20 @@ MeCab.prototype.createTagger = function (dicPath, userDicPath) {
     if (userDicPath !== "") args.push("-u", userDicPath);
     args.push("-F", "%m\t%H\t%pl\t%pL\n");
     var cargs = ctypes["char"].ptr.array(args.length)();
-    for ( var i = 0; i < args.length; ++i)
+    for (var i = 0; i < args.length; ++i)
         cargs[i] = ctypes["char"].array()(args[i]);
     var tagger = this.mecab_new(args.length, cargs);
-    if (tagger.isNull()) {
-        var e = this.getError();
-        throw new Error(e);
-    }
+    if (tagger.isNull())
+        throw new Error(this.getError());
     var retval = new Tagger(this, tagger);
     return retval;
-}
+};
 
 MeCab.prototype.getVersion = function () {
     if (!this.lib)
         throw new Error("MeCab not initialized");
     return this.mecab_version().readString();
-}
+};
 
 function Tagger (mecab, tagger) {
     this.tagger = tagger;
@@ -194,14 +191,14 @@ Tagger.prototype.getError = function () {
     if (retval.isNull())
         return "";
     else return retval.readString();
-}
+};
 
 Tagger.prototype.destroyTagger = function () {
     if (this.tagger) {
         this.mecab.mecab_destroy(this.tagger);
         this.tagger = null;
     }
-}
+};
 
 Tagger.prototype.getDictionaryInfo = function () {
     if (!this.tagger)
@@ -222,14 +219,14 @@ Tagger.prototype.getDictionaryInfo = function () {
         info = info.contents.next;
     }
     return retval;
-}
+};
 
 Tagger.prototype.getAll = function (text) {
     if (!this.tagger)
         throw new Error("tagger not initialized");
     var info = this.mecab.mecab_dictionary_info(this.tagger);
     if (info.isNull())
-        throw new Error("couldn't get dictionary information");
+        throw new Error("couldn't get the dictionary information");
     var charset = info.contents.charset.readString();
     var ctext = null;
     ctext = convertFromUnicode(text, charset);
@@ -249,9 +246,9 @@ Tagger.prototype.getAll = function (text) {
             feature : EOS ? "" : fields[1],
             length : EOS ? 0 : pL - pl
         });
-    })
+    });
     return nodes;
-}
+};
 
 function createTagger (dicPath, userDicPath) {
     var tagger;
@@ -276,7 +273,7 @@ function getNodes (data) {
     var tagger, texts, nodes = [];
     tagger = createTagger(data.dicPath, data.userDicPath);
     if (!tagger)
-        throw new Error("couldn't create tagger");
+        throw new Error("couldn't create a tagger");
     texts = data.text;
     texts.forEach(function (text) {
         var taggerNodes = tagger.getAll(text);
@@ -293,7 +290,7 @@ function getDictionaryInfo (data) {
     var tagger, info;
     tagger = createTagger(data.dicPath, data.userDicPath);
     if (!tagger)
-        throw new Error("couldn't create tagger");
+        throw new Error("couldn't create a tagger");
     info = tagger.getDictionaryInfo();
     tagger.destroyTagger();
     postMessage({
@@ -322,4 +319,4 @@ onmessage = function (event) {
         default:
             throw new Error("unknown request: " + event.data.request);
     }
-}
+};
