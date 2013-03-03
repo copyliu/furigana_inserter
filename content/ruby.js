@@ -26,7 +26,7 @@ function Simple () {
 Simple.prototype.createRuby = function (data, readings) {
     var pos = 0;
     var textWithRuby = "";
-    var that = this
+    var that = this;
     readings.forEach(function (reading) {
         reading.children.forEach(function (child) {
             textWithRuby += escapeHTML(data.substring(pos, child.start));
@@ -36,29 +36,29 @@ Simple.prototype.createRuby = function (data, readings) {
     });
     textWithRuby += escapeHTML(data.substring(pos, data.length));
     return textWithRuby;
-}
+};
 
 Simple.prototype.createRubyHtml = function (reading) {
     return "<ruby class='fi'><rb>".concat(reading.word, "</rb><rp>(</rp><rt>",
     reading.reading, "</rt><rp>)</rp></ruby>");
-}
+};
 
 var HiraganaSimple = Simple;
 
 function KatakanaSimple () {
 }
 
-KatakanaSimple.prototype = new Simple()
+KatakanaSimple.prototype = new Simple();
 
 KatakanaSimple.prototype.createRubyHtml = function (reading) {
     return "<ruby class='fi'><rb>".concat(reading.word, "</rb><rp>(</rp><rt>",
     hiraganaToKatakana(reading.reading), "</rt><rp>)</rp></ruby>");
-}
+};
 
 function RomajiSimple () {
 }
 
-RomajiSimple.prototype = new Simple()
+RomajiSimple.prototype = new Simple();
 
 RomajiSimple.prototype.createRuby = function (data, readings) {
     var pos = 0;
@@ -72,25 +72,25 @@ RomajiSimple.prototype.createRuby = function (data, readings) {
     });
     textWithRuby += escapeHTML(data.substring(pos, data.length));
     return textWithRuby;
-}
+};
 
 function Complex () {
 }
 
-Complex.prototype = new Simple()
+Complex.prototype = new Simple();
 
-Complex.prototype.createRuby = function (data, readings) {
+Complex.prototype.createRuby = function(data, readings) {
     var margin = prefs.getPref("margin");
     var style = "";
     if (margin > 0)
         style = " style='padding-left:".concat(margin, "em; padding-right:",
-            margin, "em'");
+                margin, "em'");
 
     var tag = "<span class='fi'".concat(style, " bf='");
     var pos = 0;
     var textWithRuby = "";
     var that = this;
-    readings.forEach(function (reading) {
+    readings.forEach(function(reading) {
         // push everything before start
         textWithRuby += escapeHTML(data.substring(pos, reading.start));
         // go to start
@@ -98,7 +98,7 @@ Complex.prototype.createRuby = function (data, readings) {
         var spanText = tag.concat(reading.basicForm, "'>");
         var end = pos + reading.word.length;
         // push all children
-        reading.children.forEach(function (child) {
+        reading.children.forEach(function(child) {
             spanText += escapeHTML(data.substring(pos, child.start));
             spanText += that.createRubyHtml(child);
             pos = child.start + child.word.length;
@@ -112,24 +112,24 @@ Complex.prototype.createRuby = function (data, readings) {
     // push rest
     textWithRuby += escapeHTML(data.substring(pos, data.length));
     return textWithRuby;
-}
+};
 
 Complex.prototype.createRubyHtml = function (reading) {
     return "<ruby class='fi'><rb>".concat(reading.word, "</rb><rp>(</rp><rt>",
     reading.reading, "</rt><rp>)</rp></ruby>");
-}
+};
 
 var HiraganaComplex = Complex;
 
 function KatakanaComplex () {
 }
 
-KatakanaComplex.prototype = new Complex()
+KatakanaComplex.prototype = new Complex();
 
 KatakanaComplex.prototype.createRubyHtml = function (reading) {
     return "<ruby class='fi'><rb>".concat(reading.word, "</rb><rp>(</rp><rt>",
     hiraganaToKatakana(reading.reading), "</rt><rp>)</rp></ruby>");
-}
+};
 
 function RomajiComplex () {
 }
@@ -140,14 +140,14 @@ RomajiComplex.prototype.createRuby = function (data, readings) {
     readings.forEach(function (r) {
         r.reading = katakanaToRomaji(hiraganaToKatakana(r.reading));
         r.children = [r];
-    })
+    });
     return Complex.prototype.createRuby.call(this, data, readings);
-}
+};
 
 function Keywords () {
 }
 
-Keywords.prototype = new Complex()
+Keywords.prototype = new Complex();
 
 Keywords.prototype.createRubyHtml = function (reading) {
     var rt = "";
@@ -157,7 +157,7 @@ Keywords.prototype.createRubyHtml = function (reading) {
     return "<ruby class='fi'><rb>".concat(reading.word,
         "</rb><rp>(</rp><rt lang='en' title='", reading.reading, "'>", rt,
         "</rt><rp>)</rp></ruby>");
-}
+};
 
 Keywords.prototype.toKeywords = function (word, table) {
     if (!table) return "";
@@ -167,8 +167,8 @@ Keywords.prototype.toKeywords = function (word, table) {
         if (table.hasOwnProperty(c))
             res.push(table[c]);
         else res.push("?");
-    })
+    });
     return res.join(" ");
-}
+};
 
-loadKeywords()
+loadKeywords();

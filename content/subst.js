@@ -1,6 +1,6 @@
 "use strict";
 
-Components.utils["import"]("resource://furiganainserter/utilities.js")
+Components.utils["import"]("resource://furiganainserter/utilities.js");
 
 var initialized = false;
 
@@ -22,7 +22,7 @@ function getListboxAsObj () {
     var listbox = document.getElementById("substListbox");
     var obj = [];
     var len = listbox.getRowCount();
-    for ( var i = 0; i < len; ++i) {
+    for (var i = 0; i < len; ++i) {
         var item = listbox.getItemAtIndex(i);
         obj.push([item.firstChild.getAttribute("label"),
             item.lastChild.getAttribute("label")]);

@@ -9,7 +9,7 @@ var EXPORTED_SYMBOLS = ["escapeHTML", "log", "time", "printOwnProperties",
 "getKeywordsFile", "getFilterFile", "getFilterFunction",
 "getKeywordsObject", "getFilterArray", "getUserDictionaryPath",
 "getDllPath", "readUri", "getMecabWorker", "groupBy",
-"copyTextToClipboard", "getTextFromClipboard", "getChromeWindow"];
+"copyTextToClipboard", "getTextFromClipboard", "getChromeWindow", "getSessionStore"];
 
 Components.utils["import"]("resource://gre/modules/AddonManager.jsm");
 
@@ -19,18 +19,18 @@ var XPathResult = Ci.nsIDOMXPathResult;
 var Node = Ci.nsIDOMNode;
 var NodeFilter = Ci.nsIDOMNodeFilter;
 
-var MyExtension = null;
-var DictionaryExtension = null;
-var MecabWorkerInstance = null;
+var myExtension = null;
+var dictionaryExtension = null;
+var mecabWorkerInstance = null;
 
 function init () {
     AddonManager.getAddonByID("furiganainserter@zorkzero.net",
         function (addon) {
-            MyExtension = addon;
+            myExtension = addon;
         });
     AddonManager.getAddonByID("furiganainserter-dictionary@zorkzero.net",
         function (addon) {
-            DictionaryExtension = addon;
+            dictionaryExtension = addon;
         });
 }
 
@@ -45,7 +45,7 @@ function groupBy (list, func) {
             result.push(group);
             group = [element];
         }
-    })
+    });
     if (group.length > 0)
         result.push(group);
     return result;
@@ -63,7 +63,7 @@ function getChromeWindow (win) {
 function katakanaToHiragana (str) {
     var retval = "";
     var len = str.length;
-    for ( var i = 0; i < len; ++i) {
+    for (var i = 0; i < len; ++i) {
         var c = str.charAt(i);
         var code = c.charCodeAt(0);
         if (code < 0x30A1 || code > 0x30F6)
@@ -76,7 +76,7 @@ function katakanaToHiragana (str) {
 function hiraganaToKatakana (str) {
     var retval = "";
     var len = str.length;
-    for ( var i = 0; i < len; ++i) {
+    for (var i = 0; i < len; ++i) {
         var c = str.charAt(i);
         var code = str.charCodeAt(i);
         if (code < 0x3041 || code > 0x3096)
@@ -95,7 +95,7 @@ var loadRomaji = (function () {
             "UTF-8");
         romajiTable = JSON.parse(string);
         return romajiTable;
-    }
+    };
 })();
 
 function katakanaToRomaji (string) {
@@ -105,7 +105,7 @@ function katakanaToRomaji (string) {
     var substring = "";
     var len = string.length;
 
-    for ( var i = 0; i < len;) {
+    for (var i = 0; i < len;) {
         for (j = 3; j > 0; --j) {
             substring = string.substring(i, i + j);
             if (table.hasOwnProperty(substring)) {
@@ -153,14 +153,14 @@ function time (f) {
 
 function printProperties (obj) {
     var props = [];
-    for ( var prop in obj)
+    for (var prop in obj)
         props.push(prop);
     log(props.join(", "));
 }
 
 function printOwnProperties (obj) {
     var props = [];
-    for ( var prop in obj)
+    for (var prop in obj)
         if (obj.hasOwnProperty(prop))
             props.push(prop);
     log(props.join(", "));
@@ -171,7 +171,7 @@ function getNodesByXPath (elem, expr) {
     var nodes = [], node;
     var result = doc.evaluate(expr, elem, null,
         XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-    while ((node = result.iterateNext()))
+    while (node = result.iterateNext())
         nodes.push(node);
     return nodes;
 }
@@ -239,8 +239,7 @@ function open (path) {
 
 function RangeNodeIterator (range) {
     var start = range.startContainer;
-    var startOffset = start.nodeType === Node.TEXT_NODE ? range.startOffset
-    : -1;
+    var startOffset = start.nodeType === Node.TEXT_NODE ? range.startOffset : -1;
     var end = range.endContainer;
     var endOffset = end.nodeType === Node.TEXT_NODE ? range.endOffset : -1;
     if (!range.collapsed && start.nodeType === Node.ELEMENT_NODE) {
@@ -273,32 +272,32 @@ function RangeNodeIterator (range) {
     var doc = start.ownerDocument;
     this._walker = doc.createTreeWalker(start, NodeFilter.SHOW_ELEMENT
         | NodeFilter.SHOW_TEXT, null, false);
-
-    this._START = 0;
-    this._END = 1;
-    this._DOWN = 2;
-    this._RIGHT_OR_UP = 3;
 }
+
+RangeNodeIterator._START = 0;
+RangeNodeIterator._END = 1;
+RangeNodeIterator._DOWN = 2;
+RangeNodeIterator._RIGHT_OR_UP = 3;
 
 RangeNodeIterator.prototype.nextNode = function () {
     if (this._currentNode === this._end) {
         this._currentNode = null;
-        this._state = this._END;
+        this._state = RangeNodeIterator._END;
     }
 
     switch (this._state) {
-        case 0: // START
-            this._state = this._DOWN;
+        case RangeNodeIterator._START:
+            this._state = RangeNodeIterator._DOWN;
             this._currentNode = this._start;
             return this._currentNode;
-        case 1: // END
+        case RangeNodeIterator._END:
             return null;
-        case 2: // DOWN
+        case RangeNodeIterator._DOWN:
             this._currentNode = this._walker.nextNode();
             if (!this._currentNode)
-                this._state = this._RIGHT_OR_UP; // fall through!
+                this._state = RangeNodeIterator._RIGHT_OR_UP; // fall through!
             else return this._currentNode;
-        case 3:// RIGHT_OR_UP
+        case RangeNodeIterator._RIGHT_OR_UP:
             this._currentNode = this._topNode.nextSibling;
             if (!this._currentNode) {
                 this._topNode = this._topNode.parentNode;
@@ -307,7 +306,7 @@ RangeNodeIterator.prototype.nextNode = function () {
                     throw new Error("this shouldn't happen");
                 else return this._currentNode;
             } else {
-                this._state = this._DOWN;
+                this._state = RangeNodeIterator._DOWN;
                 this._topNode = this._currentNode;
                 this._walker.currentNode = this._topNode;
                 return this._currentNode;
@@ -315,26 +314,26 @@ RangeNodeIterator.prototype.nextNode = function () {
         default:
             throw new Error("this shouldn't happen");
     }
-}
+};
 
 RangeNodeIterator.prototype.next = function () {
     var node = this.nextNode();
     if (node)
         return node;
     else throw StopIteration;
-}
+};
 
 RangeNodeIterator.prototype.__iterator__ = function () {
     return this;
-}
+};
 
 RangeNodeIterator.prototype.getStartNode = function () {
     return this._start;
-}
+};
 
 RangeNodeIterator.prototype.getEndNode = function () {
     return this._end;
-}
+};
 
 RangeNodeIterator.prototype.getStartTextOffset = function () {
     var node = this._currentNode;
@@ -343,7 +342,7 @@ RangeNodeIterator.prototype.getStartTextOffset = function () {
     if (node === this._start)
         return this._startOffset;
     else return 0;
-}
+};
 
 RangeNodeIterator.prototype.getEndTextOffset = function () {
     var node = this._currentNode;
@@ -352,11 +351,11 @@ RangeNodeIterator.prototype.getEndTextOffset = function () {
     if (node === this._end)
         return this._endOffset;
     else return node.data.length;
-}
+};
 
 RangeNodeIterator.prototype.isLast = function () {
     return this._currentNode === this._end;
-}
+};
 
 function RepeatingTimer (interval, callback) {
     this._timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
@@ -367,7 +366,7 @@ function RepeatingTimer (interval, callback) {
 
 RepeatingTimer.prototype.cancel = function () {
     this._timer.cancel();
-}
+};
 
 function Timer (interval, callback) {
     this._timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
@@ -378,7 +377,7 @@ function Timer (interval, callback) {
 
 Timer.prototype.cancel = function () {
     this._timer.cancel();
-}
+};
 
 function Preferences (branchName) {
     // nsIPrefBranch
@@ -388,12 +387,12 @@ function Preferences (branchName) {
 
 Preferences.prototype.unregister = function (observer) {
     this._prefs.removeObserver("", observer);
-}
+};
 
 Preferences.prototype.register = function (observer) {
     this._prefs.QueryInterface(Ci.nsIPrefBranch2);
     this._prefs.addObserver("", observer, false);
-}
+};
 
 Preferences.prototype.setPref = function (name, val) {
     var type = this._prefs.getPrefType(name);
@@ -407,7 +406,7 @@ Preferences.prototype.setPref = function (name, val) {
         str.data = val;
         this._prefs.setComplexValue(name, Ci.nsISupportsString, str);
     }
-}
+};
 
 Preferences.prototype.getPref = function (name) {
     var type = this._prefs.getPrefType(name);
@@ -416,11 +415,11 @@ Preferences.prototype.getPref = function (name) {
     else if (type === this._prefs.PREF_INT)
         return this._prefs.getIntPref(name);
     else return this._prefs.getComplexValue(name, Ci.nsISupportsString).data;
-}
+};
 
 Preferences.prototype.resetPref = function (name) {
     if (this._prefs.prefHasUserValue(name)) this._prefs.clearUserPref(name);
-}
+};
 
 // nsIObserver
 function PreferencesObserver (func) {
@@ -438,7 +437,7 @@ PreferencesObserver.prototype.observe = function (subject, topic, data) {
         subject : subject,
         topic : topic
     });
-}
+};
 
 function getTextFromClipboard () {
     try {
@@ -493,15 +492,15 @@ function ClipboardMonitor (interval, callback) {
 
 ClipboardMonitor.prototype.cancel = function () {
     this._timer.cancel();
-}
+};
 
 function getExtension () {
-    return MyExtension;
+    return myExtension;
 }
 
 function getDictionaryPath () {
-    if (DictionaryExtension)
-        return DictionaryExtension.getResourceURI("chrome/content/etc/mecabrc")
+    if (dictionaryExtension)
+        return dictionaryExtension.getResourceURI("chrome/content/etc/mecabrc")
         .QueryInterface(Ci.nsIFileURL).file.path;
     else return "";
 }
@@ -517,15 +516,21 @@ function getDllPath () {
     var path;
     if (getOS() === "Darwin")
         path = "mecab/libmecab.dylib";
+    else if (getOS() === "Linux")
+        path = "mecab/libmecab.so";
     else path = "mecab/libmecab.dll";
-    var uri = MyExtension.getResourceURI(path);
+    var uri = myExtension.getResourceURI(path);
     var file = uri.QueryInterface(Ci.nsIFileURL).file;
     return file.path;
 }
 
+function getProfileDirectory() {
+    return Cc["@mozilla.org/file/directory_service;1"].
+            getService(Ci.nsIProperties).get("ProfD", Ci.nsIFile);
+}
+
 function getUserDictionaryFile (extension) {
-    var file = Cc["@mozilla.org/file/directory_service;1"].
-    getService(Ci.nsIProperties).get("ProfD", Ci.nsIFile);
+    var file = getProfileDirectory();
     file.append("furigana_inserter_user_dictionary." + extension);
     return file;
 }
@@ -535,15 +540,13 @@ function getOS () {
 }
 
 function getKeywordsFile () {
-    var file = Cc["@mozilla.org/file/directory_service;1"].
-    getService(Ci.nsIProperties).get("ProfD", Ci.nsIFile);
+    var file = getProfileDirectory();
     file.append("furigana_inserter_keywords.txt");
     return file;
 }
 
 function getFilterFile () {
-    var file = Cc["@mozilla.org/file/directory_service;1"].
-    getService(Ci.nsIProperties).get("ProfD", Ci.nsIFile);
+    var file = getProfileDirectory();
     file.append("furigana_inserter_filter.js");
     return file;
 }
@@ -564,13 +567,13 @@ function getFilterFunction (obj) {
     obj.forEach(function (item) {
         var rx = new RegExp(item[0], "g");
         obj2.push([rx, item[1]]);
-    })
+    });
     var func = function (text) {
         obj2.forEach(function (item) {
             text = text.replace(item[0], item[1]);
         });
         return text;
-    }
+    };
     return func;
 }
 
@@ -601,7 +604,7 @@ function MecabWorker () {
     this.worker.onmessage = function (event) {
         var f = that.queue.shift();
         f(event.data);
-    }
+    };
     this.worker.onerror = function (event) {
         that.queue.shift();
         logError({
@@ -609,7 +612,7 @@ function MecabWorker () {
             fileName: event.filename,
             lineNumber: event.lineno
         });
-    }
+    };
 }
 
 MecabWorker.prototype.init = function () {
@@ -621,18 +624,23 @@ MecabWorker.prototype.init = function () {
         dllPath : getDllPath()
     });
     this.initialized = true;
-}
+};
 
 MecabWorker.prototype.send = function (data, f) {
     this.init();
     this.queue.push(f);
     this.worker.postMessage(data);
-}
+};
 
 function getMecabWorker () {
-    if (MecabWorkerInstance) return MecabWorkerInstance;
-    MecabWorkerInstance = new MecabWorker();
-    return MecabWorkerInstance;
+    if (mecabWorkerInstance) return mecabWorkerInstance;
+    mecabWorkerInstance = new MecabWorker();
+    return mecabWorkerInstance;
+}
+
+function getSessionStore() {
+    return Cc["@mozilla.org/browser/sessionstore;1"]
+            .getService(Ci.nsISessionStore);
 }
 
 init();

@@ -33,7 +33,7 @@ Popup.prototype.showNext = function () {
     var iframe = this.panel.ownerDocument.getElementById("furigana-inserter-iframe");
     var div = iframe.contentDocument.getElementById("furigana-inserter-window");
     div.innerHTML = text;
-}
+};
 
 Popup.prototype.show = function (event) {
     if (event.shiftKey || event.ctrlKey)
@@ -52,7 +52,7 @@ Popup.prototype.show = function (event) {
     this.timer = window.setTimeout(function () {
         that.show1(event);
     }, prefs.getPref("popup_delay"));
-}
+};
 
 Popup.prototype.inRange = function (event) {
     var win = event.view;
@@ -65,7 +65,7 @@ Popup.prototype.inRange = function (event) {
     newRange.setEnd(event.rangeParent, event.rangeOffset);
     return (newRange.compareBoundaryPoints(Range.START_TO_START, curRange) >= 0 && newRange
             .compareBoundaryPoints(Range.END_TO_END, curRange) < 0);
-}
+};
 
 Popup.prototype.kanjiSearch = function (word) {
     var text = "", searchResult = null, result, c, i;
@@ -81,11 +81,11 @@ Popup.prototype.kanjiSearch = function (word) {
     if (searchResult)
         text = this.dict.makeHtml(searchResult);
     return text;
-}
+};
 
 Popup.prototype.isVisible = function () {
     return this.panel.state === "open";
-}
+};
 
 Popup.prototype.getBasicForm = function (target) {
     var doc = target.ownerDocument;
@@ -98,11 +98,11 @@ Popup.prototype.getBasicForm = function (target) {
     type = XPathResult.FIRST_ORDERED_NODE_TYPE;
     var node = doc.evaluate(expr, target, null, type, null).singleNodeValue;
     return node ? node.getAttribute("bf") : "";
-}
+};
 
 Popup.prototype.sameElement = function (event) {
     return (this.target === event.target);
-}
+};
 
 Popup.prototype.hide = function () {
     var panel = this.panel;
@@ -110,13 +110,13 @@ Popup.prototype.hide = function () {
     if (panel.state === "open") panel.hidePopup();
     this.dict.moveToTop(this.currentDictionary);
     this.currentDictionary = 0;
-}
+};
 
 Popup.prototype.show1 = function (event) {
     var text = "";
     text = this.getBasicForm(event.target);
     this.lookupAndShowAt(text, event.screenX, event.screenY);
-}
+};
 
 Popup.prototype.lookupAndShowAt = function (word, screenX, screenY) {
     this.word = word;
@@ -132,7 +132,7 @@ Popup.prototype.lookupAndShowAt = function (word, screenX, screenY) {
     }
     text += this.kanjiSearch(word);
     this.showTextAt(text, screenX, screenY);
-}
+};
 
 Popup.prototype.showTextAt = function (text, screenX, screenY) {
     if (text === "") return;
@@ -152,4 +152,4 @@ Popup.prototype.showTextAt = function (text, screenX, screenY) {
     if ((y + offset + height) > (win.screen.top + win.screen.height))
         panel.openPopupAtScreen(x, y - (offset + height), false);
     else panel.openPopupAtScreen(x, y + offset, false);
-}
+};
