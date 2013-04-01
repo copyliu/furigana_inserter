@@ -23,8 +23,12 @@ The HTML Ruby add-on allows you to change the font size of ruby (furigana). Go t
 
 ==What about Linux and Mac OS X?==
 Since version 2.0 Furigana Inserter should work on Linux and Mac OS X. Firefox version 4 or higher is required. The dictionary add-on should also work. I have only tested it on Linux and Windows.
-  * The user dictionary will only work with the IPAdic dictionary.
-  * You have to install either !MeCab with a dictionary or !MeCab and the dictionary add-on for Firefox.
-  * You should use the UTF-8 encoding for the !MeCab dictionary.
+
+The user dictionary will only work with the IPAdic dictionary. You have to install either !MeCab with a dictionary or !MeCab and the dictionary add-on for Firefox. You should use the UTF-8 encoding for the !MeCab dictionary.
+
+To install FI 2.7 on Fedora 18 64-bit:
+  # Drag and drop `furigana-inserter-<version>.xpi` file into Firefox.
+  # `sudo yum install mecab mecab-ipadic`
+  # `sudo ln -s /usr/lib64/libmecab.so.2 /usr/lib64/libmecab.so.1`
 
 [http://akitaonrails.com/2012/05/08/off-topic-reading-with-subtitles-over-kanjis-in-japanese-webpages Blog entry] explaining how to install Furigana Inserter on Mac OS X.
