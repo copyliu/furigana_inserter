@@ -12,6 +12,7 @@ var EXPORTED_SYMBOLS = ["escapeHTML", "log", "time", "printOwnProperties",
 "copyTextToClipboard", "getTextFromClipboard", "getChromeWindow", "getSessionStore"];
 
 Components.utils["import"]("resource://gre/modules/AddonManager.jsm");
+Components.utils["import"]("resource://gre/modules/PrivateBrowsingUtils.jsm");
 
 var Ci = Components.interfaces;
 var Cc = Components.classes;
@@ -445,8 +446,7 @@ function getTextFromClipboard () {
         .getService(Ci.nsIClipboard);
         var trans = Cc["@mozilla.org/widget/transferable;1"]
         .createInstance(Ci.nsITransferable);
-        if (trans.init)
-            trans.init(null);
+        trans.init(null);
         trans.addDataFlavor("text/unicode");
         clip.getData(trans, clip.kGlobalClipboard);
         var str = {};
@@ -459,7 +459,7 @@ function getTextFromClipboard () {
     }
 }
 
-function copyTextToClipboard (text) {
+function copyTextToClipboard (text, sourceWindow) {
     try {
         var clip = Cc["@mozilla.org/widget/clipboard;1"]
         .getService(Ci.nsIClipboard);
@@ -468,8 +468,8 @@ function copyTextToClipboard (text) {
         str.data = text;
         var trans = Cc["@mozilla.org/widget/transferable;1"]
         .createInstance(Ci.nsITransferable);
-        if (trans.init)
-            trans.init(null);
+        var privacyContext = PrivateBrowsingUtils.privacyContextFromWindow(sourceWindow);
+        trans.init(privacyContext);
         trans.addDataFlavor("text/unicode");
         trans.setTransferData("text/unicode", str, text.length * 2);
         clip.setData(trans, null, clip.kGlobalClipboard);
