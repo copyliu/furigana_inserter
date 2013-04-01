@@ -51,6 +51,10 @@ var FuriganaInserter = {};
         this.isPopupEnabled = false;
         this.alphabet = "";
     }
+    
+    BrowserData.prototype.toString = function () {
+        return JSON.stringify(this);
+    };
 
     function getTabData(tab) {
         // tab is optional, the default is the selected browser
@@ -72,10 +76,18 @@ var FuriganaInserter = {};
     }
 
     function onTabSelect (event) {
-        var data = getTabData(event.target);
+        initTab(event.target);
+    }
+
+    function onTabOpen(event) {
+        initTab(event.target);
+    }
+
+    function initTab(tab) {
+        var data = getTabData(tab);
         if (data.alphabet === "") {
             data.alphabet = prefs.getPref("furigana_alphabet");
-            setTabData(gBrowser.selectedTab, data);
+            setTabData(tab, data);
         }
 
         document.getElementById("fi-auto-lookup-command").setAttribute(
@@ -91,12 +103,19 @@ var FuriganaInserter = {};
         document.getElementById("fi-" + data.alphabet + "-cmd").setAttribute(
                 "checked", true);
     }
-
-    function onTabOpen(event) {
-        var data = getTabData(event.target);
-        if (data.alphabet === "") {
-            data.alphabet = prefs.getPref("furigana_alphabet");
-            setTabData(gBrowser.selectedTab, data);
+    
+    function onTabRestored(event) {
+        var tab = event.target;
+        initTab(tab);
+        var data = getTabData(tab);
+        if (data.isClipboardMonitoringEnabled) {
+            var monitor = new ClipboardMonitor(150, function (text) {
+                appendText(text, tab);
+            });
+            addClipboardMonitor(tab, monitor);
+        }
+        if (data.isPopupEnabled) {
+            enablePopup(tab);
         }
     }
     
@@ -111,6 +130,8 @@ var FuriganaInserter = {};
         gBrowser.tabContainer.addEventListener("TabSelect", onTabSelect, false);
         gBrowser.tabContainer.addEventListener("TabOpen", onTabOpen, false);
         gBrowser.tabContainer.addEventListener("TabClose", onTabClose, false);
+
+        document.addEventListener("SSTabRestored", onTabRestored, false);
 
         // The 'load' event doesn't bubble, so it only works with a capturing
         // event listener.
@@ -265,15 +286,15 @@ var FuriganaInserter = {};
     }
 
     function togglePopup (event) {
-        var data = getTabData();
+        var tab = gBrowser.selectedTab;
+        var data = getTabData(tab);
         if (data.isPopupEnabled)
-            disablePopup();
-        else enablePopup();
+            disablePopup(tab);
+        else enablePopup(tab);
     }
 
-    function enablePopup () {
-        var browser = gBrowser.selectedBrowser;
-        var tab = gBrowser.selectedTab;
+    function enablePopup (tab) {
+        var browser = gBrowser.getBrowserForTab(tab);
         browser.addEventListener("mousemove", onMouseMove, false);
         browser.addEventListener("keydown", onKeyDown, false);
         var data = getTabData(tab);
@@ -283,9 +304,8 @@ var FuriganaInserter = {};
                 "checked", "true");
     }
 
-    function disablePopup () {
-        var browser = gBrowser.selectedBrowser;
-        var tab = gBrowser.selectedTab;
+    function disablePopup (tab) {
+        var browser = gBrowser.getBrowserForTab(tab);
         browser.removeEventListener("mousemove", onMouseMove, false);
         browser.removeEventListener("keydown", onKeyDown, false);
         var data = getTabData(tab);
@@ -298,11 +318,10 @@ var FuriganaInserter = {};
     function toggleClipboardMonitoring (event) {
         var monitor;
         var tab = gBrowser.selectedTab;
-        var browser = gBrowser.selectedBrowser;
         var data = getTabData(tab);
         if (!data.isClipboardMonitoringEnabled) {
             monitor = new ClipboardMonitor(150, function (text) {
-                appendText(text, tab, browser);
+                appendText(text, tab);
             });
             data.isClipboardMonitoringEnabled = true;
             addClipboardMonitor(tab, monitor);
@@ -444,10 +463,11 @@ var FuriganaInserter = {};
         filterFunction = Imports.getFilterFunction(obj);
     }
 
-    function appendText (text, tab, browser) {
+    function appendText (text, tab) {
         var inserter;
         if (!jRegex.test(text))
             return;
+        var browser = gBrowser.getBrowserForTab(tab);
         var win = browser.contentWindow;
         var doc = win.document;
         text = escapeHTML(text);
