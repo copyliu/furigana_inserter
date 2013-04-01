@@ -639,8 +639,7 @@ function getMecabWorker () {
 }
 
 function getSessionStore() {
-    return Cc["@mozilla.org/browser/sessionstore;1"]
-            .getService(Ci.nsISessionStore);
+    return Cc["@mozilla.org/browser/sessionstore;1"].getService(Ci.nsISessionStore);
 }
 
 init();
