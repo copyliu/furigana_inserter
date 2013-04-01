@@ -93,6 +93,18 @@ MeCab.prototype.getError = function () {
     else return retval.readString();
 };
 
+MeCab.prototype.tryOpeningLibrary = function (i) {
+    try {
+        return ctypes.open(this.getDllName());
+    } catch (e) {
+        if (getOS() === "Linux") {
+            return ctypes.open("libmecab.so.2");
+        } else {
+            throw e;
+        }
+    }
+}
+
 MeCab.prototype.init = function (dllPath) {
     if (this.lib)
         return this;
@@ -100,7 +112,7 @@ MeCab.prototype.init = function (dllPath) {
         if (dllPath === "") throw new Error();
         this.lib = ctypes.open(dllPath);
     } catch (e) {
-        this.lib = ctypes.open(this.getDllName());
+        this.lib = this.tryOpeningLibrary();
     }
     var mecab_t = ctypes.StructType("mecab_t").ptr;
     var mecab_dictionary_info_t = ctypes.StructType("mecab_dictionary_info_t");
