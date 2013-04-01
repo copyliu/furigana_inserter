@@ -1,6 +1,12 @@
 #summary Release notes for Furigana Inserter.
 #labels Featured
 = Release Notes =
+==Furigana Inserter 2.8 (01.04.2013)==
+  * Added: support for Fedora 18
+  * Added: uses the session store to store tab options
+  * Fixed: scrolling the popup window works again (the Fx API changed)
+  * Fixed: uses the privacy context when copying text to the clipboard
+
 ==Furigana Inserter 2.4 (03.09.2012)==
   * Fixed: Issue 1. FI didn't work on pages with frames.
   * Fixed: small bugs
