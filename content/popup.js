@@ -1,13 +1,13 @@
 "use strict";
 
-var EXPORTED_SYMBOLS = ["Popup"];
+let EXPORTED_SYMBOLS = ["Popup"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
-var XPathResult = Components.interfaces.nsIDOMXPathResult;
-var Range = Components.interfaces.nsIDOMRange;
-var Node = Components.interfaces.nsIDOMNode;
+let XPathResult = Components.interfaces.nsIDOMXPathResult;
+let Range = Components.interfaces.nsIDOMRange;
+let Node = Components.interfaces.nsIDOMNode;
 
-var prefs = new Preferences("extensions.furiganainserter.");
+let prefs = new Preferences("extensions.furiganainserter.");
 
 function Popup (panel, dict) {
     this.timer = null;
@@ -20,66 +20,77 @@ function Popup (panel, dict) {
 }
 
 Popup.prototype.showNext = function () {
-    if (this.searchResults.length === 0)
+    if (this.searchResults.length === 0) {
         return;
+    }
     this.currentDictionary++;
     this.currentDictionary %= this.searchResults.length;
-    var searchResult = this.searchResults[this.currentDictionary];
-    var word = this.word.substring(0, searchResult.matchLen);
-    var text = this.dict.makeHtml(searchResult);
+    let searchResult = this.searchResults[this.currentDictionary];
+    let word = this.word.substring(0, searchResult.matchLen);
+    let text = this.dict.makeHtml(searchResult);
     text += this.kanjiSearch(word);
-    if (text === "")
+    if (text === "") {
         return;
-    var iframe = this.panel.ownerDocument.getElementById("furigana-inserter-iframe");
-    var div = iframe.contentDocument.getElementById("furigana-inserter-window");
+    }
+    let iframe = this.panel.ownerDocument.getElementById("furigana-inserter-iframe");
+    let div = iframe.contentDocument.getElementById("furigana-inserter-window");
     div.innerHTML = text;
 };
 
 Popup.prototype.show = function (event) {
-    if (event.shiftKey || event.ctrlKey)
+    if (event.shiftKey || event.ctrlKey) {
         return;
-    if (!this.dict)
+    }
+    if (!this.dict) {
         return;
-    if (this.sameElement(event) || this.inRange(event))
+    }
+    if (this.sameElement(event) || this.inRange(event)) {
         return;
-    var that = this;
+    }
+    let that = this;
     this.rangeParent = event.rangeParent;
     this.rangeOffset = event.rangeOffset;
     this.target = event.target;
-    var window = this.panel.ownerDocument.defaultView;
-    if (this.timer)
+    let window = this.panel.ownerDocument.defaultView;
+    if (this.timer) {
         window.clearTimeout(this.timer);
+    }
     this.timer = window.setTimeout(function () {
         that.show1(event);
     }, prefs.getPref("popup_delay"));
 };
 
 Popup.prototype.inRange = function (event) {
-    var win = event.view;
-    var selection = win.getSelection();
-    if (selection.rangeCount === 0 || selection.isCollapsed)
+    let win = event.view;
+    let selection = win.getSelection();
+    if (selection.rangeCount === 0 || selection.isCollapsed) {
         return false;
-    var curRange = selection.getRangeAt(0);
-    var newRange = win.document.createRange();
+    }
+    let curRange = selection.getRangeAt(0);
+    let newRange = win.document.createRange();
     newRange.setStart(event.rangeParent, event.rangeOffset);
     newRange.setEnd(event.rangeParent, event.rangeOffset);
-    return (newRange.compareBoundaryPoints(Range.START_TO_START, curRange) >= 0 && newRange
-            .compareBoundaryPoints(Range.END_TO_END, curRange) < 0);
+    return (newRange.compareBoundaryPoints(Range.START_TO_START, curRange) >= 0 &&
+        newRange.compareBoundaryPoints(Range.END_TO_END, curRange) < 0);
 };
 
 Popup.prototype.kanjiSearch = function (word) {
-    var text = "", searchResult = null, result, c, i;
-    for (i = 0; i < word.length; ++i) {
-        c = word.charAt(i);
-        if (c < "\u3400" || c > "\u9FCF")
+    let text = "", searchResult = null;
+    for (let i = 0; i < word.length; ++i) {
+        let c = word.charAt(i);
+        if (c < "\u3400" || c > "\u9FCF") {
             continue;
-        result = this.dict.kanjiSearch(c);
-        if (searchResult)
-            Array.prototype.push.apply(searchResult.entries, result.entries);
-        else searchResult = result;
+        }
+        let result = this.dict.kanjiSearch(c);
+        if (searchResult) {
+            searchResult.entries.push(...result.entries);
+        } else {
+            searchResult = result;
+        }
     }
-    if (searchResult)
+    if (searchResult) {
         text = this.dict.makeHtml(searchResult);
+    }
     return text;
 };
 
@@ -88,15 +99,16 @@ Popup.prototype.isVisible = function () {
 };
 
 Popup.prototype.getBasicForm = function (target) {
-    var doc = target.ownerDocument;
-    var expr = "ancestor-or-self::rt";
-    var type = XPathResult.BOOLEAN_TYPE;
-    var isInRT = doc.evaluate(expr, target, null, type, null).booleanValue;
-    if (isInRT)
+    let doc = target.ownerDocument;
+    let expr = "ancestor-or-self::rt";
+    let type = XPathResult.BOOLEAN_TYPE;
+    let isInRT = doc.evaluate(expr, target, null, type, null).booleanValue;
+    if (isInRT) {
         return "";
+    }
     expr = "ancestor-or-self::*[(self::ruby or self::span) and @bf and @class='fi']";
     type = XPathResult.FIRST_ORDERED_NODE_TYPE;
-    var node = doc.evaluate(expr, target, null, type, null).singleNodeValue;
+    let node = doc.evaluate(expr, target, null, type, null).singleNodeValue;
     return node ? node.getAttribute("bf") : "";
 };
 
@@ -105,15 +117,19 @@ Popup.prototype.sameElement = function (event) {
 };
 
 Popup.prototype.hide = function () {
-    var panel = this.panel;
-    if (panel.hasAttribute("noautohide")) return;
-    if (panel.state === "open") panel.hidePopup();
+    let panel = this.panel;
+    if (panel.hasAttribute("noautohide")) {
+        return;
+    }
+    if (panel.state === "open") {
+        panel.hidePopup();
+    }
     this.dict.moveToTop(this.currentDictionary);
     this.currentDictionary = 0;
 };
 
 Popup.prototype.show1 = function (event) {
-    var text = "";
+    let text = "";
     text = this.getBasicForm(event.target);
     this.lookupAndShowAt(text, event.screenX, event.screenY);
 };
@@ -121,10 +137,11 @@ Popup.prototype.show1 = function (event) {
 Popup.prototype.lookupAndShowAt = function (word, screenX, screenY) {
     this.word = word;
     this.hide();
-    if (word === "")
+    if (word === "") {
         return;
-    var text = "";
-    var searchResult = null;
+    }
+    let text = "";
+    let searchResult = null;
     this.searchResults = this.dict.wordSearch(word);
     if (this.searchResults.length > 0) {
         searchResult = this.searchResults[0];
@@ -135,21 +152,25 @@ Popup.prototype.lookupAndShowAt = function (word, screenX, screenY) {
 };
 
 Popup.prototype.showTextAt = function (text, screenX, screenY) {
-    if (text === "") return;
-    var panel = this.panel;
-    var win = panel.ownerDocument.defaultView;
-    var iframe = win.document.getElementById("furigana-inserter-iframe");
+    if (text === "") {
+        return;
+    }
+    let panel = this.panel;
+    let win = panel.ownerDocument.defaultView;
+    let iframe = win.document.getElementById("furigana-inserter-iframe");
     iframe.width = "600";
     iframe.height = "400";
     panel.width = "600";
     panel.height = "400";
-    var x = screenX;
-    var y = screenY;
-    var offset = 25;
-    var height = panel.boxObject.height;
-    var div = iframe.contentDocument.getElementById("furigana-inserter-window");
+    let x = screenX;
+    let y = screenY;
+    let offset = 25;
+    let height = panel.boxObject.height;
+    let div = iframe.contentDocument.getElementById("furigana-inserter-window");
     div.innerHTML = text;
-    if ((y + offset + height) > (win.screen.top + win.screen.height))
+    if ((y + offset + height) > (win.screen.top + win.screen.height)) {
         panel.openPopupAtScreen(x, y - (offset + height), false);
-    else panel.openPopupAtScreen(x, y + offset, false);
+    } else {
+        panel.openPopupAtScreen(x, y + offset, false);
+    }
 };

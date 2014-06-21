@@ -27,7 +27,6 @@
                         <menuitem label="&furiganaAlphabetHiragana.label;" value="hiragana"/>
                         <menuitem label="&furiganaAlphabetKatakana.label;" value="katakana"/>
                         <menuitem label="&furiganaAlphabetRomaji.label;" value="romaji"/>
-                        <menuitem label="&furiganaAlphabetKeywords.label;" value="keywords"/>
                     </menupopup>
                 </menulist>
             </hbox>

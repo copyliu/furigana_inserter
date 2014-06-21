@@ -1,18 +1,18 @@
 "use strict";
 
-var EXPORTED_SYMBOLS = ["getReadings"];
+let EXPORTED_SYMBOLS = ["getReadings"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
-var kPat = "\u3005\u3400-\u9FCF"; // "\u3005" is "々" - CJK iteration mark
-var hPat = "\u3041-\u3096"; // Hiragana
-var katPat = "\u30A1-\u30FA"; // Katakana
-var jRegex = new RegExp('[' + kPat + hPat + katPat + ']');
-var kRegex = new RegExp("[" + kPat + "]");
-var katRegex = new RegExp("[" + katPat + "]");
-var hRegex = new RegExp("[" + hPat + "]");
-var hkRegex = new RegExp("^([" + hPat + "]*)([" + kPat + "]+)");
-var khRegex = new RegExp("^([" + kPat + "]+)([" + hPat + "]*)");
+let kPat = "\u3005\u3400-\u9FCF"; // "\u3005" is "々" - CJK iteration mark
+let hPat = "\u3041-\u3096"; // Hiragana
+let katPat = "\u30A1-\u30FA"; // Katakana
+let jRegex = new RegExp('[' + kPat + hPat + katPat + ']');
+let kRegex = new RegExp("[" + kPat + "]");
+let katRegex = new RegExp("[" + katPat + "]");
+let hRegex = new RegExp("[" + hPat + "]");
+let hkRegex = new RegExp("^([" + hPat + "]*)([" + kPat + "]+)");
+let khRegex = new RegExp("^([" + kPat + "]+)([" + hPat + "]*)");
 
 function Reading () {
     this.reading = "";
@@ -24,10 +24,10 @@ function Reading () {
 }
 
 function getReadings (nodes) {
-    var readings = [];
-    var start = 0;
+    let readings = [];
+    let start = 0;
     nodes.forEach(function (node) {
-        var reading = featureToReading(node.feature);
+        let reading = featureToReading(node.feature);
         // skip nodes without reading
         if (reading.reading === "") {
             start += node.length + node.surface.length;
@@ -37,7 +37,7 @@ function getReadings (nodes) {
         start += node.length;
         reading.word = node.surface;
         reading.start = start;
-        var children = parseReading(reading);
+        let children = parseReading(reading);
         if (reading.isName) children.forEach(function (child) {
             child.isName = true;
         });
@@ -52,8 +52,8 @@ function getReadings (nodes) {
 // Juman: (現在) (名詞,時相名詞,*,*,現在,げんざい,代表表記:現在)
 // IPADic: (現在) (名詞,副詞可能,*,*,*,*,現在,ゲンザイ,ゲンザイ)
 function featureToReading (feature) {
-    var obj = new Reading();
-    var fields = feature.split(",");
+    let obj = new Reading();
+    let fields = feature.split(",");
     if (fields.length > 7 && (katRegex.test(fields[7]))
         && !/[\uFF01-\uFF5E]/.test(fields[6])) // not an ASCII char
         {
@@ -69,7 +69,7 @@ function featureToReading (feature) {
 }
 
 function parseReading (reading) {
-    var result = [];
+    let result = [];
     parseWord(reading.word, reading.reading, reading.start, result);
     return result;
 }
@@ -80,9 +80,9 @@ function parseReading (reading) {
 // Kanji := [\u3005\u3400-\u9FCF]+
 // Hiragana := [\u3040-\u309F]+
 function parseWord (word, reading, start, result) {
-    var match = word.match(hkRegex);
+    let match = word.match(hkRegex);
     if (!match) return;
-    var hiragana = match[1];
+    let hiragana = match[1];
     // Hiragana KanjiHiragana
     if (hiragana === "") parseKanjiHiragana(word, reading, start, result);
     // KanjiHiragana
@@ -95,9 +95,9 @@ function parseWord (word, reading, start, result) {
 }
 
 function parseKanjiHiragana (word, reading, start, result) {
-    var match = word.match(khRegex);
-    var kanji = match[1];
-    var hiragana = match[2];
+    let match = word.match(khRegex);
+    let kanji = match[1];
+    let hiragana = match[2];
     // Kanji !Hiragana
     if (hiragana === "")
         result.push({
@@ -107,7 +107,7 @@ function parseKanjiHiragana (word, reading, start, result) {
         });
     // Kanji Word
     else {
-        var i = reading.indexOf(hiragana, 1);
+        let i = reading.indexOf(hiragana, 1);
         result.push({
             word : kanji,
             reading : reading.substring(0, i),

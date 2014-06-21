@@ -14,13 +14,7 @@
 <!ENTITY autoLookupCommand.accesskey "В">
 <!ENTITY userDictCommand.label "Словарь пользователя…">
 <!ENTITY userDictCommand.accesskey "П">
-<!ENTITY substCommand.label "Замены…">
-<!ENTITY substCommand.accesskey "З">
-<!ENTITY keywordsDialogCommand.label "Ключевые слова…">
-<!ENTITY keywordsDialogCommand.accesskey "К">
 
-<!ENTITY keywordsCommand.label "Ключевые слова">
-<!ENTITY keywordsCommand.accesskey "С">
 <!ENTITY hiraganaCommand.label "Хирагана">
 <!ENTITY hiraganaCommand.accesskey "Х">
 <!ENTITY katakanaCommand.label "Катакана">

@@ -1,11 +1,11 @@
 "use strict";
 
-var EXPORTED_SYMBOLS = ["DictionarySearcher"];
+let EXPORTED_SYMBOLS = ["DictionarySearcher"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 Components.utils["import"]('resource://gre/modules/AddonManager.jsm');
-var Ci = Components.interfaces;
-var Cc = Components.classes;
+let Ci = Components.interfaces;
+let Cc = Components.classes;
 
 function Dictionary (file) {
     this.name = "";
@@ -17,28 +17,29 @@ function Dictionary (file) {
 }
 
 Dictionary.prototype.findWord = function (word) {
-    var db = null, entries = [];
+    let db = null, entries = [];
     try {
         db = this.openDatabase();
         entries = this.getEntries(db, word);
     } finally {
-        if (db)
+        if (db) {
             db.close();
+        }
     }
     return entries;
 };
 
 Dictionary.prototype.openDatabase = function () {
-    var file = this.file;
-    var service = Components.classes['@mozilla.org/storage/service;1']
+    let file = this.file;
+    let service = Components.classes['@mozilla.org/storage/service;1']
     .getService(Components.interfaces.mozIStorageService);
     return service.openDatabase(file);
 };
 
 Dictionary.prototype.getEntries = function (db, word) {
-    var result = [], entry;
-    var stm = "SELECT * FROM dict WHERE kanji=:kanji OR kana=:kana";
-    var st = db.createStatement(stm);
+    let result = [], entry;
+    let stm = "SELECT * FROM dict WHERE kanji=:kanji OR kana=:kana";
+    let st = db.createStatement(stm);
     st.params.kanji = word;
     st.params.kana = word;
     try {
@@ -53,18 +54,6 @@ Dictionary.prototype.getEntries = function (db, word) {
         st.finalize();
     }
     return result;
-};
-
-Dictionary.prototype.getResults = function (st) {
-    var results = [], result = {}, key;
-    while (st.step()) {
-        result = {};
-        for (key in st.row)
-            if (st.row.hasOwnProperty(key))
-                result[key] = st.row[key];
-        results.push(result);
-    }
-    return results;
 };
 
 function Entry () {
@@ -96,75 +85,89 @@ function DictionarySearcher () {
 }
 
 DictionarySearcher.prototype.init = function (rcxDicList) {
-    var ids = [], id;
-    var that = this;
-    for (id in rcxDicList)
-        if (rcxDicList.hasOwnProperty(id))
+    let ids = [];
+    let that = this;
+    for (let id in rcxDicList) {
+        if (rcxDicList.hasOwnProperty(id)) {
             ids.push(id);
+        }
+    }
 
     AddonManager.getAddonsByIDs(ids, function (addons) {
         that.dictionaries = [];
-        var uri, file, i, dic, rcxDic, addon;
-        for (i = 0; i < addons.length; ++i) {
-            addon = addons[i];
-            uri = addon.getResourceURI("dict.sqlite");
-            file = uri.QueryInterface(Ci.nsIFileURL).file;
-            dic = new Dictionary(file);
-            rcxDic = rcxDicList[addon.id];
+        for (let i = 0; i < addons.length; ++i) {
+            let addon = addons[i];
+            let uri = addon.getResourceURI("dict.sqlite");
+            let file = uri.QueryInterface(Ci.nsIFileURL).file;
+            let dic = new Dictionary(file);
+            let rcxDic = rcxDicList[addon.id];
             dic.isName = rcxDic.isName;
             dic.isKanji = rcxDic.isKanji;
             dic.hasType = rcxDic.hasType;
             dic.name = rcxDic.name;
-            if (dic.isKanji)
+            if (dic.isKanji) {
                 that.kanjiDictionaries.push(dic);
-            else that.dictionaries.push(dic);
+            } else {
+                that.dictionaries.push(dic);
+            }
         }
     });
 };
 
 DictionarySearcher.prototype._wordSearch = function (word, dic) {
-    var variants, variant, i, j, entries, entry, origWord = word;
-    var result = new SearchResult();
+    let origWord = word;
+    let result = new SearchResult();
     result.title = dic.name;
     result.names = dic.isName;
     word = katakanaToHiragana(word);
 
     while (word.length > 0) {
-        if (dic.isName)
+        let variants;
+        if (dic.isName) {
             variants = [new Variant(word)];
-        else variants = this.deinflector.deinflect(word);
-        for (i = 0; i < variants.length; ++i) {
-            variant = variants[i];
-            entries = dic.findWord(variant.word);
-            for (j = 0; j < entries.length; ++j) {
-                entry = entries[j];
+        } else {
+            variants = this.deinflector.deinflect(word);
+        }
+        for (let i = 0; i < variants.length; ++i) {
+            let variant = variants[i];
+            let entries = dic.findWord(variant.word);
+            for (let j = 0; j < entries.length; ++j) {
+                let entry = entries[j];
                 // > 0 a de-inflected word
                 if (dic.hasType && this.checkType(variant.type, entry.entry)
                     || !dic.hasType) {
                     if (result.matchLen === 0) result.matchLen = word.length;
-                    if (variant.reason === '')
+                    if (variant.reason === '') {
                         entry.reason = '';
-                    else if (origWord === word)
+                    } else if (origWord === word) {
                         entry.reason = '< ' + variant.reason;
-                    else entry.reason = '< ' + variant.reason + ' < ' + word;
+                    } else {
+                        entry.reason = '< ' + variant.reason + ' < ' + word;
+                    }
                     result.entries.push(entry);
                 }
             } // for j < entries.length
         } // for i < variants.length
-        if (result.entries.length > 0) return result;
+        if (result.entries.length > 0) {
+            return result;
+        }
         word = word.substr(0, word.length - 1);
     } // while (word.length > 0)
-    if (result.entries.length === 0)
+    if (result.entries.length === 0) {
         return null;
-    else return result;
+    } else {
+        return result;
+    }
 };
 
 DictionarySearcher.prototype.wordSearch = function (word) {
-    var retval = [], i;
-    for (i = 0; i < this.dictionaries.length; ++i) {
-        var dic = this.dictionaries[i];
-        var e = this._wordSearch(word, dic);
-        if (e) retval.push(e);
+    let retval = [];
+    for (let i = 0; i < this.dictionaries.length; ++i) {
+        let dic = this.dictionaries[i];
+        let e = this._wordSearch(word, dic);
+        if (e) {
+            retval.push(e);
+        }
     }
     retval.sort(function (a, b) {
         return (b.matchLen - a.matchLen);
@@ -173,7 +176,6 @@ DictionarySearcher.prototype.wordSearch = function (word) {
 };
 
 DictionarySearcher.prototype.checkType = function (type, entry) {
-    var i;
     if (type === 0xFF) return true;
 
     // ex:
@@ -182,9 +184,9 @@ DictionarySearcher.prototype.checkType = function (type, entry) {
     // /(aux-v,v1) to begin to/(P)/
     // /(adj-na,exp,int) thank you/many thanks/
     // /(adj-i) shrill/
-    var entryParts = entry.split(/[,()]/);
-    for (i = Math.min(entryParts.length - 1, 10); i >= 0; --i) {
-        var entryPart = entryParts[i];
+    let entryParts = entry.split(/[,()]/);
+    for (let i = Math.min(entryParts.length - 1, 10); i >= 0; --i) {
+        let entryPart = entryParts[i];
         if ((type & 1) && (entryPart === 'v1')) return true;
         if ((type & 4) && (entryPart === 'adj-i')) return true;
         if ((type & 2) && (entryPart.substr(0, 2) === 'v5')) return true;
@@ -195,33 +197,32 @@ DictionarySearcher.prototype.checkType = function (type, entry) {
 };
 
 DictionarySearcher.prototype.makeHtml = function (searchResult) {
-    var result = "<div class='w-title'>" + escapeHTML(searchResult.title) + "</div>";
-    var groupedEntries = groupBy(searchResult.entries,
-        function (entry) {
-            return entry.entry;
-        });
+    let result = "<div class='w-title'>" + escapeHTML(searchResult.title) + "</div>";
+    let groupedEntries = groupBy(searchResult.entries, (entry) => entry.entry);
     result += groupedEntries.map(function (group) {
-        var result = [];
+        let result = [];
         group.forEach(function (entry) {
-            if (entry.kanji !== "" && entry.kanji !== null)
+            if (entry.kanji !== "" && entry.kanji !== null) {
                 result.push("<span class='w-kanji'>", escapeHTML(entry.kanji), "</span>");
+            }
             result.push("<span class='w-kana'>", escapeHTML(entry.kana), "</span>");
-            if (entry.reason !== "")
+            if (entry.reason !== "") {
                 result.push("<span class='w-conj'>", escapeHTML(entry.reason), "</span>");
+            }
             result.push("<br>");
         });
         result.push("<span class='w-def'>",
-        escapeHTML(group[0].entry).replace(/\n/g, "<br>").replace(/\//g, "; "),
-        "</span>");
+            escapeHTML(group[0].entry).replace(/\n/g, "<br>").replace(/\//g, "; "),
+            "</span>");
         return result.join("");
     }).join("<br>");
     return result;
 };
 
 DictionarySearcher.prototype.kanjiSearch = function (c) {
-    var searchResult = new SearchResult(), i;
-    for (i = 0; i < this.kanjiDictionaries.length; ++i) {
-        var dic = this.kanjiDictionaries[i];
+    let searchResult = new SearchResult();
+    for (let i = 0; i < this.kanjiDictionaries.length; ++i) {
+        let dic = this.kanjiDictionaries[i];
         searchResult.entries = dic.findWord(c);
         searchResult.kanji = true;
         searchResult.title = dic.name;
@@ -231,8 +232,10 @@ DictionarySearcher.prototype.kanjiSearch = function (c) {
 };
 
 DictionarySearcher.prototype.moveToTop = function (index) {
-    if (index === 0) return;
-    var removed = this.dictionaries.splice(index, 1);
+    if (index === 0) {
+        return;
+    }
+    let removed = this.dictionaries.splice(index, 1);
     this.dictionaries.unshift(removed[0]);
 };
 
@@ -243,28 +246,29 @@ function Rule () {
     this.reason = 0;
 }
 
-var getDeinflector = (function () {
-    var deinflector = null;
+let getDeinflector = (function () {
+    let deinflector = null;
     return function () {
-        if (deinflector) return deinflector;
+        if (deinflector) {
+            return deinflector;
+        }
         deinflector = new Deinflector();
         return deinflector;
     };
 })();
 
 function Deinflector () {
-    var i, line, lines, fields, rule;
     this.reasons = [];
     this.rules = [];
-    var string = readUri("chrome://furiganainserter/content/deinflect.dat", "UTF-8");
-    lines = string.split("\r\n");
-    for (i = 1; i < lines.length; ++i) {
-        line = lines[i];
-        fields = line.split("\t");
-        if (fields.length === 1)
+    let string = readUri("chrome://furiganainserter/content/deinflect.dat", "UTF-8");
+    let lines = string.split("\r\n");
+    for (let i = 1; i < lines.length; ++i) {
+        let line = lines[i];
+        let fields = line.split("\t");
+        if (fields.length === 1) {
             this.reasons.push(fields[0]);
-        else {
-            rule = new Rule();
+        } else {
+            let rule = new Rule();
             rule.from = fields[0];
             rule.to = fields[1];
             rule.type = parseInt(fields[2]);
@@ -275,23 +279,24 @@ function Deinflector () {
 }
 
 Deinflector.prototype.deinflect = function (word) {
-    var i, j, index, end, rule, newWord, newVariant;
-    var variant = new Variant(word);
-    var cache = {};
+    let variant = new Variant(word);
+    let cache = {};
     cache[word] = variant;
-    var variants = [variant];
-    var rules = this.rules;
-    for (i = 0; i < variants.length; ++i) {
-        variant = variants[i];
-        for (j = 0; j < rules.length; ++j) {
-            rule = rules[j];
-            if (rule.from.length >= variant.word.length)
+    let variants = [variant];
+    let rules = this.rules;
+    for (let i = 0; i < variants.length; ++i) {
+        let variant = variants[i];
+        for (let j = 0; j < rules.length; ++j) {
+            let rule = rules[j];
+            if (rule.from.length >= variant.word.length) {
                 continue;
-            index = variant.word.length - rule.from.length;
-            end = variant.word.substring(index);
-            if ((variant.type & rule.type) === 0 || end !== rule.from)
+            }
+            let index = variant.word.length - rule.from.length;
+            let end = variant.word.substring(index);
+            if ((variant.type & rule.type) === 0 || end !== rule.from) {
                 continue;
-            newWord = variant.word.substring(0, index) + rule.to;
+            }
+            let newWord = variant.word.substring(0, index) + rule.to;
             // update cache
             if (cache.hasOwnProperty(newWord)) {
                 newVariant = cache[newWord];
@@ -299,12 +304,14 @@ Deinflector.prototype.deinflect = function (word) {
             }
             //new deinflection
             else {
-                newVariant = new Variant(newWord);
+                let newVariant = new Variant(newWord);
                 newVariant.type = rule.type >> 8;
-                if (variant.reason === "")
+                if (variant.reason === "") {
                     newVariant.reason = this.reasons[rule.reason];
-                else newVariant.reason = this.reasons[rule.reason] + ' < '
+                } else {
+                    newVariant.reason = this.reasons[rule.reason] + ' < '
                     + variant.reason;
+                }
                 cache[newWord] = newVariant;
                 variants.push(newVariant);
             }

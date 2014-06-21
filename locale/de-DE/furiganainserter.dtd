@@ -14,13 +14,7 @@
 <!ENTITY autoLookupCommand.accesskey "P">
 <!ENTITY userDictCommand.label "Benutzerwörterbuch…">
 <!ENTITY userDictCommand.accesskey "B">
-<!ENTITY substCommand.label "Ersetzungen…">
-<!ENTITY substCommand.accesskey "r">
-<!ENTITY keywordsDialogCommand.label "Schlüsselworte…">
-<!ENTITY keywordsDialogCommand.accesskey "S">
 
-<!ENTITY keywordsCommand.label "Schlüsselworte">
-<!ENTITY keywordsCommand.accesskey "S">
 <!ENTITY hiraganaCommand.label "Hiragana">
 <!ENTITY hiraganaCommand.accesskey "H">
 <!ENTITY katakanaCommand.label "Katakana">
