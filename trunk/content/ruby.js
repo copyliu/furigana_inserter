@@ -1,32 +1,19 @@
 "use strict";
 
-var EXPORTED_SYMBOLS = ["HiraganaComplex", "KatakanaComplex", "RomajiComplex",
-"Keywords", "setKeywords", "RomajiSimple", "HiraganaSimple", "KatakanaSimple"];
+let EXPORTED_SYMBOLS = ["HiraganaComplex", "KatakanaComplex", "RomajiComplex",
+"RomajiSimple", "HiraganaSimple", "KatakanaSimple"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
-var prefs = new Preferences("extensions.furiganainserter.");
-
-var keywords = null;
-
-function setKeywords (table) {
-    keywords = table;
-}
-
-function loadKeywords () {
-    var file = getKeywordsFile();
-    if (!file.exists()) return;
-    var text = read(file, "UTF-8");
-    keywords = getKeywordsObject(text);
-}
+let prefs = new Preferences("extensions.furiganainserter.");
 
 function Simple () {
 }
 
 Simple.prototype.createRuby = function (data, readings) {
-    var pos = 0;
-    var textWithRuby = "";
-    var that = this;
+    let pos = 0;
+    let textWithRuby = "";
+    let that = this;
     readings.forEach(function (reading) {
         reading.children.forEach(function (child) {
             textWithRuby += escapeHTML(data.substring(pos, child.start));
@@ -43,7 +30,7 @@ Simple.prototype.createRubyHtml = function (reading) {
     reading.reading, "</rt><rp>)</rp></ruby>");
 };
 
-var HiraganaSimple = Simple;
+let HiraganaSimple = Simple;
 
 function KatakanaSimple () {
 }
@@ -61,9 +48,9 @@ function RomajiSimple () {
 RomajiSimple.prototype = new Simple();
 
 RomajiSimple.prototype.createRuby = function (data, readings) {
-    var pos = 0;
-    var textWithRuby = "";
-    var that = this;
+    let pos = 0;
+    let textWithRuby = "";
+    let that = this;
     readings.forEach(function (reading) {
         reading.reading = katakanaToRomaji(hiraganaToKatakana(reading.reading));
         textWithRuby += escapeHTML(data.substring(pos, reading.start));
@@ -80,23 +67,23 @@ function Complex () {
 Complex.prototype = new Simple();
 
 Complex.prototype.createRuby = function(data, readings) {
-    var margin = prefs.getPref("margin");
-    var style = "";
-    if (margin > 0)
-        style = " style='padding-left:".concat(margin, "em; padding-right:",
-                margin, "em'");
+    let margin = prefs.getPref("margin");
+    let style = "";
+    if (margin > 0) {
+        style = " style='padding-left:".concat(margin, "em; padding-right:", margin, "em'");
+    }
 
-    var tag = "<span class='fi'".concat(style, " bf='");
-    var pos = 0;
-    var textWithRuby = "";
-    var that = this;
+    let tag = "<span class='fi'".concat(style, " bf='");
+    let pos = 0;
+    let textWithRuby = "";
+    let that = this;
     readings.forEach(function(reading) {
         // push everything before start
         textWithRuby += escapeHTML(data.substring(pos, reading.start));
         // go to start
         pos = reading.start;
-        var spanText = tag.concat(reading.basicForm, "'>");
-        var end = pos + reading.word.length;
+        let spanText = tag.concat(reading.basicForm, "'>");
+        let end = pos + reading.word.length;
         // push all children
         reading.children.forEach(function(child) {
             spanText += escapeHTML(data.substring(pos, child.start));
@@ -119,7 +106,7 @@ Complex.prototype.createRubyHtml = function (reading) {
     reading.reading, "</rt><rp>)</rp></ruby>");
 };
 
-var HiraganaComplex = Complex;
+let HiraganaComplex = Complex;
 
 function KatakanaComplex () {
 }
@@ -143,32 +130,3 @@ RomajiComplex.prototype.createRuby = function (data, readings) {
     });
     return Complex.prototype.createRuby.call(this, data, readings);
 };
-
-function Keywords () {
-}
-
-Keywords.prototype = new Complex();
-
-Keywords.prototype.createRubyHtml = function (reading) {
-    var rt = "";
-    if (reading.isName)
-        rt = reading.reading;
-    else rt = this.toKeywords(reading.word, keywords);
-    return "<ruby class='fi'><rb>".concat(reading.word,
-        "</rb><rp>(</rp><rt lang='en' title='", reading.reading, "'>", rt,
-        "</rt><rp>)</rp></ruby>");
-};
-
-Keywords.prototype.toKeywords = function (word, table) {
-    if (!table) return "";
-    var res = [];
-    var chars = word.split("");
-    chars.forEach(function (c) {
-        if (table.hasOwnProperty(c))
-            res.push(table[c]);
-        else res.push("?");
-    });
-    return res.join(" ");
-};
-
-loadKeywords();

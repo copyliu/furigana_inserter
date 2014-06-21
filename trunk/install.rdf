@@ -4,12 +4,12 @@
          xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <RDF:Description RDF:about="rdf:#$a+7ge2"
                      em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
-                     em:minVersion="17.0"
-                     em:maxVersion="20.*"/>
+                     em:minVersion="27.0"
+                     em:maxVersion="30.*"/>
     <RDF:Description RDF:about="urn:mozilla:install-manifest"
                      em:id="furiganainserter@zorkzero.net"
                      em:name="Furigana Inserter"
-                     em:version="2.8"
+                     em:version="2.9"
                      em:creator="zorkzero@hotmail.com"
                      em:description="Automatically inserts furigana for words written in kanji. Uses MeCab."
                      em:homepageURL="http://code.google.com/p/itadaki/"

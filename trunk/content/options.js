@@ -2,29 +2,34 @@
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
-var prefs = new Preferences("extensions.furiganainserter.");
+let prefs = new Preferences("extensions.furiganainserter.");
 
-var keyCodes = {};
+let keyCodes = {};
 
 function onload () {
-    var key;
-    for (key in KeyEvent)
-        if (KeyEvent.hasOwnProperty(key))
+    let key;
+    for (key in KeyEvent) {
+        if (KeyEvent.hasOwnProperty(key)) {
             keyCodes[KeyEvent[key]] = key;
+        }
+    }
 }
 
-var keydown = makeKeyFunction();
+let keydown = makeKeyFunction();
 
 function makeKeyFunction () {
-    var pressedModifiers = {};
+    let pressedModifiers = {};
     return function (event) {
         event.preventDefault();
-        if (event.target.readOnly)
+        if (event.target.readOnly) {
             return;
-        if (pressedModifiers.hasOwnProperty(event.keyCode))
+        }
+        if (pressedModifiers.hasOwnProperty(event.keyCode)) {
             return;
-        if (!keyCodes.hasOwnProperty(event.keyCode))
+        }
+        if (!keyCodes.hasOwnProperty(event.keyCode)) {
             return;
+        }
         // if modifier then add key and wait for the next
         if (isModifier(event.keyCode)) {
             addKey(event.target, getModifierName(event.keyCode));
@@ -67,32 +72,34 @@ function getModifierName (keyCode) {
 }
 
 function addKey (target, key) {
-    if (target.value === "")
+    if (target.value === "") {
         target.value = key;
-    else target.value += "+" + key;
+    } else {
+        target.value += "+" + key;
+    }
 }
 
 function setKey (event) {
-    var textbox = document.getElementById('lookup_key_textbox');
+    let textbox = document.getElementById('lookup_key_textbox');
     textbox.reset();
     textbox.readOnly = false;
     textbox.focus();
 }
 
 function resetKey (event) {
-    var textbox = document.getElementById('lookup_key_textbox');
+    let textbox = document.getElementById('lookup_key_textbox');
     textbox.value = prefs.getPref("lookup_key");
     textbox.readOnly = true;
 }
 
 function deleteKey (event) {
-    var textbox = document.getElementById('lookup_key_textbox');
+    let textbox = document.getElementById('lookup_key_textbox');
     textbox.reset();
     textbox.readOnly = true;
 }
 
 function saveHotkeys (event) {
-    var textbox = document.getElementById('lookup_key_textbox');
+    let textbox = document.getElementById('lookup_key_textbox');
     prefs.setPref("lookup_key", textbox.value);
 }
 

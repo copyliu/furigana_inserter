@@ -5,13 +5,6 @@
 <!ENTITY furiganaAlphabetHiragana.label "Хирагана">
 <!ENTITY furiganaAlphabetKatakana.label "Катакана">
 <!ENTITY furiganaAlphabetRomaji.label "Ромадзи">
-<!ENTITY furiganaAlphabetKeywords.label "Ключевые слова">
-<!ENTITY tokenize.label "Разделять японский на слова">
-<!ENTITY tokenize.tooltip "Позволяет искать слово если вы переместите курсор куда-нибудь
-в слово.">
-<!ENTITY useToken.label "Использовать слова для поиска">
-<!ENTITY useToken.tooltip "Когда эта опция включена, для поиска используется слово под курсором,
-в противном случае используется текст после курсора.">
 <!ENTITY popupDelay.label "Задержка всплывающего окна:">
 <!ENTITY colorScheme.label "Цвет:">
 <!ENTITY colorSchemeBlue.label "Синий">

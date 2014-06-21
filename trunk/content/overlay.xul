@@ -29,10 +29,6 @@ id="furigana-inserter-overlay" >
                           command="fi-auto-lookup-command"/>
                 <menuitem id="fi-user-dict-tb"
                           command="fi-user-dict-command"/>
-                <menuitem id="fi-subst-tb"
-                          command="fi-subst-command"/>
-                <menuitem id="fi-keywords-dialog-tb"
-                          command="fi-keywords-dialog-command"/>
                 <menu id="fi-furigana-alphabet-menu-tm"
                       label="&furiganaAlphabet.label;">
                     <menupopup id="fi-furigana-alphabet-menupopup-tm">
@@ -48,11 +44,6 @@ id="furigana-inserter-overlay" >
                         />
                         <menuitem id="fi-romaji-tb"
                                   command="fi-romaji-cmd"
-                                  type="radio"
-                                  name="alphabet-tb"
-                        />
-                        <menuitem id="fi-keywords-tb"
-                                  command="fi-keywords-cmd"
                                   type="radio"
                                   name="alphabet-tb"
                         />
@@ -97,15 +88,6 @@ id="furigana-inserter-overlay" >
                  label="&userDictCommand.label;"
                  accesskey="&userDictCommand.accesskey;"
                  oncommand="FuriganaInserter.openUserDictionary(event);"/>
-        <command id="fi-subst-command"
-                 label="&substCommand.label;"
-                 accesskey="&substCommand.accesskey;"
-                 oncommand="FuriganaInserter.openSubstitutions(event);"/>
-        <command id="fi-keywords-dialog-command"
-                 label="&keywordsDialogCommand.label;"
-                 accesskey="&keywordsDialogCommand.accesskey;"
-                 oncommand="FuriganaInserter.openKeywords(event);"/>
-
         <command id="fi-hiragana-cmd"
                  label="&hiraganaCommand.label;"
                  accesskey="&hiraganaCommand.accesskey;"
@@ -119,11 +101,6 @@ id="furigana-inserter-overlay" >
         <command id="fi-romaji-cmd"
                  label="&romajiCommand.label;"
                  accesskey="&romajiCommand.accesskey;"
-                 oncommand="FuriganaInserter.switchAlphabet(event);"
-        />
-        <command id="fi-keywords-cmd"
-                 label="&keywordsCommand.label;"
-                 accesskey="&keywordsCommand.accesskey;"
                  oncommand="FuriganaInserter.switchAlphabet(event);"
         />
     </commandset>
@@ -141,10 +118,6 @@ id="furigana-inserter-overlay" >
                           command="fi-auto-lookup-command"/>
                 <menuitem id="fi-user-dict-tm"
                           command="fi-user-dict-command"/>
-                <menuitem id="fi-subst-tm"
-                          command="fi-subst-command"/>
-                <menuitem id="fi-keywords-dialog-tm"
-                          command="fi-keywords-dialog-command"/>
                 <menu id="fi-furigana-alphabet-menu-tm"
                       label="&furiganaAlphabet.label;">
                     <menupopup id="fi-furigana-alphabet-menupopup-tm">
@@ -160,11 +133,6 @@ id="furigana-inserter-overlay" >
                         />
                         <menuitem id="fi-romaji-tm"
                                   command="fi-romaji-cmd"
-                                  type="radio"
-                                  name="alphabet-tm"
-                        />
-                        <menuitem id="fi-keywords-tm"
-                                  command="fi-keywords-cmd"
                                   type="radio"
                                   name="alphabet-tm"
                         />
