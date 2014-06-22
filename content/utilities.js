@@ -1,11 +1,10 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["escapeHTML", "log", "time", "printOwnProperties",
-"printProperties", "getNodesByXPath", "Timer", "Preferences",
+let EXPORTED_SYMBOLS = ["escapeHTML", "time", "getNodesByXPath", "Preferences",
 "PreferencesObserver", "ClipboardMonitor", "katakanaToRomaji",
-"katakanaToHiragana", "hiraganaToKatakana", "open", "read", "write",
+"katakanaToHiragana", "hiraganaToKatakana", "read", "write",
 "getDictionaryPath", "getOS", "getExtension", "getUserDictionaryPath",
-"getDllPath", "readUri", "getMecabWorker", "groupBy", "getPathToMecabDictIndex",
+"getDllFile", "readUri", "getMecabWorker", "groupBy", "getMecabDictIndexFile",
 "copyTextToClipboard", "getTextFromClipboard", "getChromeWindow", "getSessionStore",
 "runMecabDictIndex", "getUserDictionaryFile"];
 
@@ -14,6 +13,10 @@ Components.utils["import"]("resource://gre/modules/Task.jsm");
 Components.utils["import"]("resource://gre/modules/Promise.jsm");
 Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
 Components.utils["import"]("resource://gre/modules/osfile.jsm");
+Components.utils["import"]("resource://gre/modules/devtools/Console.jsm");
+Components.utils["import"]("resource://gre/modules/Services.jsm");
+Components.utils["import"]("resource://gre/modules/FileUtils.jsm");
+
 Components.utils["import"]("resource://furiganainserter/MecabWorker.js");
 
 let Ci = Components.interfaces;
@@ -122,12 +125,12 @@ function katakanaToRomaji (string) {
     return result;
 }
 
-function chromeUrlStringToPath(chromeUrl) {
+function chromeUrlStringToFile(chromeUrl) {
     let chromeRegistry = Components.classes["@mozilla.org/chrome/chrome-registry;1"]
     .getService(Components.interfaces.nsIChromeRegistry);
     let url = chromeRegistry.convertChromeURL(NetUtil.newURI(chromeUrl));
     let fileUrl = url.QueryInterface(Components.interfaces.nsIFileURL);
-    return fileUrl.file.path;
+    return fileUrl.file;
 }
 
 function escapeHTML (text) {
@@ -135,35 +138,12 @@ function escapeHTML (text) {
         '&gt;');
 }
 
-function log (msg) {
-    Cc["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService)
-    .logStringMessage(msg);
-}
-
 function time (f) {
     let start = new Date().getTime();
     let result = f();
     let end = new Date().getTime();
-    log("time: " + (end - start) + " ms");
+//    console.log("time: " + (end - start) + " ms");
     return result;
-}
-
-function printProperties (obj) {
-    let props = [];
-    for (let prop in obj) {
-        props.push(prop);
-    }
-    log(props.join(", "));
-}
-
-function printOwnProperties (obj) {
-    let props = [];
-    for (let prop in obj) {
-        if (obj.hasOwnProperty(prop)) {
-            props.push(prop);
-        }
-    }
-    log(props.join(", "));
 }
 
 function getNodesByXPath (elem, expr) {
@@ -191,8 +171,7 @@ function write (file, data, charset, append) {
 }
 
 function readUri (uri, charset) {
-    let inp = Cc["@mozilla.org/network/io-service;1"].
-    getService(Ci.nsIIOService).newChannel(uri, null, null).open();
+    let inp = Services.io.newChannel(uri, null, null).open();
     return readStream(inp, charset);
 }
 
@@ -216,39 +195,9 @@ function readStream (is, charset) {
     return retval;
 }
 
-// replace by new FileUtils.File(path)
-function open (path) {
-    let file = Cc['@mozilla.org/file/local;1'].createInstance(Ci.nsILocalFile);
-    file.initWithPath(path);
-    return file;
-}
-
-function RepeatingTimer (interval, callback) {
-    this._timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-    this._timer.initWithCallback({
-        notify : callback
-    }, interval, this._timer.TYPE_REPEATING_SLACK);
-}
-
-RepeatingTimer.prototype.cancel = function () {
-    this._timer.cancel();
-};
-
-function Timer (interval, callback) {
-    this._timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-    this._timer.initWithCallback({
-        notify : callback
-    }, interval, this._timer.TYPE_ONE_SHOT);
-}
-
-Timer.prototype.cancel = function () {
-    this._timer.cancel();
-};
-
 function Preferences (branchName) {
     // nsIPrefBranch
-    this._prefs = Cc["@mozilla.org/preferences-service;1"].
-    getService(Ci.nsIPrefService).getBranch(branchName);
+    this._prefs = Services.prefs.getBranch(branchName);
 }
 
 Preferences.prototype.unregister = function (observer) {
@@ -256,39 +205,45 @@ Preferences.prototype.unregister = function (observer) {
 };
 
 Preferences.prototype.register = function (observer) {
-    this._prefs.QueryInterface(Ci.nsIPrefBranch2);
     this._prefs.addObserver("", observer, false);
 };
 
 Preferences.prototype.setPref = function (name, val) {
     let type = this._prefs.getPrefType(name);
-    if (type === this._prefs.PREF_BOOL) {
+    switch (type) {
+    case Ci.nsIPrefBranch.PREF_BOOL:
         this._prefs.setBoolPref(name, val);
-    } else if (type === this._prefs.PREF_INT) {
+        break;
+    case Ci.nsIPrefBranch.PREF_INT:
         this._prefs.setIntPref(name, val);
-    } else {
+        break;
+    case Ci.nsIPrefBranch.PREF_STRING:
         let str = Cc["@mozilla.org/supports-string;1"]
         .createInstance(Ci.nsISupportsString);
         str.data = val;
         this._prefs.setComplexValue(name, Ci.nsISupportsString, str);
+        break;
+    default:
+        throw new Error("unknown preference type: " + type);
     }
 };
 
 Preferences.prototype.getPref = function (name) {
     let type = this._prefs.getPrefType(name);
-    if (type === this._prefs.PREF_BOOL) {
+    switch (type) {
+    case Ci.nsIPrefBranch.PREF_BOOL:
         return this._prefs.getBoolPref(name);
-    } else if (type === this._prefs.PREF_INT) {
+    case Ci.nsIPrefBranch.PREF_INT:
         return this._prefs.getIntPref(name);
-    } else {
+    case Ci.nsIPrefBranch.PREF_STRING:
         return this._prefs.getComplexValue(name, Ci.nsISupportsString).data;
+    default:
+        throw new Error("unknown preference type: " + type);
     }
 };
 
 Preferences.prototype.resetPref = function (name) {
-    if (this._prefs.prefHasUserValue(name)) {
-        this._prefs.clearUserPref(name);
-    }
+    this._prefs.clearUserPref(name);
 };
 
 // nsIObserver
@@ -313,28 +268,24 @@ PreferencesObserver.prototype.observe = function (subject, topic, data) {
 
 function getTextFromClipboard () {
     try {
-        let clip = Cc["@mozilla.org/widget/clipboard;1"]
-        .getService(Ci.nsIClipboard);
         let trans = Cc["@mozilla.org/widget/transferable;1"]
         .createInstance(Ci.nsITransferable);
         trans.init(null);
         trans.addDataFlavor("text/unicode");
-        clip.getData(trans, clip.kGlobalClipboard);
+        Services.clipboard.getData(trans, Services.clipboard.kGlobalClipboard);
         let str = {};
         let strLength = {};
         trans.getTransferData("text/unicode", str, strLength);
         str = str.value.QueryInterface(Ci.nsISupportsString);
         return str.data.substring(0, strLength.value / 2);
     } catch (e) {
-        log("error getting text from clipboard: " + e.message);
+        console.error("error getting text from clipboard: " + e.message);
         return "";
     }
 }
 
 function copyTextToClipboard (text, sourceWindow) {
     try {
-        let clip = Cc["@mozilla.org/widget/clipboard;1"]
-        .getService(Ci.nsIClipboard);
         let str = Cc["@mozilla.org/supports-string;1"]
         .createInstance(Ci.nsISupportsString);
         str.data = text;
@@ -344,15 +295,16 @@ function copyTextToClipboard (text, sourceWindow) {
         trans.init(privacyContext);
         trans.addDataFlavor("text/unicode");
         trans.setTransferData("text/unicode", str, text.length * 2);
-        clip.setData(trans, null, clip.kGlobalClipboard);
+        Services.clipboard.setData(trans, null, Services.clipboard.kGlobalClipboard);
     } catch (e) {
-        log("error copying text to clipboard: " + e.message);
+        console.error("error copying text to clipboard: " + e.message);
     }
 }
 
 function ClipboardMonitor (interval, callback) {
     let previousText = "";
-    this._timer = new RepeatingTimer(interval, function () {
+    this._timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+    let notify = function () {
         // get text from clipboard. if text hasn't changed ignore it,
         // otherwise paste it into the document
         let text = getTextFromClipboard();
@@ -360,7 +312,10 @@ function ClipboardMonitor (interval, callback) {
             previousText = text;
             callback(text);
         }
-    });
+    }
+    this._timer.initWithCallback({
+        notify : notify
+    }, interval, Ci.nsITimer.TYPE_REPEATING_SLACK);
 }
 
 ClipboardMonitor.prototype.cancel = function () {
@@ -370,7 +325,7 @@ ClipboardMonitor.prototype.cancel = function () {
 function getDictionaryPath () {
     let chromeUrl = "chrome://furiganainserter-dictionary/content/etc/mecabrc";
     try {
-        return chromeUrlStringToPath(chromeUrl);
+        return chromeUrlStringToFile(chromeUrl).path;
     } catch (e) {
         return "";
     }
@@ -385,7 +340,7 @@ function getUserDictionaryPath () {
     }
 }
 
-function getDllPath () {
+function getDllFile () {
     let ext;
     if (getOS() === "Darwin") {
         ext = "dylib";
@@ -394,43 +349,31 @@ function getDllPath () {
     } else {
         ext = "dll";
     }
-    let path = chromeUrlStringToPath("chrome://furiganainserter/content");
-    path = OS.Path.dirname(path);
-    path = OS.Path.dirname(path);
-    return OS.Path.join(path, "mecab", "libmecab." + ext);
+    let file = chromeUrlStringToFile("chrome://furiganainserter/content");
+    file = file.parent.parent;
+    file.append("mecab");
+    file.append("libmecab." + ext);
+    return file;
 }
 
-function getPathToMecabDictIndex() {
+function getMecabDictIndexFile() {
     if (getOS() === "WINNT") {
-        let path = chromeUrlStringToPath("chrome://furiganainserter/content");
-        path = OS.Path.dirname(path);
-        path = OS.Path.dirname(path);
-        return OS.Path.join(path, "mecab", "mecab-dict-index.exe");
+        let file = chromeUrlStringToFile("chrome://furiganainserter/content");
+        file = file.parent.parent;
+        file.append("mecab");
+        file.append("mecab-dict-index.exe");
+        return file;
     } else {
-        return "/usr/lib/mecab/mecab-dict-index";
+        return new FileUtils.File("/usr/lib/mecab/mecab-dict-index");
     }
 }
 
 function getUserDictionaryFile (extension) {
-    let file = getProfileDirectory();
-    file.append("furigana_inserter_user_dictionary." + extension);
-    return file;
-}
-
-function getProfileDirectory() {
-    return Cc["@mozilla.org/file/directory_service;1"].
-            getService(Ci.nsIProperties).get("ProfD", Ci.nsIFile);
+    return FileUtils.getFile("ProfD", ["furigana_inserter_user_dictionary." + extension]);
 }
 
 function getOS () {
-    return Cc["@mozilla.org/xre/app-info;1"].getService(Ci.nsIXULRuntime).OS;
-}
-
-function showErrorDialog () {
-    let msg = document.getElementById("furiganainserter-strings").
-    getString("createTaggerError");
-    let promptService = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-    .getService(Ci.nsIPromptService);
+    return Services.appinfo.OS;
 }
 
 function getMecabWorker () {
@@ -453,7 +396,7 @@ function runMecabDictIndex (dictionaryInfo) {
     let csvFile = getUserDictionaryFile("csv");
     let dicFilePath = dictionaryInfo.split(/\n/)[0].split(/;/)[0];
     dicFilePath = dicFilePath.substring("filename=".length);
-    let dicFile = open(dicFilePath);
+    let dicFile = new FileUtils.File(dicFilePath);
     dicFile.normalize();
     let dicDir = dicFile.parent;
 
@@ -466,10 +409,9 @@ function runMecabDictIndex (dictionaryInfo) {
 
 function runMecabDictIndex2 (userDicFile, dicDir, csvFile, charset) {
     let process = Cc["@mozilla.org/process/util;1"].createInstance(Ci.nsIProcess);
-    let mecabDictIndexPath = getPathToMecabDictIndex();
-    let file = open(mecabDictIndexPath);
+    let file = getMecabDictIndexFile();
     process.init(file);
-//    log('"'+[file.path, userDicFile.path, dicDir.path, charset, csvFile.path].join('", "')+'"');
+//    console.log('"'+[file.path, userDicFile.path, dicDir.path, charset, csvFile.path].join('", "')+'"');
     let args = ["-u", userDicFile.path, "-d", dicDir.path, "-f", "UTF-8", "-t",
     charset, csvFile.path];
     process.runw(false, args, args.length);

@@ -14,7 +14,6 @@ let FuriganaInserter = {};
     
     let Ci = Components.interfaces;
 
-    let log = Imports.log;
     let time = Imports.time;
     let splitTextNode = Imports.splitTextNode;
     let escapeHTML = Imports.escapeHTML;
