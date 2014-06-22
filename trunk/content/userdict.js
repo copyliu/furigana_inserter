@@ -1,7 +1,10 @@
 "use strict";
 
-Components.utils["import"]("resource://furiganainserter/utilities.js");
 Components.utils["import"]("resource://gre/modules/Task.jsm");
+Components.utils["import"]("resource://gre/modules/devtools/Console.jsm");
+Components.utils["import"]("resource://gre/modules/Services.jsm");
+
+Components.utils["import"]("resource://furiganainserter/utilities.js");
 
 let Cc = Components.classes;
 let Ci = Components.interfaces;
@@ -117,39 +120,8 @@ function doUpdate () {
     });
 }
 
-function runMecabDictIndex (dictionaryInfo) {
-    if (dictionaryInfo === "") {
-        return;
-    }
-
-    let csvFile = getUserDictionaryFile("csv");
-    let dicFilePath = dictionaryInfo.split(/\n/)[0].split(/;/)[0];
-    dicFilePath = dicFilePath.substring("filename=".length);
-    let dicFile = open(dicFilePath);
-    dicFile.normalize();
-    let dicDir = dicFile.parent;
-
-    // 5. create user directory with a tagger
-    let userDicFile = getUserDictionaryFile("dic");
-    let charset = dictionaryInfo.split(/\n/)[0].split(/;/)[1]
-    .substring("charset=".length);
-    runMecabDictIndex2(userDicFile, dicDir, csvFile, charset);
-}
-
-function runMecabDictIndex2 (userDicFile, dicDir, csvFile, charset) {
-    let process = Cc["@mozilla.org/process/util;1"].createInstance(Ci.nsIProcess);
-    let mecabDictIndexPath = getPathToMecabDictIndex();
-    let file = open(mecabDictIndexPath);
-    process.init(file);
-//    log('"'+[file.path, userDicFile.path, dicDir.path, charset, csvFile.path].join('", "')+'"');
-    let args = ["-u", userDicFile.path, "-d", dicDir.path, "-f", "UTF-8", "-t",
-    charset, csvFile.path];
-    process.runw(false, args, args.length);
-}
-
 function getUserDictionaryFile (extension) {
-    let file = Cc["@mozilla.org/file/directory_service;1"]
-    .getService(Ci.nsIProperties).get("ProfD", Ci.nsIFile);
+    let file = Services.dirsvc.get("ProfD", Ci.nsIFile);
     file.append("furigana_inserter_user_dictionary." + extension);
     return file;
 }
@@ -164,12 +136,10 @@ function doOK () {
 }
 
 function doHelp () {
-    let ps = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-    .getService(Ci.nsIPromptService);
     let win = window.opener;
     let text = win.document.getElementById("furiganainserter-strings")
     .getString("userDictionaryHelp");
-    ps.alert(window, "User Dictionary Help", text);
+    Services.prompt.alert(window, "User Dictionary Help", text);
     return true;
 }
 

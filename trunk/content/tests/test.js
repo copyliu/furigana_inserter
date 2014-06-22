@@ -1,9 +1,8 @@
 "use strict";
 
-Components.utils["import"]("resource://gre/modules/AddonManager.jsm");
 Components.utils["import"]("resource://gre/modules/Task.jsm");
-Components.utils.import("resource://gre/modules/FileUtils.jsm");
-Components.utils.import("resource://gre/modules/NetUtil.jsm");
+Components.utils["import"]("resource://gre/modules/FileUtils.jsm");
+Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
 
 let mw = null;
 
@@ -96,9 +95,41 @@ QUnit.test("RangeNodeIterator4", assert => {
     }
     assert.equal(n, 5);
 });
-QUnit.test("getDllPath", assert => {
-    let path = getDllPath();
-    assert.ok(/C:\\.*?libmecab.dll$/.test(path));
+QUnit.test("Preferences", assert => {
+    let prefs = new Preferences("extensions.furiganainserter.");
+    let alphabet = prefs.getPref("furigana_alphabet");
+    let popupDelay = prefs.getPref("popup_delay");
+    let tbAdded = prefs.getPref("toolbar_button_added");
+    try {
+        prefs.resetPref("furigana_alphabet");
+        prefs.resetPref("popup_delay");
+        prefs.resetPref("toolbar_button_added");
+
+        assert.equal(prefs.getPref("furigana_alphabet"), "hiragana");
+        assert.equal(prefs.getPref("popup_delay"), 150);
+        assert.equal(prefs.getPref("toolbar_button_added"), false);
+
+        prefs.setPref("furigana_alphabet", "katakana");
+        assert.equal(prefs.getPref("furigana_alphabet"), "katakana");
+        prefs.setPref("popup_delay", 200);
+        assert.equal(prefs.getPref("popup_delay"), 200);
+        prefs.setPref("toolbar_button_added", true);
+        assert.ok(prefs.getPref("toolbar_button_added"));
+    } finally {
+        prefs.setPref("furigana_alphabet", alphabet);
+        prefs.setPref("popup_delay", popupDelay);
+        prefs.setPref("toolbar_button_added", tbAdded);
+    }
+});
+QUnit.test("getDllFile", assert => {
+    let file = getDllFile();
+    //console.log(file.path);
+    assert.ok(/C:\\.*?libmecab.dll$/.test(file.path));
+});
+QUnit.test("getMecabDictIndexFile", assert => {
+    let file = getMecabDictIndexFile();
+//    console.log(file.path);
+    assert.ok(/C:\\.*?mecab-dict-index.exe$/.test(file.path));
 });
 QUnit.test("getDictionaryPath", assert => {
 //    assert.ok(/C:\\.*?mecabrc$/.test(getDictionaryPath()));

@@ -1,6 +1,8 @@
 let EXPORTED_SYMBOLS = ["MecabWorker"];
 
 Components.utils["import"]("resource://gre/modules/Promise.jsm");
+Components.utils["import"]("resource://gre/modules/devtools/Console.jsm");
+
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
 let Ci = Components.interfaces;
@@ -19,14 +21,14 @@ function MecabWorker () {
 //        let {resolve, reject} = this.queue.shift();
         let d = this.queue.shift();
         let err = new Error(event.message, event.filename, event.lineno);
-        log(err);
+        console.error(err);
         d.reject(err);
     };
     this.worker.postMessage({
         type: "init",
         data: {
             OS: getOS(),
-            dllPath: getDllPath()
+            dllPath: getDllFile().path
         }
     });
 }

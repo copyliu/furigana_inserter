@@ -54,21 +54,6 @@ function setup (range) {
     return [start, end];
 }
 
-function* upAndRightBroken(node) {
-    let tw = node.ownerDocument.createTreeWalker(node,
-    NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
-    while (true) {
-        if (tw.nextSibling()) {
-            yield [tw.currentNode, true];
-        } else {
-            if (!tw.parentNode()) {
-                return;
-            }
-            yield [tw.currentNode, false];
-        }
-    };
-}
-
 function* upAndRight(node) {
     let temp;
     while (true) {

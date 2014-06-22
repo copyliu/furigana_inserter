@@ -2,8 +2,11 @@
 
 let EXPORTED_SYMBOLS = ["DictionarySearcher"];
 
-Components.utils["import"]("resource://furiganainserter/utilities.js");
 Components.utils["import"]('resource://gre/modules/AddonManager.jsm');
+Components.utils["import"]('resource://gre/modules/Services.jsm');
+
+Components.utils["import"]("resource://furiganainserter/utilities.js");
+
 let Ci = Components.interfaces;
 let Cc = Components.classes;
 
@@ -17,34 +20,24 @@ function Dictionary (file) {
 }
 
 Dictionary.prototype.findWord = function (word) {
-    let db = null, entries = [];
+    let db = Services.storage.openDatabase(this.file);
+    let entries = [];
     try {
-        db = this.openDatabase();
         entries = this.getEntries(db, word);
     } finally {
-        if (db) {
-            db.close();
-        }
+        db.close();
     }
     return entries;
 };
 
-Dictionary.prototype.openDatabase = function () {
-    let file = this.file;
-    let service = Components.classes['@mozilla.org/storage/service;1']
-    .getService(Components.interfaces.mozIStorageService);
-    return service.openDatabase(file);
-};
-
 Dictionary.prototype.getEntries = function (db, word) {
-    let result = [], entry;
-    let stm = "SELECT * FROM dict WHERE kanji=:kanji OR kana=:kana";
-    let st = db.createStatement(stm);
-    st.params.kanji = word;
-    st.params.kana = word;
+    let result = [];
+    let st = db.createStatement("SELECT * FROM dict WHERE kanji=:kanji OR kana=:kana");
     try {
+        st.params.kanji = word;
+        st.params.kana = word;
         while (st.step()) {
-            entry = new Entry();
+            let entry = new Entry();
             entry.kana = st.row.kana;
             entry.kanji = st.row.kanji;
             entry.entry = st.row.entry;
