@@ -1,6 +1,12 @@
 #summary Release notes for Furigana Inserter.
 #labels Featured
 = Release Notes =
+
+==Furigana Inserter 2.9 (22.06.2014)==
+  * Fixed some bugs.
+  * Removed features that I no longer use.
+  * The new release requires Fx 29.
+
 ==Furigana Inserter 2.8 (01.04.2013)==
   * Added: support for Fedora 18
   * Added: uses the session store to store tab options
