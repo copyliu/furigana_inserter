@@ -27,8 +27,8 @@ range.endOffset;
 QUnit.module("getRangeNodes");
 QUnit.test("getRangeNodes1", assert => {
     let range = document.createRange();
-    let fixture = document.getElementById("qunit-fixture");
-    let p = fixture.children[0];
+    let div = document.getElementById("getRangeNodes1");
+    let p = div.children[0];
     assert.strictEqual(p.nodeName, "P");
     range.setStart(p, 0);
     range.setEnd(p, 4);
@@ -41,8 +41,8 @@ QUnit.test("getRangeNodes1", assert => {
 });
 QUnit.test("getRangeNodes2", assert => {
     let range = document.createRange();
-    let fixture = document.getElementById("qunit-fixture");
-    let p = fixture.children[0];
+    let div = document.getElementById("getRangeNodes1");
+    let p = div.children[0];
     let text = p.childNodes[1];
     assert.strictEqual(p.nodeName, "P");
     assert.strictEqual(text.data, "は、信頼されるフリーなオンライン");
@@ -57,9 +57,9 @@ QUnit.test("getRangeNodes2", assert => {
 });
 QUnit.test("getRangeNodes3", assert => {
     let range = document.createRange();
-    let fixture = document.getElementById("qunit-fixture");
-    let p1 = fixture.children[1];
-    let p2 = fixture.children[2];
+    let div = document.getElementById("getRangeNodes2");
+    let p1 = div.children[0];
+    let p2 = div.children[1];
     assert.strictEqual(p1.nodeName, "P");
     assert.strictEqual(p2.nodeName, "P");
     let text1 = p1.childNodes[0];
@@ -77,9 +77,9 @@ QUnit.test("getRangeNodes3", assert => {
 });
 QUnit.test("getRangeNodes4", assert => {
     let range = document.createRange();
-    let fixture = document.getElementById("qunit-fixture");
-    let p1 = fixture.children[3];
-    let p2 = fixture.children[4];
+    let div = document.getElementById("getRangeNodes3");
+    let p1 = div.children[0];
+    let p2 = div.children[1];
     assert.strictEqual(p1.nodeName, "P");
     assert.strictEqual(p2.nodeName, "P");
     let text1 = p1.childNodes[0];
