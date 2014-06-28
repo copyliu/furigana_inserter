@@ -1,6 +1,6 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["RangeNodeIterator", "getStartTextOffset", "getEndTextOffset",
+let EXPORTED_SYMBOLS = ["getRangeNodes", "getStartTextOffset", "getEndTextOffset",
 "splitTextNode", "getTextNodesFromRange"];
 
 let Ci = Components.interfaces;
@@ -9,9 +9,8 @@ let XPathResult = Ci.nsIDOMXPathResult;
 let Node = Ci.nsIDOMNode;
 let NodeFilter = Ci.nsIDOMNodeFilter;
 
-function* RangeNodeIterator (range) {
+function* getRangeNodes (range) {
     let [start, end] = setup(range);
-
     yield start;
     if (start === end) {
         return;
@@ -22,9 +21,9 @@ function* RangeNodeIterator (range) {
             return;
         }
         if (descend) {
-            for (let temp2 of down(temp)) {
-                yield temp2;
-                if (temp2 === end) {
+            for (let temp of down(temp)) {
+                yield temp;
+                if (temp === end) {
                     return;
                 }
             }
@@ -56,19 +55,30 @@ function setup (range) {
 
 function* upAndRight(node) {
     let temp;
-    while (true) {
-        if ((temp = node.nextSibling)) {
+    do {
+        while ((temp = node.nextSibling)) {
             node = temp;
             yield [node, true];
-        } else {
-            temp = node.parentNode;
-            node = temp;
-            if (!temp) {
-                return;
-            }
+        }
+        if ((node = node.parentNode)) {
             yield [node, false];
         }
-    }
+    } while (node);
+}
+
+function* upAndRightTreeWalker(node) {
+    let tw = node.ownerDocument.createTreeWalker(node.ownerDocument.children[0],
+    NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+    tw.currentNode = node;
+    let temp;
+    do {
+        while (tw.nextSibling()) {
+            yield [tw.currentNode, true];
+        }
+        if ((temp = tw.parentNode())) {
+            yield [tw.currentNode, false];
+        }
+    } while (temp);
 }
 
 function* down(node) {
@@ -98,19 +108,25 @@ function getEndTextOffset (node, range) {
     }
 }
 
-function getTextNodesFromRange (range, pred) {
-    let nodes = [];
-    for (let node of RangeNodeIterator(range)) {
-        if (!pred(node)) {
+function TextNode () {
+    this.node = null;
+    this.start = 0;
+    this.end = 0;
+}
+
+function getTextNodesFromRange (range) {
+    let textNodes = [];
+    for (let node of getRangeNodes(range)) {
+        if (node.nodeType !== Node.TEXT_NODE) {
             continue;
         }
-        nodes.push({
-            node : node,
-            start : getStartTextOffset(node, range),
-            end : getEndTextOffset(node, range)
-        });
+        let textNode = new TextNode();
+        textNode.node = node;
+        textNode.start = getStartTextOffset(node, range);
+        textNode.end = getEndTextOffset(node, range);
+        textNodes.push(textNode);
     }
-    return nodes;
+    return textNodes;
 }
 
 function splitTextNode (node, startOffset, endOffset) {

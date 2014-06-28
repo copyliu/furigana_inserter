@@ -20,8 +20,8 @@ function Dictionary (file) {
 }
 
 Dictionary.prototype.findWord = function (word) {
-    let db = Services.storage.openDatabase(this.file);
     let entries = [];
+    let db = Services.storage.openDatabase(this.file);
     try {
         entries = this.getEntries(db, word);
     } finally {
@@ -129,7 +129,9 @@ DictionarySearcher.prototype._wordSearch = function (word, dic) {
                 // > 0 a de-inflected word
                 if (dic.hasType && this.checkType(variant.type, entry.entry)
                     || !dic.hasType) {
-                    if (result.matchLen === 0) result.matchLen = word.length;
+                    if (result.matchLen === 0) {
+                        result.matchLen = word.length;
+                    }
                     if (variant.reason === '') {
                         entry.reason = '';
                     } else if (origWord === word) {
@@ -191,7 +193,7 @@ DictionarySearcher.prototype.checkType = function (type, entry) {
 
 DictionarySearcher.prototype.makeHtml = function (searchResult) {
     let result = "<div class='w-title'>" + escapeHTML(searchResult.title) + "</div>";
-    let groupedEntries = groupBy(searchResult.entries, (entry) => entry.entry);
+    let groupedEntries = groupBy(searchResult.entries, (e1, e2) => e1.entry === e2.entry);
     result += groupedEntries.map(function (group) {
         let result = [];
         group.forEach(function (entry) {
@@ -253,7 +255,8 @@ let getDeinflector = (function () {
 function Deinflector () {
     this.reasons = [];
     this.rules = [];
-    let string = readUri("chrome://furiganainserter/content/deinflect.dat", "UTF-8");
+    let uri = Services.io.newURI("chrome://furiganainserter/content/deinflect.dat", null, null);
+    let string = read(uri, "UTF-8");
     let lines = string.split("\r\n");
     for (let i = 1; i < lines.length; ++i) {
         let line = lines[i];
@@ -290,14 +293,14 @@ Deinflector.prototype.deinflect = function (word) {
                 continue;
             }
             let newWord = variant.word.substring(0, index) + rule.to;
+            let newVariant;
             // update cache
             if (cache.hasOwnProperty(newWord)) {
                 newVariant = cache[newWord];
                 newVariant.type |= (rule.type >> 8);
-            }
-            //new deinflection
-            else {
-                let newVariant = new Variant(newWord);
+            } else {
+                //new deinflection
+                newVariant = new Variant(newWord);
                 newVariant.type = rule.type >> 8;
                 if (variant.reason === "") {
                     newVariant.reason = this.reasons[rule.reason];

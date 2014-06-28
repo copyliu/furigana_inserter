@@ -1,4 +1,6 @@
-<!ENTITY statusbarpanel.tooltip "Furigana Inserter">
+<!ENTITY furiganaInserter.tooltip "Furigana Inserter">
+<!ENTITY furiganaInserter.accesskey "F">
+
 <!ENTITY insertFuriganaCommand.label "Insert Furigana">
 <!ENTITY insertFuriganaCommand.accesskey "I">
 <!ENTITY removeFuriganaCommand.label "Remove Furigana">
@@ -11,7 +13,7 @@
 <!ENTITY monitorClipboardCommand.label "Monitor Clipboard">
 <!ENTITY monitorClipboardCommand.accesskey "M">
 <!ENTITY autoLookupCommand.label "Show Dictionary Popup">
-<!ENTITY autoLookupCommand.accesskey "P">
+<!ENTITY autoLookupCommand.accesskey "S">
 <!ENTITY userDictCommand.label "User Dictionary…">
 <!ENTITY userDictCommand.accesskey "U">
 
@@ -23,3 +25,4 @@
 <!ENTITY romajiCommand.accesskey "R">
 
 <!ENTITY furiganaAlphabet.label "Furigana alphabet">
+<!ENTITY furiganaAlphabet.accesskey "A">

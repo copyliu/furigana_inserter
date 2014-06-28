@@ -1,4 +1,6 @@
-<!ENTITY statusbarpanel.tooltip "Furigana Inserter">
+<!ENTITY furiganaInserter.tooltip "Furigana Inserter">
+<!ENTITY furiganaInserter.accesskey "F">
+
 <!ENTITY insertFuriganaCommand.label "Furigana hinzufügen">
 <!ENTITY insertFuriganaCommand.accesskey "h">
 <!ENTITY removeFuriganaCommand.label "Furigana entfernen">
@@ -9,9 +11,9 @@
 <!ENTITY openOptionsCommand.label "Einstellungen…">
 <!ENTITY openOptionsCommand.accesskey "E">
 <!ENTITY monitorClipboardCommand.label "Zwischenablage überwachen">
-<!ENTITY monitorClipboardCommand.accesskey "ü">
+<!ENTITY monitorClipboardCommand.accesskey "Z">
 <!ENTITY autoLookupCommand.label "Wörterbuch-Popup anzeigen">
-<!ENTITY autoLookupCommand.accesskey "P">
+<!ENTITY autoLookupCommand.accesskey "W">
 <!ENTITY userDictCommand.label "Benutzerwörterbuch…">
 <!ENTITY userDictCommand.accesskey "B">
 
@@ -23,3 +25,4 @@
 <!ENTITY romajiCommand.accesskey "R">
 
 <!ENTITY furiganaAlphabet.label "Alphabet für Furigana">
+<!ENTITY furiganaAlphabet.accesskey "A">
