@@ -2,47 +2,38 @@
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
-let prefs = new Preferences("extensions.furiganainserter.");
-
 let keyCodes = {};
 
 function onload () {
-    let key;
-    for (key in KeyEvent) {
+    for (let key in KeyEvent) {
         if (KeyEvent.hasOwnProperty(key)) {
             keyCodes[KeyEvent[key]] = key;
         }
     }
 }
 
-let keydown = makeKeyFunction();
-
-function makeKeyFunction () {
+let keydown = (function () {
     let pressedModifiers = {};
     return function (event) {
         event.preventDefault();
         if (event.target.readOnly) {
             return;
-        }
-        if (pressedModifiers.hasOwnProperty(event.keyCode)) {
+        } else if (pressedModifiers.hasOwnProperty(event.keyCode)) {
             return;
-        }
-        if (!keyCodes.hasOwnProperty(event.keyCode)) {
+        } else if (!keyCodes.hasOwnProperty(event.keyCode)) {
             return;
-        }
-        // if modifier then add key and wait for the next
-        if (isModifier(event.keyCode)) {
+        } else if (isModifier(event.keyCode)) {
+            // if modifier then add key and wait for the next
             addKey(event.target, getModifierName(event.keyCode));
             pressedModifiers[event.keyCode] = true;
-        }
-        // if normal key then add key and stop
-        else {
+        } else {
+            // if normal key then add key and stop
             addKey(event.target, keyCodes[event.keyCode].substring(4));
             event.target.readOnly = true;
             pressedModifiers = {};
         }
     };
-}
+})();
 
 function isModifier (keyCode) {
     switch (keyCode) {
@@ -88,7 +79,7 @@ function setKey (event) {
 
 function resetKey (event) {
     let textbox = document.getElementById('lookup_key_textbox');
-    textbox.value = prefs.getPref("lookup_key");
+    textbox.value = getPrefs().getPref("lookup_key");
     textbox.readOnly = true;
 }
 
@@ -100,7 +91,7 @@ function deleteKey (event) {
 
 function saveHotkeys (event) {
     let textbox = document.getElementById('lookup_key_textbox');
-    prefs.setPref("lookup_key", textbox.value);
+    getPrefs().setPref("lookup_key", textbox.value);
 }
 
 window.addEventListener("load", onload, false);

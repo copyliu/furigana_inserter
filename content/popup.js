@@ -7,8 +7,6 @@ let XPathResult = Components.interfaces.nsIDOMXPathResult;
 let Range = Components.interfaces.nsIDOMRange;
 let Node = Components.interfaces.nsIDOMNode;
 
-let prefs = new Preferences("extensions.furiganainserter.");
-
 function Popup (panel, dict) {
     this.timer = null;
     this.panel = panel;
@@ -57,7 +55,7 @@ Popup.prototype.show = function (event) {
     }
     this.timer = window.setTimeout(function () {
         that.show1(event);
-    }, prefs.getPref("popup_delay"));
+    }, getPrefs().getPref("popup_delay"));
 };
 
 Popup.prototype.inRange = function (event) {

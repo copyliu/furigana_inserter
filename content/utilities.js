@@ -1,7 +1,7 @@
 "use strict";
 
 let EXPORTED_SYMBOLS = ["escapeHTML", "time", "getNodesByXPath", "Preferences",
-"PreferencesObserver", "ClipboardMonitor", "katakanaToRomaji",
+"PreferencesObserver", "ClipboardMonitor", "katakanaToRomaji", "getPrefs",
 "katakanaToHiragana", "hiraganaToKatakana", "read", "write",
 "getDictionaryPath", "getOS", "getExtension", "getUserDictionaryPath",
 "getDllFile", "readUri", "getMecabWorker", "groupBy", "getMecabDictIndexFile",
@@ -24,8 +24,6 @@ let Cc = Components.classes;
 let XPathResult = Ci.nsIDOMXPathResult;
 let Node = Ci.nsIDOMNode;
 let NodeFilter = Ci.nsIDOMNodeFilter;
-
-let mecabWorkerInstance = null;
 
 function groupBy(list, equal) {
     let group = [], result = [];
@@ -412,13 +410,15 @@ function getOS () {
     return Services.appinfo.OS;
 }
 
-function getMecabWorker () {
-    if (mecabWorkerInstance) {
-        return mecabWorkerInstance;
+let getMecabWorker = (function () {
+    let mecabWorker = null;
+    return function () {
+        if (mecabWorker === null) {
+            mecabWorker = new MecabWorker();
+        }
+        return mecabWorker;
     }
-    mecabWorkerInstance = new MecabWorker();
-    return mecabWorkerInstance;
-}
+})();
 
 function getSessionStore() {
     return Cc["@mozilla.org/browser/sessionstore;1"].getService(Ci.nsISessionStore);
@@ -457,3 +457,13 @@ function __extends(sub, sup) {
     sub.prototype = new F();
     sub.prototype.constructor = sub;
 }
+
+let getPrefs = (function () {
+    let prefs = null;
+    return function () {
+        if (prefs === null) {
+             prefs = new Preferences("extensions.furiganainserter.");
+        }
+        return prefs;
+    }
+})();

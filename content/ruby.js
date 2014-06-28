@@ -5,8 +5,6 @@ let EXPORTED_SYMBOLS = ["HiraganaComplex", "KatakanaComplex", "RomajiComplex",
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
-let prefs = new Preferences("extensions.furiganainserter.");
-
 function Simple () {
 }
 
@@ -67,12 +65,11 @@ function Complex () {
 Complex.prototype = Object.create(Simple.prototype);
 
 Complex.prototype.createSpan = function(data, spans) {
-    let margin = prefs.getPref("margin");
+    let margin = getPrefs().getPref("margin");
     let style = "";
     if (margin > 0) {
         style = " style='padding-left:".concat(margin, "em; padding-right:", margin, "em'");
     }
-
     let tag = "<span class='fi'".concat(style, " data-bf='");
     let pos = 0;
     let textWithRuby = "";
