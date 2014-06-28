@@ -10,7 +10,7 @@ let FuriganaInserter = {};
     Components.utils["import"]("resource://furiganainserter/dict.js", Imports);
     Components.utils["import"]("resource://furiganainserter/parse.js", Imports);
     Components.utils["import"]("resource://furiganainserter/ruby.js", Imports);
-    Components.utils["import"]("resource://furiganainserter/RangeNodeIterator.js", Imports);
+    Components.utils["import"]("resource://furiganainserter/getRangeNodes.js", Imports);
     
     let Ci = Components.interfaces;
 
@@ -20,11 +20,11 @@ let FuriganaInserter = {};
     let Preferences = Imports.Preferences;
     let PreferencesObserver = Imports.PreferencesObserver;
     let ClipboardMonitor = Imports.ClipboardMonitor;
-    let RangeNodeIterator = Imports.RangeNodeIterator;
+    let getRangeNodes = Imports.getRangeNodes;
     let MecabWorker = Imports.getMecabWorker(document);
     let DictionarySearcher = Imports.DictionarySearcher;
     let Popup = Imports.Popup;
-    let getReadings = Imports.getReadings;
+    let getSpans = Imports.getSpans;
     let HiraganaSimple = Imports.HiraganaSimple;
     let KatakanaSimple = Imports.KatakanaSimple;
     let RomajiSimple = Imports.RomajiSimple;
@@ -36,8 +36,6 @@ let FuriganaInserter = {};
     let copyTextToClipboard = Imports.copyTextToClipboard;
     let getSessionStore = Imports.getSessionStore;
     let getTextNodesFromRange = Imports.getTextNodesFromRange;
-    let getStartTextOffset = Imports.getStartTextOffset;
-    let getEndTextOffset = Imports.getEndTextOffset;
 
     let kPat = "\u3005\u3400-\u9FCF"; // "\u3005" is "々" - CJK iteration mark
     let hPat = "\u3041-\u3096"; // Hiragana
@@ -188,28 +186,26 @@ let FuriganaInserter = {};
         }
     }
 
-    function Pair(first, second) {
-        this.first = first;
-        this.second = second;
-    }
-
     // contains pairs of tab and clipboard monitor
     let clipboardMonitors = [];
 
     function addClipboardMonitor(tab, monitor) {
         for (let i = 0; i < clipboardMonitors.length; ++i) {
-            if (clipboardMonitors[i].first === tab) {
-                clipboardMonitors[i].second = monitor;
+            if (clipboardMonitors[i].tab === tab) {
+                clipboardMonitors[i].monitor = monitor;
                 return;
             }
         }
-        clipboardMonitors.push(new Pair(tab, monitor));
+        clipboardMonitors.push({
+            tab: tab,
+            monitor: monitor
+        });
     }
 
     function getClipboardMonitor(tab) {
         for (let i = 0; i < clipboardMonitors.length; ++i) {
-            if (clipboardMonitors[i].first === tab) {
-                return clipboardMonitors[i].second;
+            if (clipboardMonitors[i].tab === tab) {
+                return clipboardMonitors[i].monitor;
             }
         }
         return null;
@@ -448,8 +444,7 @@ let FuriganaInserter = {};
         let alphabet = id.substring(3, id.length - 4);
         let data = new BrowserData();
         data.alphabet = alphabet;
-        ["katakana", "hiragana", "romaji"].forEach(function (
-                alphabet) {
+        ["katakana", "hiragana", "romaji"].forEach(function (alphabet) {
             document.getElementById("fi-" + alphabet + "-cmd").setAttribute(
                     "checked", false);
         });
@@ -525,11 +520,9 @@ let FuriganaInserter = {};
         }
         let range = selection.getRangeAt(0);
         let text = "";
-        for (let node of RangeNodeIterator(range)) {
-            let start = getStartTextOffset(node, range);
-            let end = getEndTextOffset(node, range);
-            if (isTextNotInRt(node)) {
-                text += node.data.substring(start, end);
+        for (let textNode of getTextNodesFromRange(range)) {
+            if (isTextNotInRt(textNode.node)) {
+                text += textNode.node.data.substring(textNode.start, textNode.end);
             }
         }
         return text;
@@ -540,10 +533,10 @@ let FuriganaInserter = {};
     }
 
     Inserter.prototype.doRangeAsync = function (range) {
-        let textNodes = getTextNodesFromRange(range, isTextNotInRuby);
+        let textNodes = getTextNodesFromRange(range).filter(textNode => isTextNotInRuby(textNode.node));
         let that = this;
-        let strings = textNodes.map(function (node) {
-            return node.node.data.substring(node.start, node.end);
+        let strings = textNodes.map(function (textNode) {
+            return textNode.node.data.substring(textNode.start, textNode.end);
         });
         return Task.spawn(function* () {
             // an array of arrays of tagger nodes
@@ -559,11 +552,11 @@ let FuriganaInserter = {};
     Inserter.prototype.doitRight = function (taggerNodes, node, start, end) {
         let data = node.data.substring(start, end);
         let doc = node.ownerDocument;
-        let readings = getReadings(taggerNodes);
-        if (readings.length === 0) {
+        let spans = getSpans(taggerNodes);
+        if (spans.length === 0) {
             return;
         }
-        let rubyHtml = this.creator.createRuby(data, readings);
+        let rubyHtml = this.creator.createSpan(data, spans);
         let div = doc.createElement("div");
         div.innerHTML = rubyHtml;
         let fragment = doc.createDocumentFragment();
@@ -676,23 +669,21 @@ let FuriganaInserter = {};
     }
 
     function installButton (toolbarId, id, afterId) {
-        let elem, before = null, toolbar;
-
-        if (!document.getElementById(id)) {
-            toolbar = document.getElementById(toolbarId);
-
-            // If no afterId is given, then append the item to the toolbar
-            if (afterId) {
-                elem = document.getElementById(afterId);
-                if (elem && elem.parentNode === toolbar) {
-                    before = elem.nextElementSibling;
-                }
-            }
-
-            toolbar.insertItem(id, before);
-            toolbar.setAttribute("currentset", toolbar.currentSet);
-            document.persist(toolbar.id, "currentset");
+        if (document.getElementById(id)) {
+            return;
         }
+        let toolbar = document.getElementById(toolbarId);
+        // If no afterId is given, then append the item to the toolbar
+        let before = null;
+        if (afterId) {
+            let elem = document.getElementById(afterId);
+            if (elem && elem.parentNode === toolbar) {
+                before = elem.nextElementSibling;
+            }
+        }
+        toolbar.insertItem(id, before);
+        toolbar.setAttribute("currentset", toolbar.currentSet);
+        document.persist(toolbar.id, "currentset");
     }
 
     FuriganaInserter.openOptionsWindow = openOptionsWindow;

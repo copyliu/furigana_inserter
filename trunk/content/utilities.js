@@ -6,7 +6,7 @@ let EXPORTED_SYMBOLS = ["escapeHTML", "time", "getNodesByXPath", "Preferences",
 "getDictionaryPath", "getOS", "getExtension", "getUserDictionaryPath",
 "getDllFile", "readUri", "getMecabWorker", "groupBy", "getMecabDictIndexFile",
 "copyTextToClipboard", "getTextFromClipboard", "getChromeWindow", "getSessionStore",
-"runMecabDictIndex", "getUserDictionaryFile"];
+"runMecabDictIndex", "getUserDictionaryFile", "setInterval", "clearInterval"];
 
 Components.utils["import"]("resource://gre/modules/PrivateBrowsingUtils.jsm");
 Components.utils["import"]("resource://gre/modules/Task.jsm");
@@ -27,16 +27,14 @@ let NodeFilter = Ci.nsIDOMNodeFilter;
 
 let mecabWorkerInstance = null;
 
-function groupBy (list, func) {
+function groupBy(list, equal) {
     let group = [], result = [];
     list.forEach(function (element) {
         if (group.length === 0) {
             group.push(element);
-        }
-        else if (func(group[0]) === func(element)) {
+        } else if (equal(group[0], element)) {
             group.push(element);
-        }
-        else {
+        } else {
             result.push(group);
             group = [element];
         }
@@ -48,12 +46,12 @@ function groupBy (list, func) {
 }
 
 function getChromeWindow (win) {
-    return win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-    .getInterface(Components.interfaces.nsIWebNavigation)
-    .QueryInterface(Components.interfaces.nsIDocShellTreeItem)
+    return win.QueryInterface(Ci.nsIInterfaceRequestor)
+    .getInterface(Ci.nsIWebNavigation)
+    .QueryInterface(Ci.nsIDocShellTreeItem)
     .rootTreeItem
-    .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-    .getInterface(Components.interfaces.nsIDOMWindow);
+    .QueryInterface(Ci.nsIInterfaceRequestor)
+    .getInterface(Ci.nsIDOMWindow);
 }
 
 function katakanaToHiragana (str) {
@@ -64,8 +62,7 @@ function katakanaToHiragana (str) {
         let code = c.charCodeAt(0);
         if (code < 0x30A1 || code > 0x30F6) {
             retval += c;
-        }
-        else {
+        } else {
             retval += String.fromCharCode(code - 0x60);
         }
     }
@@ -80,8 +77,7 @@ function hiraganaToKatakana (str) {
         let code = str.charCodeAt(i);
         if (code < 0x3041 || code > 0x3096) {
             retval += c;
-        }
-        else {
+        } else {
             retval += String.fromCharCode(code + 0x60);
         }
     }
@@ -94,8 +90,8 @@ let loadRomaji = (function () {
         if (romajiTable) {
             return romajiTable;
         }
-        let string = readUri("chrome://furiganainserter/content/romaji.json",
-            "UTF-8");
+        let uri = Services.io.newURI("chrome://furiganainserter/content/romaji.json", null, null)
+        let string = read(uri, "UTF-8");
         romajiTable = JSON.parse(string);
         return romajiTable;
     };
@@ -157,42 +153,62 @@ function getNodesByXPath (elem, expr) {
     return nodes;
 }
 
-function write (file, data, charset, append) {
-    let fos = Cc['@mozilla.org/network/file-output-stream;1']
-    .createInstance(Ci.nsIFileOutputStream);
-    let flags = 0x02 | 0x08 | 0x20; // wronly | create | truncate
-    if (append) flags = 0x02 | 0x10; // wronly | append
-    fos.init(file, flags, -1, 0);
-    let cos = Cc["@mozilla.org/intl/converter-output-stream;1"]
-    .createInstance(Ci.nsIConverterOutputStream);
-    cos.init(fos, charset, -1, 0x0000);
-    cos.writeString(data);
-    cos.close();
-}
-
-function readUri (uri, charset) {
-    let inp = Services.io.newChannel(uri, null, null).open();
-    return readStream(inp, charset);
-}
-
-function read (file, charset) {
-    let fis = Cc['@mozilla.org/network/file-input-stream;1']
-    .createInstance(Ci.nsIFileInputStream);
-    fis.init(file, -1, -1, 0);
-    return readStream(fis, charset);
-}
-
-function readStream (is, charset) {
-    let retval = "";
-    let cis = Cc['@mozilla.org/intl/converter-input-stream;1']
-    .createInstance(Ci.nsIConverterInputStream);
-    cis.init(is, charset, -1, 0x0000);
-    let str = {};
-    while (cis.readString(-1, str) > 0) {
-        retval += str.value;
+function write(file, data, charset, append) {
+    if (!(file instanceof Ci.nsIFile)) {
+        throw new TypeError("file must be a nsIFile");
     }
-    cis.close();
-    return retval;
+    let fos = null;
+    let cos = null;
+    try {
+        fos = Cc['@mozilla.org/network/file-output-stream;1']
+        .createInstance(Ci.nsIFileOutputStream);
+        let flags = append ? 0x02 | 0x10 /*wronly,append*/: 0x02 | 0x08 | 0x20 /*wronly,create,truncate*/;
+        fos.init(file, flags, -1, 0);
+        cos = Cc["@mozilla.org/intl/converter-output-stream;1"]
+        .createInstance(Ci.nsIConverterOutputStream);
+        cos.init(fos, charset, -1, 0x0000);
+        cos.writeString(data);
+    } finally {
+        if (fos) {
+            fos.close();
+        }
+        if (cos) {
+            cos.close();
+        }
+    }
+}
+
+function read(fileOrUri, charset) {
+    let is = null;
+    let cis = null;
+    try {
+        if (fileOrUri instanceof Ci.nsIURI) {
+            let channel = Services.io.newChannelFromURI(fileOrUri);
+            is = channel.open();
+        } else if (fileOrUri instanceof Ci.nsIFile) {
+            is = Cc['@mozilla.org/network/file-input-stream;1']
+            .createInstance(Ci.nsIFileInputStream);
+            is.init(fileOrUri, -1, -1, 0);
+        } else {
+            throw new TypeError("fileOrUri must be an nsIFile or an nsIURI");
+        }
+        cis = Cc['@mozilla.org/intl/converter-input-stream;1']
+        .createInstance(Ci.nsIConverterInputStream);
+        cis.init(is, charset, -1, 0x0000);
+        let retval = "";
+        let str = {};
+        while (cis.readString(-1, str) > 0) {
+            retval += str.value;
+        }
+        return retval;
+    } finally {
+        if (is) {
+            is.close();
+        }
+        if (cis) {
+            cis.close();
+        }
+    }
 }
 
 function Preferences (branchName) {
@@ -272,7 +288,7 @@ function getTextFromClipboard () {
         .createInstance(Ci.nsITransferable);
         trans.init(null);
         trans.addDataFlavor("text/unicode");
-        Services.clipboard.getData(trans, Services.clipboard.kGlobalClipboard);
+        Services.clipboard.getData(trans, Ci.nsIClipboard.kGlobalClipboard);
         let str = {};
         let strLength = {};
         trans.getTransferData("text/unicode", str, strLength);
@@ -295,15 +311,37 @@ function copyTextToClipboard (text, sourceWindow) {
         trans.init(privacyContext);
         trans.addDataFlavor("text/unicode");
         trans.setTransferData("text/unicode", str, text.length * 2);
-        Services.clipboard.setData(trans, null, Services.clipboard.kGlobalClipboard);
+        Services.clipboard.setData(trans, null, Ci.nsIClipboard.kGlobalClipboard);
     } catch (e) {
         console.error("error copying text to clipboard: " + e.message);
     }
 }
 
+function setInterval(func, delay, ...params) {
+    if (typeof func !== "function") {
+        throw new TypeError("func must be a function");
+    }
+    if (typeof delay != "number") {
+        throw new TypeError("delay must be a number");
+    }
+    let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+    timer.initWithCallback({
+        notify : function () {
+            func.call(null, ...params);
+        }
+    }, delay, Ci.nsITimer.TYPE_REPEATING_SLACK);
+    return timer;
+}
+
+function clearInterval(intervalID) {
+    if (!intervalID instanceof Ci.nsITimer) {
+        throw new TypeError("intervalID must be a nsITimer");
+    }
+    intervalID.cancel();
+}
+
 function ClipboardMonitor (interval, callback) {
     let previousText = "";
-    this._timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
     let notify = function () {
         // get text from clipboard. if text hasn't changed ignore it,
         // otherwise paste it into the document
@@ -313,13 +351,11 @@ function ClipboardMonitor (interval, callback) {
             callback(text);
         }
     }
-    this._timer.initWithCallback({
-        notify : notify
-    }, interval, Ci.nsITimer.TYPE_REPEATING_SLACK);
+    this._timer = setInterval(notify, interval);
 }
 
 ClipboardMonitor.prototype.cancel = function () {
-    this._timer.cancel();
+    clearInterval(this._timer);
 };
 
 function getDictionaryPath () {
@@ -392,15 +428,12 @@ function runMecabDictIndex (dictionaryInfo) {
     if (dictionaryInfo === "") {
         return;
     }
-
     let csvFile = getUserDictionaryFile("csv");
     let dicFilePath = dictionaryInfo.split(/\n/)[0].split(/;/)[0];
     dicFilePath = dicFilePath.substring("filename=".length);
     let dicFile = new FileUtils.File(dicFilePath);
     dicFile.normalize();
     let dicDir = dicFile.parent;
-
-    // 5. create user directory with a tagger
     let userDicFile = getUserDictionaryFile("dic");
     let charset = dictionaryInfo.split(/\n/)[0].split(/;/)[1]
     .substring("charset=".length);
@@ -415,4 +448,12 @@ function runMecabDictIndex2 (userDicFile, dicDir, csvFile, charset) {
     let args = ["-u", userDicFile.path, "-d", dicDir.path, "-f", "UTF-8", "-t",
     charset, csvFile.path];
     process.runw(false, args, args.length);
+}
+
+function __extends(sub, sup) {
+//    sup.prototype = Object.create(sup.prototype);
+    let F = function () {};
+    F.prototype = sup.prototype;
+    sub.prototype = new F();
+    sub.prototype.constructor = sub;
 }

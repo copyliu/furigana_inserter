@@ -106,10 +106,10 @@ Popup.prototype.getBasicForm = function (target) {
     if (isInRT) {
         return "";
     }
-    expr = "ancestor-or-self::*[(self::ruby or self::span) and @bf and @class='fi']";
+    expr = "ancestor-or-self::*[(self::ruby or self::span) and @data-bf and @class='fi']";
     type = XPathResult.FIRST_ORDERED_NODE_TYPE;
     let node = doc.evaluate(expr, target, null, type, null).singleNodeValue;
-    return node ? node.getAttribute("bf") : "";
+    return node ? node.getAttribute("data-bf") : "";
 };
 
 Popup.prototype.sameElement = function (event) {

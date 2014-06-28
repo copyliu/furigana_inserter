@@ -34,11 +34,19 @@ function doit () {
         let data = yield worker.getNodesAsync([text]);
         let nodes = data[0];
         for (let node of nodes) {
-            addRow([node.surface, node.feature, node.length]);
+            addRow([node.surface, getReading(node.feature), node.length]);
         }
-        return null;
     });
     return false;
+}
+
+function getReading (feature) {
+    let fields = feature.split(/,/);
+    if (fields.length >= 8) {
+        return katakanaToHiragana(fields[7]);
+    } else {
+        return "";
+    }
 }
 
 function getVersion () {

@@ -10,24 +10,24 @@ let prefs = new Preferences("extensions.furiganainserter.");
 function Simple () {
 }
 
-Simple.prototype.createRuby = function (data, readings) {
+Simple.prototype.createSpan = function (data, spans) {
     let pos = 0;
     let textWithRuby = "";
     let that = this;
-    readings.forEach(function (reading) {
-        reading.children.forEach(function (child) {
-            textWithRuby += escapeHTML(data.substring(pos, child.start));
-            textWithRuby += that.createRubyHtml(child);
-            pos = child.start + child.word.length;
+    spans.forEach(function (span) {
+        span.children.forEach(function (ruby) {
+            textWithRuby += escapeHTML(data.substring(pos, ruby.start));
+            textWithRuby += that.createRuby(ruby);
+            pos = ruby.start + ruby.word.length;
         });
     });
     textWithRuby += escapeHTML(data.substring(pos, data.length));
     return textWithRuby;
 };
 
-Simple.prototype.createRubyHtml = function (reading) {
-    return "<ruby class='fi'><rb>".concat(reading.word, "</rb><rp>(</rp><rt>",
-    reading.reading, "</rt><rp>)</rp></ruby>");
+Simple.prototype.createRuby = function (ruby) {
+    return "<ruby class='fi'><rb>".concat(ruby.word, "</rb><rp>(</rp><rt>",
+    ruby.reading, "</rt><rp>)</rp></ruby>");
 };
 
 let HiraganaSimple = Simple;
@@ -35,27 +35,27 @@ let HiraganaSimple = Simple;
 function KatakanaSimple () {
 }
 
-KatakanaSimple.prototype = new Simple();
+KatakanaSimple.prototype = Object.create(Simple.prototype);
 
-KatakanaSimple.prototype.createRubyHtml = function (reading) {
-    return "<ruby class='fi'><rb>".concat(reading.word, "</rb><rp>(</rp><rt>",
-    hiraganaToKatakana(reading.reading), "</rt><rp>)</rp></ruby>");
+KatakanaSimple.prototype.createRuby = function (ruby) {
+    return "<ruby class='fi'><rb>".concat(ruby.word, "</rb><rp>(</rp><rt>",
+    hiraganaToKatakana(ruby.reading), "</rt><rp>)</rp></ruby>");
 };
 
 function RomajiSimple () {
 }
 
-RomajiSimple.prototype = new Simple();
+RomajiSimple.prototype = Object.create(Simple.prototype);
 
-RomajiSimple.prototype.createRuby = function (data, readings) {
+RomajiSimple.prototype.createSpan = function (data, spans) {
     let pos = 0;
     let textWithRuby = "";
     let that = this;
-    readings.forEach(function (reading) {
-        reading.reading = katakanaToRomaji(hiraganaToKatakana(reading.reading));
-        textWithRuby += escapeHTML(data.substring(pos, reading.start));
-        textWithRuby += that.createRubyHtml(reading);
-        pos = reading.start + reading.word.length;
+    spans.forEach(function (span) {
+        span.reading = katakanaToRomaji(hiraganaToKatakana(span.reading));
+        textWithRuby += escapeHTML(data.substring(pos, span.start));
+        textWithRuby += that.createRuby(span);
+        pos = span.start + span.word.length;
     });
     textWithRuby += escapeHTML(data.substring(pos, data.length));
     return textWithRuby;
@@ -64,31 +64,31 @@ RomajiSimple.prototype.createRuby = function (data, readings) {
 function Complex () {
 }
 
-Complex.prototype = new Simple();
+Complex.prototype = Object.create(Simple.prototype);
 
-Complex.prototype.createRuby = function(data, readings) {
+Complex.prototype.createSpan = function(data, spans) {
     let margin = prefs.getPref("margin");
     let style = "";
     if (margin > 0) {
         style = " style='padding-left:".concat(margin, "em; padding-right:", margin, "em'");
     }
 
-    let tag = "<span class='fi'".concat(style, " bf='");
+    let tag = "<span class='fi'".concat(style, " data-bf='");
     let pos = 0;
     let textWithRuby = "";
     let that = this;
-    readings.forEach(function(reading) {
+    spans.forEach(function(span) {
         // push everything before start
-        textWithRuby += escapeHTML(data.substring(pos, reading.start));
+        textWithRuby += escapeHTML(data.substring(pos, span.start));
         // go to start
-        pos = reading.start;
-        let spanText = tag.concat(reading.basicForm, "'>");
-        let end = pos + reading.word.length;
+        pos = span.start;
+        let spanText = tag.concat(span.basicForm, "'>");
+        let end = pos + span.word.length;
         // push all children
-        reading.children.forEach(function(child) {
-            spanText += escapeHTML(data.substring(pos, child.start));
-            spanText += that.createRubyHtml(child);
-            pos = child.start + child.word.length;
+        span.children.forEach(function(ruby) {
+            spanText += escapeHTML(data.substring(pos, ruby.start));
+            spanText += that.createRuby(ruby);
+            pos = ruby.start + ruby.word.length;
         });
         //
         spanText += escapeHTML(data.substring(pos, end));
@@ -101,9 +101,9 @@ Complex.prototype.createRuby = function(data, readings) {
     return textWithRuby;
 };
 
-Complex.prototype.createRubyHtml = function (reading) {
-    return "<ruby class='fi'><rb>".concat(reading.word, "</rb><rp>(</rp><rt>",
-    reading.reading, "</rt><rp>)</rp></ruby>");
+Complex.prototype.createRuby = function (ruby) {
+    return "<ruby class='fi'><rb>".concat(ruby.word, "</rb><rp>(</rp><rt>",
+    ruby.reading, "</rt><rp>)</rp></ruby>");
 };
 
 let HiraganaComplex = Complex;
@@ -111,22 +111,22 @@ let HiraganaComplex = Complex;
 function KatakanaComplex () {
 }
 
-KatakanaComplex.prototype = new Complex();
+KatakanaComplex.prototype = Object.create(Complex.prototype);
 
-KatakanaComplex.prototype.createRubyHtml = function (reading) {
-    return "<ruby class='fi'><rb>".concat(reading.word, "</rb><rp>(</rp><rt>",
-    hiraganaToKatakana(reading.reading), "</rt><rp>)</rp></ruby>");
+KatakanaComplex.prototype.createRuby = function (ruby) {
+    return "<ruby class='fi'><rb>".concat(ruby.word, "</rb><rp>(</rp><rt>",
+    hiraganaToKatakana(ruby.reading), "</rt><rp>)</rp></ruby>");
 };
 
 function RomajiComplex () {
 }
 
-RomajiComplex.prototype = new Complex();
+RomajiComplex.prototype = Object.create(Complex.prototype);
 
-RomajiComplex.prototype.createRuby = function (data, readings) {
-    readings.forEach(function (r) {
-        r.reading = katakanaToRomaji(hiraganaToKatakana(r.reading));
-        r.children = [r];
+RomajiComplex.prototype.createSpan = function (data, spans) {
+    spans.forEach(function (span) {
+        span.reading = katakanaToRomaji(hiraganaToKatakana(span.reading));
+        span.children = [span];
     });
-    return Complex.prototype.createRuby.call(this, data, readings);
+    return Complex.prototype.createSpan.call(this, data, spans);
 };

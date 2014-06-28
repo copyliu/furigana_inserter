@@ -30,7 +30,8 @@ id="furigana-inserter-overlay" >
                 <menuitem id="fi-user-dict-tb"
                           command="fi-user-dict-command"/>
                 <menu id="fi-furigana-alphabet-menu-tm"
-                      label="&furiganaAlphabet.label;">
+                      label="&furiganaAlphabet.label;"
+                      accesskey="&furiganaAlphabet.accesskey;">
                     <menupopup id="fi-furigana-alphabet-menupopup-tm">
                         <menuitem id="fi-hiragana-tb"
                                   command="fi-hiragana-cmd"
@@ -106,7 +107,8 @@ id="furigana-inserter-overlay" >
     </commandset>
 
     <menupopup id="menu_ToolsPopup">
-        <menu label="&statusbarpanel.tooltip;"
+        <menu label="&furiganaInserter.tooltip;"
+              accesskey="&furiganaInserter.accesskey;"
               insertafter="devToolsSeparator">
             <menupopup>
                 <menuitem id="fi-open-options-tm"

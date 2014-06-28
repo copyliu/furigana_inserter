@@ -1,6 +1,6 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["getReadings"];
+let EXPORTED_SYMBOLS = ["getSpans"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
@@ -14,63 +14,75 @@ let hRegex = new RegExp("[" + hPat + "]");
 let hkRegex = new RegExp("^([" + hPat + "]*)([" + kPat + "]+)");
 let khRegex = new RegExp("^([" + kPat + "]+)([" + hPat + "]*)");
 
-function Reading () {
+function Span() {
     this.reading = "";
     this.word = "";
     this.start = 0;
     this.basicForm = "";
     this.isName = false;
-    this.children = [];
+    this.children = []; // List<Ruby>
 }
 
-function getReadings (nodes) {
-    let readings = [];
+function Ruby() {
+    this.reading = "";
+    this.word = "";
+    this.start = 0;
+    this.isName = false;
+}
+
+function getSpans(nodes) {
+    let spans = [];
     let start = 0;
     nodes.forEach(function (node) {
-        let reading = featureToReading(node.feature);
-        // skip nodes without reading
-        if (reading.reading === "") {
+        let span = featureToSpan(node.feature);
+        // skip spans without reading
+        if (span.reading === "") {
             start += node.length + node.surface.length;
             return;
         }
         // skip whitespace
         start += node.length;
-        reading.word = node.surface;
-        reading.start = start;
-        let children = parseReading(reading);
-        if (reading.isName) children.forEach(function (child) {
-            child.isName = true;
-        });
-        reading.children = children;
-        readings.push(reading);
+        span.word = node.surface;
+        span.start = start;
+        let children = parseSpan(span);
+        if (span.isName) {
+            children.forEach(function (child) {
+                child.isName = true;
+            });
+        }
+        span.children = children;
+        spans.push(span);
         // move to the end of the surface
         start += node.surface.length;
     });
-    return readings;
+    return spans;
 }
 
-// Juman: (現在) (名詞,時相名詞,*,*,現在,げんざい,代表表記:現在)
+// Juman:  (現在) (名詞,時相名詞,*,*,現在,げんざい,代表表記:現在)
 // IPADic: (現在) (名詞,副詞可能,*,*,*,*,現在,ゲンザイ,ゲンザイ)
-function featureToReading (feature) {
-    let obj = new Reading();
+function featureToSpan (feature) {
+    let span = new Span();
     let fields = feature.split(",");
     if (fields.length > 7 && (katRegex.test(fields[7]))
         && !/[\uFF01-\uFF5E]/.test(fields[6])) // not an ASCII char
         {
-        obj.reading = katakanaToHiragana(fields[7]);
-        obj.basicForm = fields[6];
-        obj.isName = (fields[2] === "人名");
+        // IPADic
+        span.reading = katakanaToHiragana(fields[7]);
+        span.basicForm = fields[6];
+        span.isName = (fields[2] === "人名");
     } else if (fields.length === 7 && hRegex.test(fields[5])) {
-        obj.reading = fields[5];
-        obj.basicForm = fields[4];
-        obj.isName = (fields[2] === "人名");
+        // JRuby
+        span.reading = fields[5];
+        span.basicForm = fields[4];
+        span.isName = (fields[2] === "人名");
     }
-    return obj;
+    return span;
 }
 
-function parseReading (reading) {
+// @return List<Ruby>
+function parseSpan(span) {
     let result = [];
-    parseWord(reading.word, reading.reading, reading.start, result);
+    parseWord(span.word, span.reading, span.start, result);
     return result;
 }
 
@@ -81,12 +93,15 @@ function parseReading (reading) {
 // Hiragana := [\u3040-\u309F]+
 function parseWord (word, reading, start, result) {
     let match = word.match(hkRegex);
-    if (!match) return;
+    if (!match) {
+        return;
+    }
     let hiragana = match[1];
     // Hiragana KanjiHiragana
-    if (hiragana === "") parseKanjiHiragana(word, reading, start, result);
-    // KanjiHiragana
-    else {
+    if (hiragana === "") {
+        parseKanjiHiragana(word, reading, start, result);
+    } else {
+        // KanjiHiragana
         word = word.substring(hiragana.length);
         reading = reading.substring(hiragana.length);
         start = start + hiragana.length;
@@ -99,20 +114,20 @@ function parseKanjiHiragana (word, reading, start, result) {
     let kanji = match[1];
     let hiragana = match[2];
     // Kanji !Hiragana
-    if (hiragana === "")
-        result.push({
-            word : word,
-            reading : reading,
-            start : start
-        });
-    // Kanji Word
-    else {
-        let i = reading.indexOf(hiragana, 1);
-        result.push({
-            word : kanji,
-            reading : reading.substring(0, i),
-            start : start
-        });
+    if (hiragana === "") {
+        let r = new Ruby();
+        r.word = word;
+        r.reading = reading;
+        r.start = start;
+        result.push(r);
+    } else {
+        // Kanji Word
+        let i = reading.indexOf(hiragana, kanji.length);
+        let r = new Ruby();
+        r.word = kanji;
+        r.reading = reading.substring(0, i);
+        r.start = start;
+        result.push(r);
         word = word.substring(match[0].length);
         reading = reading.substring(i + hiragana.length);
         start = start + match[0].length;

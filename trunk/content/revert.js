@@ -3,7 +3,7 @@
 let EXPORTED_SYMBOLS = ["revertElement", "revertRange"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
-Components.utils["import"]("resource://furiganainserter/RangeNodeIterator.js");
+Components.utils["import"]("resource://furiganainserter/getRangeNodes.js");
 
 function revertElementSimple (elem) {
     let rubys = getNodesByXPath(elem, ".//ruby[@class='fi']");
@@ -12,7 +12,7 @@ function revertElementSimple (elem) {
 
 function revertRangeSimple (range) {
     let rubys = [];
-    for (let node of RangeNodeIterator(range)) {
+    for (let node of getRangeNodes(range)) {
         if (node.nodeName === "RUBY" && node.getAttribute("class") === 'fi') {
             rubys.push(node);
         }
@@ -41,7 +41,7 @@ function revertElement (elem) {
 
 function revertRange (range) {
     let nodes = [];
-    for (let node of RangeNodeIterator(range)) {
+    for (let node of getRangeNodes(range)) {
         if (node.nodeName === 'SPAN' && node.getAttribute("class") === 'fi') {
             nodes.push(node);
         }
