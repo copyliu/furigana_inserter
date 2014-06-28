@@ -307,7 +307,6 @@ function createTagger(dicPath, userDicPath) {
     } catch (e) {
         return mecab.createTagger(dicPath, "");
     }
-    return null; // unreachable
 }
 
 function init(data) {

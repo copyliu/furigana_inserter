@@ -172,7 +172,6 @@ DictionarySearcher.prototype.wordSearch = function (word) {
 
 DictionarySearcher.prototype.checkType = function (type, entry) {
     if (type === 0xFF) return true;
-
     // ex:
     // /(io) (v5r) to finish/to close/
     // /(v5r) to finish/to close/(P)/
@@ -244,10 +243,9 @@ function Rule () {
 let getDeinflector = (function () {
     let deinflector = null;
     return function () {
-        if (deinflector) {
-            return deinflector;
+        if (deinflector === null) {
+            deinflector = new Deinflector();
         }
-        deinflector = new Deinflector();
         return deinflector;
     };
 })();
