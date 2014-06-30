@@ -2,7 +2,6 @@
 
 let EXPORTED_SYMBOLS = ["DictionarySearcher", "Dictionary", "getDeinflector"];
 
-Components.utils["import"]('resource://gre/modules/AddonManager.jsm');
 Components.utils["import"]('resource://gre/modules/Services.jsm');
 Components.utils["import"]("resource://gre/modules/Task.jsm");
 Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
