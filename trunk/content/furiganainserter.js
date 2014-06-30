@@ -37,6 +37,7 @@ let FuriganaInserter = {};
     let getSessionStore = Imports.getSessionStore;
     let getTextNodesFromRange = Imports.getTextNodesFromRange;
     let getPrefs = Imports.getPrefs;
+    let getDeinflector = Imports.getDeinflector;
 
     let kPat = "\u3005\u3400-\u9FCF"; // "\u3005" is "々" - CJK iteration mark
     let hPat = "\u3041-\u3096"; // Hiragana
@@ -379,21 +380,18 @@ let FuriganaInserter = {};
         let popup = null;
         return function () {
             if (popup === null) {
-                let dict = new DictionarySearcher();
-                if (!window.rcxDicList) {
-                    dict.init([]);
-                } else {
-                    dict.init(window.rcxDicList);
-                }
-                popup = createPopup(dict);
+                let deinflector = getDeinflector();
+                let dictionaries = JSON.parse(getPrefs().getPref("dictionaries"));
+                let dictionarySearcher = new DictionarySearcher(deinflector, dictionaries);
+                popup = createPopup(dictionarySearcher);
             }
             return popup;
         }
     })();
 
-    function createPopup (dict) {
+    function createPopup (dictionarySearcher) {
         let panel = document.getElementById("furigana-inserter-popup");
-        let popup = new Popup(panel, dict);
+        let popup = new Popup(panel, dictionarySearcher);
         panel.addEventListener("mouseover", function (event) {
             window.clearTimeout(popup.timer);
         }, false);

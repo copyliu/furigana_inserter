@@ -509,6 +509,7 @@ QUnit.test("extends", assert => {
     assert.ok(sub instanceof Sub);
 });
 QUnit.module("miscellaneous");
+/*
 QUnit.asyncTest("setInterval", assert => {
     expect(2);
     let n = 0;
@@ -524,6 +525,7 @@ QUnit.asyncTest("setInterval", assert => {
         QUnit.start();
     }, 300);
 });
+*/
 QUnit.test("Deinflector", assert => {
     let d = getDeinflector();
     let variants = d.deinflect("信頼される");
@@ -531,4 +533,35 @@ QUnit.test("Deinflector", assert => {
     assert.strictEqual(variants[0].reason, "");
     assert.strictEqual(variants[0].type, 255);
     assert.strictEqual(variants[0].word, "信頼される");
+});
+
+let dictionaries = [];
+
+QUnit.module("DictionarySearcher", {
+    setup: function (assert) {
+        dictionaries = JSON.parse(getPrefs().getPref("dictionaries"));
+    }
+})
+QUnit.test("getRikaichanDictionaryFileFromChromeURL", assert => {
+    let file = getRikaichanDictionaryFileFromChromeURL("chrome://rikaichan-warodai-sqlite/content");
+    assert.ok(file.exists());
+
+    let file = getRikaichanDictionaryFileFromChromeURL("chrome://rikaichan-jpen/content");
+    assert.ok(file.exists());
+
+    try {
+        getRikaichanDictionaryFileFromChromeURL("chrome://foo/content");
+        assert.ok(false);
+    } catch (e) {
+        assert.strictEqual(e.message, "Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIChromeRegistry.convertChromeURL]");
+    }
+});
+QUnit.test("DictionarySearcher", assert => {
+    let ds = new DictionarySearcher(getDeinflector(), []);
+    assert.strictEqual(ds.dictionaries.length, 0);
+    assert.strictEqual(ds.kanjiDictionaries.length, 0);
+
+    let ds = new DictionarySearcher(getDeinflector(), dictionaries);
+    assert.strictEqual(ds.dictionaries.length, 2);
+    assert.strictEqual(ds.kanjiDictionaries.length, 1);
 });
