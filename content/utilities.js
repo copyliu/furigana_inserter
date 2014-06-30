@@ -6,13 +6,13 @@ let EXPORTED_SYMBOLS = ["escapeHTML", "time", "getNodesByXPath", "Preferences",
 "getDictionaryPath", "getOS", "getExtension", "getUserDictionaryPath",
 "getDllFile", "readUri", "getMecabWorker", "groupBy", "getMecabDictIndexFile",
 "copyTextToClipboard", "getTextFromClipboard", "getChromeWindow", "getSessionStore",
-"runMecabDictIndex", "getUserDictionaryFile", "setInterval", "clearInterval"];
+"runMecabDictIndex", "getUserDictionaryFile", "setInterval", "clearInterval",
+"getRikaichanDictionaryFileFromChromeURL"];
 
 Components.utils["import"]("resource://gre/modules/PrivateBrowsingUtils.jsm");
 Components.utils["import"]("resource://gre/modules/Task.jsm");
-Components.utils["import"]("resource://gre/modules/Promise.jsm");
 Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
-Components.utils["import"]("resource://gre/modules/osfile.jsm");
+Components.utils["import"]("resource://gre/modules/Promise.jsm");
 Components.utils["import"]("resource://gre/modules/devtools/Console.jsm");
 Components.utils["import"]("resource://gre/modules/Services.jsm");
 Components.utils["import"]("resource://gre/modules/FileUtils.jsm");
@@ -119,12 +119,34 @@ function katakanaToRomaji (string) {
     return result;
 }
 
-function chromeUrlStringToFile(chromeUrl) {
-    let chromeRegistry = Components.classes["@mozilla.org/chrome/chrome-registry;1"]
-    .getService(Components.interfaces.nsIChromeRegistry);
+function getFileFromChromeURL(chromeUrl) {
+    let chromeRegistry = Cc["@mozilla.org/chrome/chrome-registry;1"]
+    .getService(Ci.nsIChromeRegistry);
     let url = chromeRegistry.convertChromeURL(NetUtil.newURI(chromeUrl));
-    let fileUrl = url.QueryInterface(Components.interfaces.nsIFileURL);
-    return fileUrl.file;
+    let fileURL = url.QueryInterface(Ci.nsIFileURL);
+    return fileURL.file;
+}
+
+function getRikaichanDictionaryFileFromChromeURL(chromeUrl) {
+    let chromeRegistry = Cc["@mozilla.org/chrome/chrome-registry;1"]
+    .getService(Ci.nsIChromeRegistry);
+    let url = chromeRegistry.convertChromeURL(NetUtil.newURI(chromeUrl));
+    let fileURL;
+    if (url.path.startsWith("file://")) {
+       fileURL = NetUtil.newURI(url.path);
+    } else {
+        fileURL = NetUtil.newURI(url.prePath + url.path);
+    }
+    fileURL.QueryInterface(Ci.nsIFileURL);
+    let file = fileURL.file;
+    if (url.path.startsWith("file://")) {
+        file = file.parent;
+    }
+    file = file.parent;
+    file = file.parent;
+    file = file.parent;
+    file.append("dict.sqlite");
+    return file;
 }
 
 function escapeHTML (text) {
@@ -359,7 +381,7 @@ ClipboardMonitor.prototype.cancel = function () {
 function getDictionaryPath () {
     let chromeUrl = "chrome://furiganainserter-dictionary/content/etc/mecabrc";
     try {
-        return chromeUrlStringToFile(chromeUrl).path;
+        return getFileFromChromeURL(chromeUrl).path;
     } catch (e) {
         return "";
     }
@@ -383,7 +405,7 @@ function getDllFile () {
     } else {
         ext = "dll";
     }
-    let file = chromeUrlStringToFile("chrome://furiganainserter/content");
+    let file = getFileFromChromeURL("chrome://furiganainserter/content");
     file = file.parent.parent;
     file.append("mecab");
     file.append("libmecab." + ext);
@@ -392,7 +414,7 @@ function getDllFile () {
 
 function getMecabDictIndexFile() {
     if (getOS() === "WINNT") {
-        let file = chromeUrlStringToFile("chrome://furiganainserter/content");
+        let file = getFileFromChromeURL("chrome://furiganainserter/content");
         file = file.parent.parent;
         file.append("mecab");
         file.append("mecab-dict-index.exe");

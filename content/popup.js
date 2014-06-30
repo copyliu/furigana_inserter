@@ -3,17 +3,18 @@
 let EXPORTED_SYMBOLS = ["Popup"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
+
 let XPathResult = Components.interfaces.nsIDOMXPathResult;
 let Range = Components.interfaces.nsIDOMRange;
 let Node = Components.interfaces.nsIDOMNode;
 
-function Popup (panel, dict) {
+function Popup (panel, dictSearcher) {
     this.timer = null;
     this.panel = panel;
     this.currentDictionary = 0;
     this.searchResults = [];
     this.word = "";
-    this.dict = dict;
+    this.dictSearcher = dictSearcher;
     this.target = null;
 }
 
@@ -25,7 +26,7 @@ Popup.prototype.showNext = function () {
     this.currentDictionary %= this.searchResults.length;
     let searchResult = this.searchResults[this.currentDictionary];
     let word = this.word.substring(0, searchResult.matchLen);
-    let text = this.dict.makeHtml(searchResult);
+    let text = this.dictSearcher.makeHtml(searchResult);
     text += this.kanjiSearch(word);
     if (text === "") {
         return;
@@ -39,7 +40,7 @@ Popup.prototype.show = function (event) {
     if (event.shiftKey || event.ctrlKey) {
         return;
     }
-    if (!this.dict) {
+    if (!this.dictSearcher) {
         return;
     }
     if (this.sameElement(event) || this.inRange(event)) {
@@ -79,7 +80,7 @@ Popup.prototype.kanjiSearch = function (word) {
         if (c < "\u3400" || c > "\u9FCF") {
             continue;
         }
-        let result = this.dict.kanjiSearch(c);
+        let result = this.dictSearcher.kanjiSearch(c);
         if (searchResult) {
             searchResult.entries.push(...result.entries);
         } else {
@@ -87,7 +88,7 @@ Popup.prototype.kanjiSearch = function (word) {
         }
     }
     if (searchResult) {
-        text = this.dict.makeHtml(searchResult);
+        text = this.dictSearcher.makeHtml(searchResult);
     }
     return text;
 };
@@ -122,13 +123,12 @@ Popup.prototype.hide = function () {
     if (panel.state === "open") {
         panel.hidePopup();
     }
-    this.dict.moveToTop(this.currentDictionary);
+    this.dictSearcher.moveToTop(this.currentDictionary);
     this.currentDictionary = 0;
 };
 
 Popup.prototype.show1 = function (event) {
-    let text = "";
-    text = this.getBasicForm(event.target);
+    let text = this.getBasicForm(event.target);
     this.lookupAndShowAt(text, event.screenX, event.screenY);
 };
 
@@ -140,10 +140,10 @@ Popup.prototype.lookupAndShowAt = function (word, screenX, screenY) {
     }
     let text = "";
     let searchResult = null;
-    this.searchResults = this.dict.wordSearch(word);
+    this.searchResults = this.dictSearcher.wordSearch(word);
     if (this.searchResults.length > 0) {
         searchResult = this.searchResults[0];
-        text += this.dict.makeHtml(searchResult);
+        text += this.dictSearcher.makeHtml(searchResult);
     }
     text += this.kanjiSearch(word);
     this.showTextAt(text, screenX, screenY);

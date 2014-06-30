@@ -1,22 +1,24 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["DictionarySearcher"];
+let EXPORTED_SYMBOLS = ["DictionarySearcher", "Dictionary", "getDeinflector"];
 
 Components.utils["import"]('resource://gre/modules/AddonManager.jsm');
 Components.utils["import"]('resource://gre/modules/Services.jsm');
+Components.utils["import"]("resource://gre/modules/Task.jsm");
+Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
+Components.utils["import"]("resource://gre/modules/devtools/Console.jsm");
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
 let Ci = Components.interfaces;
 let Cc = Components.classes;
 
-function Dictionary (file) {
+function Dictionary () {
     this.name = "";
     this.isName = false;
-    this.file = file;
+    this.file = null;
     this.isKanji = false;
     this.hasType = false;
-    this.hasIndex = false;
 }
 
 Dictionary.prototype.findWord = function (word) {
@@ -71,41 +73,29 @@ function Variant (word) {
     this.reason = "";
 }
 
-function DictionarySearcher () {
-    this.deinflector = getDeinflector();
+function DictionarySearcher (deinflector, dictionaries) {
+    this.deinflector = deinflector;
     this.dictionaries = [];
     this.kanjiDictionaries = [];
-}
-
-DictionarySearcher.prototype.init = function (rcxDicList) {
-    let ids = [];
-    let that = this;
-    for (let id in rcxDicList) {
-        if (rcxDicList.hasOwnProperty(id)) {
-            ids.push(id);
+    for (let d of dictionaries) {
+        try {
+            let file = getRikaichanDictionaryFileFromChromeURL(d.path);
+            let dict = new Dictionary();
+            dict.name = d.name;
+            dict.isName = d.isName;
+            dict.file = file;
+            dict.isKanji = d.isKanji;
+            dict.hasType = d.hasType;
+            if (dict.isKanji) {
+                this.kanjiDictionaries.push(dict);
+            } else {
+                this.dictionaries.push(dict);
+            }
+        } catch (e) {
+            console.error(e);
         }
     }
-
-    AddonManager.getAddonsByIDs(ids, function (addons) {
-        that.dictionaries = [];
-        for (let i = 0; i < addons.length; ++i) {
-            let addon = addons[i];
-            let uri = addon.getResourceURI("dict.sqlite");
-            let file = uri.QueryInterface(Ci.nsIFileURL).file;
-            let dic = new Dictionary(file);
-            let rcxDic = rcxDicList[addon.id];
-            dic.isName = rcxDic.isName;
-            dic.isKanji = rcxDic.isKanji;
-            dic.hasType = rcxDic.hasType;
-            dic.name = rcxDic.name;
-            if (dic.isKanji) {
-                that.kanjiDictionaries.push(dic);
-            } else {
-                that.dictionaries.push(dic);
-            }
-        }
-    });
-};
+}
 
 DictionarySearcher.prototype._wordSearch = function (word, dic) {
     let origWord = word;
@@ -253,7 +243,7 @@ let getDeinflector = (function () {
 function Deinflector () {
     this.reasons = [];
     this.rules = [];
-    let uri = Services.io.newURI("chrome://furiganainserter/content/deinflect.dat", null, null);
+    let uri = NetUtil.newURI("chrome://furiganainserter/content/deinflect.dat");
     let string = read(uri, "UTF-8");
     let lines = string.split("\r\n");
     for (let i = 1; i < lines.length; ++i) {
