@@ -4,7 +4,7 @@ Components.utils["import"]("resource://furiganainserter/utilities.js");
 
 let keyCodes = {};
 
-function onload () {
+function onLoad () {
     for (let key in KeyEvent) {
         if (KeyEvent.hasOwnProperty(key)) {
             keyCodes[KeyEvent[key]] = key;
@@ -12,7 +12,7 @@ function onload () {
     }
 }
 
-let keydown = (function () {
+let onKeydown = (function () {
     let pressedModifiers = {};
     return function (event) {
         event.preventDefault();
@@ -70,28 +70,28 @@ function addKey (target, key) {
     }
 }
 
-function setKey (event) {
+function onSet(event) {
     let textbox = document.getElementById('lookup_key_textbox');
     textbox.reset();
     textbox.readOnly = false;
     textbox.focus();
 }
 
-function resetKey (event) {
+function onReset(event) {
     let textbox = document.getElementById('lookup_key_textbox');
     textbox.value = getPrefs().getPref("lookup_key");
     textbox.readOnly = true;
 }
 
-function deleteKey (event) {
+function onDelete(event) {
     let textbox = document.getElementById('lookup_key_textbox');
     textbox.reset();
     textbox.readOnly = true;
 }
 
-function saveHotkeys (event) {
+function onDialogaccept(event) {
     let textbox = document.getElementById('lookup_key_textbox');
     getPrefs().setPref("lookup_key", textbox.value);
 }
 
-window.addEventListener("load", onload, false);
+window.addEventListener("load", onLoad, false);

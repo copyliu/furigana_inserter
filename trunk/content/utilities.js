@@ -3,7 +3,7 @@
 let EXPORTED_SYMBOLS = ["escapeHTML", "time", "getNodesByXPath", "Preferences",
 "PreferencesObserver", "ClipboardMonitor", "katakanaToRomaji", "getPrefs",
 "katakanaToHiragana", "hiraganaToKatakana", "read", "write",
-"getDictionaryPath", "getOS", "getExtension", "getUserDictionaryPath",
+"getDictionaryPath", "getUserDictionaryPath",
 "getDllFile", "readUri", "getMecabWorker", "groupBy", "getMecabDictIndexFile",
 "copyTextToClipboard", "getTextFromClipboard", "getChromeWindow", "getSessionStore",
 "runMecabDictIndex", "getUserDictionaryFile", "setInterval", "clearInterval",
@@ -43,7 +43,7 @@ function groupBy(list, equal) {
     return result;
 }
 
-function getChromeWindow (win) {
+function getChromeWindow(win) {
     return win.QueryInterface(Ci.nsIInterfaceRequestor)
     .getInterface(Ci.nsIWebNavigation)
     .QueryInterface(Ci.nsIDocShellTreeItem)
@@ -52,10 +52,9 @@ function getChromeWindow (win) {
     .getInterface(Ci.nsIDOMWindow);
 }
 
-function katakanaToHiragana (str) {
+function katakanaToHiragana(str) {
     let retval = "";
-    let len = str.length;
-    for (let i = 0; i < len; ++i) {
+    for (let i = 0; i < str.length; ++i) {
         let c = str.charAt(i);
         let code = c.charCodeAt(0);
         if (code < 0x30A1 || code > 0x30F6) {
@@ -67,10 +66,9 @@ function katakanaToHiragana (str) {
     return retval;
 }
 
-function hiraganaToKatakana (str) {
+function hiraganaToKatakana(str) {
     let retval = "";
-    let len = str.length;
-    for (let i = 0; i < len; ++i) {
+    for (let i = 0; i < str.length; ++i) {
         let c = str.charAt(i);
         let code = str.charCodeAt(i);
         if (code < 0x3041 || code > 0x3096) {
@@ -85,26 +83,22 @@ function hiraganaToKatakana (str) {
 let loadRomaji = (function () {
     let romajiTable = null;
     return function () {
-        if (romajiTable) {
-            return romajiTable;
+        if (romajiTable == null) {
+            let uri = NetUtil.newURI("chrome://furiganainserter/content/romaji.json");
+            let string = read(uri, "UTF-8");
+            romajiTable = JSON.parse(string);
         }
-        let uri = Services.io.newURI("chrome://furiganainserter/content/romaji.json", null, null)
-        let string = read(uri, "UTF-8");
-        romajiTable = JSON.parse(string);
         return romajiTable;
     };
 })();
 
-function katakanaToRomaji (string) {
+function katakanaToRomaji(string) {
     let table = loadRomaji();
-    let j = 0;
     let result = "";
-    let substring = "";
-    let len = string.length;
-
-    for (let i = 0; i < len;) {
+    for (let i = 0; i < string.length;) {
+        let j = 0;
         for (j = 3; j > 0; --j) {
-            substring = string.substring(i, i + j);
+            let substring = string.substring(i, i + j);
             if (table.hasOwnProperty(substring)) {
                 result += table[substring];
                 i += j;
@@ -284,7 +278,7 @@ Preferences.prototype.resetPref = function (name) {
 
 // nsIObserver
 function PreferencesObserver (func) {
-    this.func = func;
+    this._func = func;
 }
 
 // aSubject - The nsIPrefBranch object
@@ -295,7 +289,7 @@ PreferencesObserver.prototype.observe = function (subject, topic, data) {
     if (topic !== "nsPref:changed") {
         return;
     }
-    this.func({
+    this._func({
         data : data,
         subject : subject,
         topic : topic
@@ -398,9 +392,9 @@ function getUserDictionaryPath () {
 
 function getDllFile () {
     let ext;
-    if (getOS() === "Darwin") {
+    if (Services.appinfo.OS === "Darwin") {
         ext = "dylib";
-    } else if (getOS() === "Linux") {
+    } else if (Services.appinfo.OS === "Linux") {
         ext = "so";
     } else {
         ext = "dll";
@@ -413,7 +407,7 @@ function getDllFile () {
 }
 
 function getMecabDictIndexFile() {
-    if (getOS() === "WINNT") {
+    if (Services.appinfo.OS === "WINNT") {
         let file = getFileFromChromeURL("chrome://furiganainserter/content");
         file = file.parent.parent;
         file.append("mecab");
@@ -426,10 +420,6 @@ function getMecabDictIndexFile() {
 
 function getUserDictionaryFile (extension) {
     return FileUtils.getFile("ProfD", ["furigana_inserter_user_dictionary." + extension]);
-}
-
-function getOS () {
-    return Services.appinfo.OS;
 }
 
 let getMecabWorker = (function () {
@@ -489,3 +479,29 @@ let getPrefs = (function () {
         return prefs;
     }
 })();
+
+// [from, to), "from" inclusive, "to" not inclusive
+function* range(from, to) {
+    for (let i = from; i < to; ++i) {
+        yield i;
+    }
+}
+function* filter(iterable, func) {
+    let iterator;
+    if (typeof iterable === "function") {
+        iterator = iterable();
+        if (!("next" in iterator)) {
+            throw new TypeError("not an iterable: " + iterable);
+        }
+    } else {
+        iterator = iterable;
+        if (!("length" in iterator || "next" in iterator)) {
+            throw new TypeError("not an iterator: " + iterator);
+        }
+    }
+    for (let elem of iterator) {
+        if (func(elem)) {
+            yield elem;
+        }
+    }
+}

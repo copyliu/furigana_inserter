@@ -8,7 +8,7 @@ id="furigana-inserter-overlay" >
     <window id="main-window">
         <keyset id="fi-keyset">
             <key id="fi-lookup-word-key" modifiers="alt" keycode="VK_DELETE"
-             oncommand="FuriganaInserter.lookupWord(event);" />
+             oncommand="FuriganaInserter.onLookupWord(event);" />
         </keyset>
     </window>
 
@@ -18,12 +18,12 @@ id="furigana-inserter-overlay" >
                        label="Furigana Inserter"
                        tooltiptext="Furigana Inserter"
                        type="menu-button"
-                       oncommand="FuriganaInserter.togglePopup(event);">
+                       oncommand="FuriganaInserter.onTogglePopup(event);">
             <menupopup>
                 <menuitem id="fi-open-options-tb"
                           label="&openOptionsCommand.label;"
                           accesskey="&openOptionsCommand.accesskey;"
-                          oncommand="FuriganaInserter.openOptionsWindow(event);"/>
+                          oncommand="FuriganaInserter.onOpenOptionsWindow(event);"/>
                 <menuitem id="fi-auto-lookup-tb"
                           type="checkbox"
                           command="fi-auto-lookup-command"/>
@@ -80,29 +80,29 @@ id="furigana-inserter-overlay" >
         <command id="fi-auto-lookup-command"
                  label="&autoLookupCommand.label;"
                  accesskey="&autoLookupCommand.accesskey;"
-                 oncommand="FuriganaInserter.togglePopup(event);"/>
+                 oncommand="FuriganaInserter.onTogglePopup(event);"/>
         <command id="fi-monitor-clipboard-command"
                  label="&monitorClipboardCommand.label;"
                  accesskey="&monitorClipboardCommand.accesskey;"
-                 oncommand="FuriganaInserter.toggleClipboardMonitoring(event);"/>
+                 oncommand="FuriganaInserter.onToggleClipboardMonitoring(event);"/>
         <command id="fi-user-dict-command"
                  label="&userDictCommand.label;"
                  accesskey="&userDictCommand.accesskey;"
-                 oncommand="FuriganaInserter.openUserDictionary(event);"/>
+                 oncommand="FuriganaInserter.onOpenUserDictionary(event);"/>
         <command id="fi-hiragana-cmd"
                  label="&hiraganaCommand.label;"
                  accesskey="&hiraganaCommand.accesskey;"
-                 oncommand="FuriganaInserter.switchAlphabet(event);"
+                 oncommand="FuriganaInserter.onSwitchAlphabet(event);"
         />
         <command id="fi-katakana-cmd"
                  label="&katakanaCommand.label;"
                  accesskey="&katakanaCommand.accesskey;"
-                 oncommand="FuriganaInserter.switchAlphabet(event);"
+                 oncommand="FuriganaInserter.onSwitchAlphabet(event);"
         />
         <command id="fi-romaji-cmd"
                  label="&romajiCommand.label;"
                  accesskey="&romajiCommand.accesskey;"
-                 oncommand="FuriganaInserter.switchAlphabet(event);"
+                 oncommand="FuriganaInserter.onSwitchAlphabet(event);"
         />
     </commandset>
 
@@ -114,7 +114,7 @@ id="furigana-inserter-overlay" >
                 <menuitem id="fi-open-options-tm"
                           label="&openOptionsCommand.label;"
                           accesskey="&openOptionsCommand.accesskey;"
-                          oncommand="FuriganaInserter.openOptionsWindow(event);"/>
+                          oncommand="FuriganaInserter.onOpenOptionsWindow(event);"/>
                 <menuitem id="fi-auto-lookup-tm"
                           type="checkbox"
                           command="fi-auto-lookup-command"/>
@@ -150,17 +150,17 @@ id="furigana-inserter-overlay" >
     <popup id="contentAreaContextMenu"><!-- "contentAreaContextMenu" is a merge point -->
         <menuseparator id="furigana-inserter-separator-cm"/>
         <menuitem id="fi-insert-furigana-cm"
-                  oncommand="FuriganaInserter.insertFurigana(event);"
+                  oncommand="FuriganaInserter.onInsertFurigana(event);"
                   label="&insertFuriganaCommand.label;"
                   accesskey="&insertFuriganaCommand.accesskey;"/>
         <menuitem id="fi-remove-furigana-cm"
-                  oncommand="FuriganaInserter.removeFurigana(event);"
+                  oncommand="FuriganaInserter.onRemoveFurigana(event);"
                   label="&removeFuriganaCommand.label;"
                   accesskey="&removeFuriganaCommand.accesskey;"/>
         <menuitem id="fi-copy-without-furigana-cm"
                   label="&copyWithoutFuriganaCommand.label;"
                   accesskey="&copyWithoutFuriganaCommand.accesskey;"
-                  oncommand="FuriganaInserter.copyWithoutFurigana(event);"/>
+                  oncommand="FuriganaInserter.onCopyWithoutFurigana(event);"/>
     </popup>
 
     <toolbox id="navigator-toolbox">
@@ -170,14 +170,14 @@ id="furigana-inserter-overlay" >
                  fullscreentoolbar="true"
                  position="1000"
                  ordinal="1000"
-                 onkeydown="FuriganaInserter.toolbarOnKeyDown(event);">
+                 onkeydown="FuriganaInserter.onToolbarKeyDown(event);">
             <toolbarbutton id="fi-toolbar-close"
-                oncommand="FuriganaInserter.closeButtonOnCommand(event)"/>
+                oncommand="FuriganaInserter.onToolbarClose(event)"/>
             <textbox id="fi-toolbar-textbox"
                      size="30" maxlength="30"
                      placeholder="Furigana Inserter"/>
             <toolbarbutton id="fi-toolbar-search"
-                oncommand="FuriganaInserter.searchButtonOnCommand(event)"/>
+                oncommand="FuriganaInserter.onToolbarSearch(event)"/>
         </toolbar>
     </toolbox>
 </overlay>
