@@ -1,7 +1,6 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["getRangeNodes", "getStartTextOffset", "getEndTextOffset",
-"splitTextNode", "getTextNodesFromRange"];
+let EXPORTED_SYMBOLS = ["getRangeNodes", "getTextNodesFromRange", "TextNode"];
 
 let Ci = Components.interfaces;
 let Cc = Components.classes;
@@ -9,7 +8,7 @@ let XPathResult = Ci.nsIDOMXPathResult;
 let Node = Ci.nsIDOMNode;
 let NodeFilter = Ci.nsIDOMNodeFilter;
 
-function* getRangeNodes (range) {
+function* getRangeNodes(range) {
     let [start, end] = setup(range);
     yield start;
     if (start === end) {
@@ -31,7 +30,7 @@ function* getRangeNodes (range) {
     }
 }
 
-function setup (range) {
+function setup(range) {
     let start = range.startContainer;
     let end = range.endContainer;
     if (!range.collapsed && start.nodeType === Node.ELEMENT_NODE) {
@@ -90,7 +89,7 @@ function* down(node) {
     }
 }
 
-function getStartTextOffset (node, range) {
+function getStartOffset(node, range) {
     if (node.nodeType === Node.TEXT_NODE) {
         return (node === range.startContainer) ? range.startOffset : 0;
         return 0;
@@ -99,7 +98,7 @@ function getStartTextOffset (node, range) {
     }
 }
 
-function getEndTextOffset (node, range) {
+function getEndOffset(node, range) {
     if (node.nodeType === Node.TEXT_NODE) {
         return (node === range.endContainer) ? range.endOffset : node.data.length;
         return node.data.length;
@@ -108,40 +107,44 @@ function getEndTextOffset (node, range) {
     }
 }
 
-function TextNode () {
-    this.node = null;
-    this.start = 0;
-    this.end = 0;
+function TextNode(node, range) {
+    this._node = node;
+    this._startOffset = getStartOffset(node, range);
+    this._endOffset = getEndOffset(node, range);
 }
 
-function getTextNodesFromRange (range) {
-    let textNodes = [];
+Object.defineProperty(TextNode.prototype, 'node', {
+    get: function () {
+        return this._node;
+    }
+});
+
+TextNode.prototype.split = function () {
+    if (this._startOffset === 0 && this._endOffset === this._node.data.length) {
+        // do nothing
+    } else if (this._startOffset > 0 && this._endOffset < this._node.data.length) {
+        this._node = this._node.splitText(this._endOffset);
+        this._node = this._node.previousSibling;
+        this._node = this._node.splitText(this._startOffset);
+    } else if (this._startOffset > 0) {
+        this._node = this._node.splitText(this._startOffset);
+    } else { // (_endOffset < _node.data.length)
+        this._node = this._node.splitText(this._endOffset).previousSibling;
+    }
+    this._startOffset = 0;
+    this._endOffset = this._node.data.length;
+    return this;
+}
+
+TextNode.prototype.getText = function() {
+    return this._node.data.substring(this._startOffset, this._endOffset);
+};
+
+function* getTextNodesFromRange(range) {
     for (let node of getRangeNodes(range)) {
         if (node.nodeType !== Node.TEXT_NODE) {
             continue;
         }
-        let textNode = new TextNode();
-        textNode.node = node;
-        textNode.start = getStartTextOffset(node, range);
-        textNode.end = getEndTextOffset(node, range);
-        textNodes.push(textNode);
-    }
-    return textNodes;
-}
-
-function splitTextNode (node, startOffset, endOffset) {
-    if (startOffset === 0 && endOffset === node.data.length) {
-        return node;
-    } else if (startOffset > 0 && endOffset < node.data.length) {
-        node = node.splitText(endOffset);
-        node = node.previousSibling;
-        node = node.splitText(startOffset);
-        return node;
-    } else if (startOffset > 0) {
-        node = node.splitText(startOffset);
-        return node;
-    } else { // (endOffset < node.data.length)
-        node = node.splitText(endOffset).previousSibling;
-        return node;
+        yield new TextNode(node, range);
     }
 }

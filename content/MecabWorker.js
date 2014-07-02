@@ -2,6 +2,7 @@ let EXPORTED_SYMBOLS = ["MecabWorker"];
 
 Components.utils["import"]("resource://gre/modules/Promise.jsm");
 Components.utils["import"]("resource://gre/modules/devtools/Console.jsm");
+Components.utils["import"]("resource://gre/modules/Services.jsm");
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
@@ -27,7 +28,7 @@ function MecabWorker () {
     this.worker.postMessage({
         type: "init",
         data: {
-            OS: getOS(),
+            OS: Services.appinfo.OS,
             dllPath: getDllFile().path
         }
     });

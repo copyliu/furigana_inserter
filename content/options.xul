@@ -4,7 +4,7 @@
 
 <prefwindow id="furiganainserter-preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
             title="&prefwindow.title;"
-            ondialogaccept="saveHotkeys(event)">
+            ondialogaccept="onDialogaccept(event)">
     <script type="application/javascript" src="options.js"/>
     <prefpane id="pane1" label="&pane1.title;">
         <preferences>
@@ -54,12 +54,12 @@
             </hbox>
             <hbox align="center">
                 <label value="&lookupKey.label;" control="lookup_key_textbox"/>
-                <textbox id="lookup_key_textbox" size="30" readonly="true" onkeydown="keydown(event)" preference="lookup_key_pref"/>
+                <textbox id="lookup_key_textbox" size="30" readonly="true" onkeydown="onKeydown(event)" preference="lookup_key_pref"/>
                 <button type="menu" label="…">
                     <menupopup>
-                        <menuitem label="set" oncommand="setKey()"/>
-                        <menuitem label="reset" oncommand="resetKey()"/>
-                        <menuitem label="delete" oncommand="deleteKey()"/>
+                        <menuitem label="set" oncommand="onSet(event)"/>
+                        <menuitem label="reset" oncommand="onReset(event)"/>
+                        <menuitem label="delete" oncommand="onDelete(event)"/>
                     </menupopup>
                 </button>
             </hbox>

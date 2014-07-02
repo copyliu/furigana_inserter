@@ -73,9 +73,9 @@ function Variant (word) {
 }
 
 function DictionarySearcher (deinflector, dictionaries) {
-    this.deinflector = deinflector;
-    this.dictionaries = [];
-    this.kanjiDictionaries = [];
+    this._deinflector = deinflector;
+    this._dictionaries = [];
+    this._kanjiDictionaries = [];
     for (let d of dictionaries) {
         try {
             let file = getRikaichanDictionaryFileFromChromeURL(d.path);
@@ -86,12 +86,12 @@ function DictionarySearcher (deinflector, dictionaries) {
             dict.isKanji = d.isKanji;
             dict.hasType = d.hasType;
             if (dict.isKanji) {
-                this.kanjiDictionaries.push(dict);
+                this._kanjiDictionaries.push(dict);
             } else {
-                this.dictionaries.push(dict);
+                this._dictionaries.push(dict);
             }
         } catch (e) {
-            console.error(e);
+//            console.debug(e);
         }
     }
 }
@@ -108,7 +108,7 @@ DictionarySearcher.prototype._wordSearch = function (word, dic) {
         if (dic.isName) {
             variants = [new Variant(word)];
         } else {
-            variants = this.deinflector.deinflect(word);
+            variants = this._deinflector.deinflect(word);
         }
         for (let i = 0; i < variants.length; ++i) {
             let variant = variants[i];
@@ -146,8 +146,8 @@ DictionarySearcher.prototype._wordSearch = function (word, dic) {
 
 DictionarySearcher.prototype.wordSearch = function (word) {
     let retval = [];
-    for (let i = 0; i < this.dictionaries.length; ++i) {
-        let dic = this.dictionaries[i];
+    for (let i = 0; i < this._dictionaries.length; ++i) {
+        let dic = this._dictionaries[i];
         let e = this._wordSearch(word, dic);
         if (e) {
             retval.push(e);
@@ -204,8 +204,8 @@ DictionarySearcher.prototype.makeHtml = function (searchResult) {
 
 DictionarySearcher.prototype.kanjiSearch = function (c) {
     let searchResult = new SearchResult();
-    for (let i = 0; i < this.kanjiDictionaries.length; ++i) {
-        let dic = this.kanjiDictionaries[i];
+    for (let i = 0; i < this._kanjiDictionaries.length; ++i) {
+        let dic = this._kanjiDictionaries[i];
         searchResult.entries = dic.findWord(c);
         searchResult.kanji = true;
         searchResult.title = dic.name;
@@ -218,8 +218,8 @@ DictionarySearcher.prototype.moveToTop = function (index) {
     if (index === 0) {
         return;
     }
-    let removed = this.dictionaries.splice(index, 1);
-    this.dictionaries.unshift(removed[0]);
+    let removed = this._dictionaries.splice(index, 1);
+    this._dictionaries.unshift(removed[0]);
 };
 
 function Rule () {

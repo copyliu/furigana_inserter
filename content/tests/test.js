@@ -6,12 +6,6 @@ Components.utils["import"]("resource://gre/modules/NetUtil.jsm");
 
 let mw = null;
 
-function* range(from, to) {
-    for (let i = from; i < to; ++i) {
-        yield i;
-    }
-}
-
 function onQUnitError(e) {
     console.error(e);
     QUnit.start();
@@ -558,10 +552,32 @@ QUnit.test("getRikaichanDictionaryFileFromChromeURL", assert => {
 });
 QUnit.test("DictionarySearcher", assert => {
     let ds = new DictionarySearcher(getDeinflector(), []);
-    assert.strictEqual(ds.dictionaries.length, 0);
-    assert.strictEqual(ds.kanjiDictionaries.length, 0);
+    assert.strictEqual(ds._dictionaries.length, 0);
+    assert.strictEqual(ds._kanjiDictionaries.length, 0);
 
     let ds = new DictionarySearcher(getDeinflector(), dictionaries);
-    assert.strictEqual(ds.dictionaries.length, 2);
-    assert.strictEqual(ds.kanjiDictionaries.length, 1);
+    assert.strictEqual(ds._dictionaries.length, 2);
+    assert.strictEqual(ds._kanjiDictionaries.length, 1);
+});
+QUnit.module("miscellaneous");
+QUnit.test("katakanaToHiragana", assert => {
+    assert.strictEqual(katakanaToHiragana("ウィキペディア"), "うぃきぺでぃあ");
+});
+QUnit.test("hiraganaToKatakana", assert => {
+    assert.strictEqual(hiraganaToKatakana("うぃきぺでぃあ"), "ウィキペディア");
+});
+QUnit.test("katakanaToRomaji", assert => {
+    assert.strictEqual(katakanaToRomaji("ウィキペディア"), "wikipedia");
+});
+QUnit.test("range", assert => {
+    assert.deepEqual([for (i of range(1, 6)) i], [1,2,3,4,5]);
+});
+QUnit.test("filter", assert => {
+    let numbers = [for (i of range(1, 10)) i];
+    
+    let even = [for (i of filter(numbers, n => n%2 === 0)) i];
+    assert.deepEqual(even, [2,4,6,8]);
+
+    even = [for (i of filter(range(1, 10), n => n%2 === 0)) i];
+    assert.deepEqual(even, [2,4,6,8]);
 });

@@ -5,8 +5,7 @@ let EXPORTED_SYMBOLS = ["HiraganaComplex", "KatakanaComplex", "RomajiComplex",
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
-function Simple () {
-}
+function Simple () {}
 
 Simple.prototype.createSpan = function (data, spans) {
     let pos = 0;
@@ -30,8 +29,7 @@ Simple.prototype.createRuby = function (ruby) {
 
 let HiraganaSimple = Simple;
 
-function KatakanaSimple () {
-}
+function KatakanaSimple () {}
 
 KatakanaSimple.prototype = Object.create(Simple.prototype);
 
@@ -40,8 +38,7 @@ KatakanaSimple.prototype.createRuby = function (ruby) {
     hiraganaToKatakana(ruby.reading), "</rt><rp>)</rp></ruby>");
 };
 
-function RomajiSimple () {
-}
+function RomajiSimple () {}
 
 RomajiSimple.prototype = Object.create(Simple.prototype);
 
@@ -59,8 +56,7 @@ RomajiSimple.prototype.createSpan = function (data, spans) {
     return textWithRuby;
 };
 
-function Complex () {
-}
+function Complex () {}
 
 Complex.prototype = Object.create(Simple.prototype);
 
@@ -105,8 +101,7 @@ Complex.prototype.createRuby = function (ruby) {
 
 let HiraganaComplex = Complex;
 
-function KatakanaComplex () {
-}
+function KatakanaComplex () {}
 
 KatakanaComplex.prototype = Object.create(Complex.prototype);
 
@@ -115,8 +110,7 @@ KatakanaComplex.prototype.createRuby = function (ruby) {
     hiraganaToKatakana(ruby.reading), "</rt><rp>)</rp></ruby>");
 };
 
-function RomajiComplex () {
-}
+function RomajiComplex () {}
 
 RomajiComplex.prototype = Object.create(Complex.prototype);
 
