@@ -10,6 +10,7 @@ let FuriganaInserter = {};
     Components.utils["import"]("resource://furiganainserter/dict.js", Imports);
     Components.utils["import"]("resource://furiganainserter/getRangeNodes.js", Imports);
     Components.utils["import"]("resource://furiganainserter/inserter.js", Imports);
+    Components.utils["import"]("resource://furiganainserter/BrowserData.js", Imports);
     
     let Ci = Components.interfaces;
 
@@ -24,11 +25,11 @@ let FuriganaInserter = {};
     let revertRange = Imports.revertRange;
     let revertElement = Imports.revertElement;
     let copyTextToClipboard = Imports.copyTextToClipboard;
-    let getSessionStore = Imports.getSessionStore;
     let getTextNodesFromRange = Imports.getTextNodesFromRange;
     let getPrefs = Imports.getPrefs;
     let getDeinflector = Imports.getDeinflector;
     let createInserter = Imports.createInserter;
+    let BrowserData = Imports.BrowserData;
 
     let kPat = "\u3005\u3400-\u9FCF"; // "\u3005" is "々" - CJK iteration mark
     let hPat = "\u3041-\u3096"; // Hiragana
@@ -38,42 +39,6 @@ let FuriganaInserter = {};
     let mouseDown = false;
     // map from tab to clipboard monitor implemented as array of {tab, monitor} objects
     let clipboardMonitors = [];
-
-    function BrowserData (tab) {
-        this._ss = getSessionStore();
-        this._tab = tab;
-    }
-
-    Object.defineProperty(BrowserData.prototype, 'isClipboardMonitoringEnabled', {
-        get: function () {
-            return this._ss.getTabValue(this._tab, "fiIsClipboardMonitoringEnabled") === "true";
-        },
-        set: function (value) {
-            this._ss.setTabValue(this._tab, "fiIsClipboardMonitoringEnabled", value.toString());
-        }
-    });
-
-    Object.defineProperty(BrowserData.prototype, 'isPopupEnabled', {
-        get: function () {
-            return this._ss.getTabValue(this._tab, "fiIsPopupEnabled") === "true";
-        },
-        set: function (value) {
-            this._ss.setTabValue(this._tab, "fiIsPopupEnabled", value.toString());
-        }
-    });
-
-    Object.defineProperty(BrowserData.prototype, 'alphabet', {
-        get: function () {
-            return this._ss.getTabValue(this._tab, "fiFuriganaAlphabet");
-        },
-        set: function (value) {
-            this._ss.setTabValue(this._tab, "fiFuriganaAlphabet", value);
-        }
-    });
-
-    BrowserData.prototype.toString = function () {
-        return JSON.stringify(this);
-    };
 
     function onTabSelect(event) {
 //        console.log("onTabSelect");
@@ -97,9 +62,9 @@ let FuriganaInserter = {};
         .setAttribute("checked", data.isClipboardMonitoringEnabled);
 
         ["katakana", "hiragana", "romaji"].forEach(function (alphabet) {
-            document.getElementById("fi-" + alphabet + "-cmd").setAttribute("checked", false);
+            document.getElementById("fi-" + alphabet + "-cmd").setAttribute("checked",
+                alphabet === data.alphabet);
         });
-        document.getElementById("fi-" + data.alphabet + "-cmd").setAttribute("checked", true);
     }
 
     function onTabRestored(event) {

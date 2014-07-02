@@ -1,6 +1,6 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["DictionarySearcher", "Dictionary", "getDeinflector"];
+let EXPORTED_SYMBOLS = ["DictionarySearcher", "getDeinflector"];
 
 Components.utils["import"]('resource://gre/modules/Services.jsm');
 Components.utils["import"]("resource://gre/modules/Task.jsm");
