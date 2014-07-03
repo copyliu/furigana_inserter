@@ -14,15 +14,10 @@ let Ci = Components.interfaces;
 let Cc = Components.classes;
 let XPathResult = Ci.nsIDOMXPathResult;
 
-let kPat = "\u3005\u3400-\u9FCF"; // "\u3005" is "々" - CJK iteration mark
-let hPat = "\u3041-\u3096"; // Hiragana
-let katPat = "\u30A1-\u30FA"; // Katakana
-let jRegex = new RegExp('[' + kPat + hPat + katPat + ']');
-
 function isTextNotInRuby(node) {
     let expr = "self::text() and not(ancestor::ruby)";
     let doc = node.ownerDocument;
-    if (node.data === "" || !jRegex.test(node.data)) {
+    if (!jRegex.test(node.data)) {
         return false;
     } else {
         return doc.evaluate(expr, node, null, XPathResult.BOOLEAN_TYPE, null).booleanValue;
@@ -33,16 +28,13 @@ function createInserter(alphabet) {
     let inserter = null;
     let tokenize = getPrefs().getPref("tokenize");
     if (alphabet === "hiragana") {
-        inserter = tokenize ? new Inserter(new HiraganaComplex())
-        : new Inserter(new HiraganaSimple());
+        inserter = new Inserter(tokenize ? new HiraganaComplex() : new HiraganaSimple());
     } else if (alphabet === "katakana") {
-        inserter = tokenize ? new Inserter(new KatakanaComplex())
-        : new Inserter(new KatakanaSimple());
+        inserter = new Inserter(tokenize ? new KatakanaComplex() : new KatakanaSimple());
     } else if (alphabet === "romaji") {
-        inserter = tokenize ? new Inserter(new RomajiComplex())
-        : new Inserter(new RomajiSimple());
+        inserter = new Inserter(tokenize ? new RomajiComplex() : new RomajiSimple());
     } else {
-        console.error("unknown alphabet: " + alphabet);
+        throw new Error("unknown alphabet: " + alphabet);
     }
     return inserter;
 }

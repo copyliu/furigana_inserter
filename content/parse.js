@@ -1,6 +1,6 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["getSpans"];
+let EXPORTED_SYMBOLS = ["getSpans", "jRegex"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 

@@ -298,6 +298,10 @@ PreferencesObserver.prototype.observe = function (subject, topic, data) {
 
 function getTextFromClipboard () {
     try {
+        if (!Services.clipboard.hasDataMatchingFlavors(["text/unicode"], 1,
+            Ci.nsIClipboard.kGlobalClipboard)) {
+            return;
+        }
         let trans = Cc["@mozilla.org/widget/transferable;1"]
         .createInstance(Ci.nsITransferable);
         trans.init(null);
