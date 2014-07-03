@@ -11,6 +11,7 @@ let FuriganaInserter = {};
     Components.utils["import"]("resource://furiganainserter/getRangeNodes.js", Imports);
     Components.utils["import"]("resource://furiganainserter/inserter.js", Imports);
     Components.utils["import"]("resource://furiganainserter/BrowserData.js", Imports);
+    Components.utils["import"]("resource://furiganainserter/parse.js", Imports);
     
     let Ci = Components.interfaces;
 
@@ -30,11 +31,7 @@ let FuriganaInserter = {};
     let getDeinflector = Imports.getDeinflector;
     let createInserter = Imports.createInserter;
     let BrowserData = Imports.BrowserData;
-
-    let kPat = "\u3005\u3400-\u9FCF"; // "\u3005" is "々" - CJK iteration mark
-    let hPat = "\u3041-\u3096"; // Hiragana
-    let katPat = "\u30A1-\u30FA"; // Katakana
-    let jRegex = new RegExp('[' + kPat + hPat + katPat + ']');
+    let jRegex = Imports.jRegex;
 
     let mouseDown = false;
     // map from tab to clipboard monitor implemented as array of {tab, monitor} objects
