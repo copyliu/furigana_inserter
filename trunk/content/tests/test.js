@@ -540,14 +540,14 @@ QUnit.test("getRikaichanDictionaryFileFromChromeURL", assert => {
     let file = getRikaichanDictionaryFileFromChromeURL("chrome://rikaichan-warodai-sqlite/content");
     assert.ok(file.exists());
 
-    let file = getRikaichanDictionaryFileFromChromeURL("chrome://rikaichan-jpen/content");
+    file = getRikaichanDictionaryFileFromChromeURL("chrome://rikaichan-jpen/content");
     assert.ok(file.exists());
 
     try {
         getRikaichanDictionaryFileFromChromeURL("chrome://foo/content");
         assert.ok(false);
     } catch (e) {
-        assert.strictEqual(e.message, "Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIChromeRegistry.convertChromeURL]");
+        assert.strictEqual(e.message, "Component returned failure code: 0x80520012 (NS_ERROR_FILE_NOT_FOUND) [nsIChromeRegistry.convertChromeURL]");
     }
 });
 QUnit.test("DictionarySearcher", assert => {
@@ -555,7 +555,7 @@ QUnit.test("DictionarySearcher", assert => {
     assert.strictEqual(ds._dictionaries.length, 0);
     assert.strictEqual(ds._kanjiDictionaries.length, 0);
 
-    let ds = new DictionarySearcher(getDeinflector(), dictionaries);
+    ds = new DictionarySearcher(getDeinflector(), dictionaries);
     assert.strictEqual(ds._dictionaries.length, 2);
     assert.strictEqual(ds._kanjiDictionaries.length, 1);
 });
