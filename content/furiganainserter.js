@@ -32,6 +32,8 @@ let FuriganaInserter = {};
     let createInserter = Imports.createInserter;
     let BrowserData = Imports.BrowserData;
     let jRegex = Imports.jRegex;
+    let vc = Imports.vc;
+    let appinfo = Imports.appinfo;
 
     let mouseDown = false;
     // map from tab to clipboard monitor implemented as array of {tab, monitor} objects
@@ -113,7 +115,12 @@ let FuriganaInserter = {};
     function onDOMMouseScroll(event) {
         let iframe = document.getElementById("furigana-inserter-iframe");
         let contentViewer = iframe.docShell.contentViewer;
-        let docViewer = contentViewer.QueryInterface(Ci.nsIMarkupDocumentViewer);
+        let docViewer;
+        if (vc.compare(appinfo.version, "34") < 0) {
+           docViewer = contentViewer.QueryInterface(Ci.nsIMarkupDocumentViewer);
+        } else {
+            docViewer = contentViewer;
+        }
         if (event.axis === MouseScrollEvent.VERTICAL_AXIS && event.ctrlKey) {
             docViewer.fullZoom += event.detail < 0 ? 0.1 : -0.1;
             event.preventDefault();

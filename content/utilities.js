@@ -7,7 +7,7 @@ let EXPORTED_SYMBOLS = ["escapeHTML", "time", "getNodesByXPath", "Preferences",
 "getDllFile", "readUri", "getMecabWorker", "groupBy", "getMecabDictIndexFile",
 "copyTextToClipboard", "getTextFromClipboard", "getChromeWindow", "getSessionStore",
 "runMecabDictIndex", "getUserDictionaryFile", "setInterval", "clearInterval",
-"getRikaichanDictionaryFileFromChromeURL"];
+"getRikaichanDictionaryFileFromChromeURL", "vc", "appinfo"];
 
 Components.utils["import"]("resource://gre/modules/PrivateBrowsingUtils.jsm");
 Components.utils["import"]("resource://gre/modules/Task.jsm");
@@ -24,6 +24,9 @@ let Cc = Components.classes;
 let XPathResult = Ci.nsIDOMXPathResult;
 let Node = Ci.nsIDOMNode;
 let NodeFilter = Ci.nsIDOMNodeFilter;
+
+let vc = Services.vc;
+let appinfo = Services.appinfo;
 
 function groupBy(list, equal) {
     let group = [], result = [];
@@ -353,7 +356,7 @@ function setInterval(func, delay, ...params) {
 
 function clearInterval(intervalID) {
     if (!intervalID instanceof Ci.nsITimer) {
-        throw new TypeError("intervalID must be a nsITimer");
+        throw new TypeError("intervalID must be an nsITimer");
     }
     intervalID.cancel();
 }
