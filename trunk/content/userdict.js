@@ -117,7 +117,7 @@ function doUpdate () {
     Task.spawn(function* () {
         let data = yield mw.getDictionaryInfoAsync("", getDictionaryPath());
         runMecabDictIndex(data);
-    });
+    }).catch(err => console.error(err));
 }
 
 function getUserDictionaryFile (extension) {

@@ -22,8 +22,10 @@ function MecabWorker () {
 //        let {resolve, reject} = this.queue.shift();
         let d = this.queue.shift();
         let err = new Error(event.message, event.filename, event.lineno);
-        console.error(err);
-        d.reject(err);
+//        console.error(err);
+        if (d) {
+            d.reject(err);
+        }
     };
     this.worker.postMessage({
         type: "init",
