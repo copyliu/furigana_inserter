@@ -36,7 +36,7 @@ function doit () {
         for (let node of nodes) {
             addRow([node.surface, getReading(node.feature), node.length]);
         }
-    });
+    }).catch(err => console.error(err));
     return false;
 }
 
@@ -53,7 +53,7 @@ function getVersion () {
     Task.spawn(function* () {
         let version = yield worker.getVersionAsync();
         alert(version);
-    });
+    }).catch(err => console.error(err));
     return false;
 }
 
@@ -61,7 +61,7 @@ function getDictionaryInfo () {
     Task.spawn(function* () {
         let info = yield worker.getDictionaryInfoAsync();
         alert(info);
-    });
+    }).catch(err => console.error(err));
     return false;
 }
 

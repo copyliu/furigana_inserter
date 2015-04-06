@@ -12,6 +12,7 @@ let FuriganaInserter = {};
     Components.utils["import"]("resource://furiganainserter/inserter.js", Imports);
     Components.utils["import"]("resource://furiganainserter/BrowserData.js", Imports);
     Components.utils["import"]("resource://furiganainserter/parse.js", Imports);
+    Components.utils["import"]("resource://gre/modules/devtools/Console.jsm", Imports);
     
     let Ci = Components.interfaces;
 
@@ -34,6 +35,7 @@ let FuriganaInserter = {};
     let jRegex = Imports.jRegex;
     let vc = Imports.vc;
     let appinfo = Imports.appinfo;
+    let console = Imports.console;
 
     let mouseDown = false;
     // map from tab to clipboard monitor implemented as array of {tab, monitor} objects
@@ -73,7 +75,7 @@ let FuriganaInserter = {};
         let data = new BrowserData(tab);
         if (data.isClipboardMonitoringEnabled) {
             let monitor = new ClipboardMonitor(150, function (text) {
-                appendTextAsync(text, tab);
+                appendTextAsync(text, tab).catch(err => console.error(err));
             });
             addClipboardMonitor(tab, monitor);
         }
@@ -232,7 +234,7 @@ let FuriganaInserter = {};
             return;
         }
         if (getPrefs().getPref("auto_process_all_pages")) {
-            inserter.doElementAsync(doc.body);
+            inserter.doElementAsync(doc.body).catch(err => console.error(err));
         }
     }
 
@@ -272,7 +274,7 @@ let FuriganaInserter = {};
         let data = new BrowserData(tab);
         if (!data.isClipboardMonitoringEnabled) {
             monitor = new ClipboardMonitor(150, function (text) {
-                appendTextAsync(text, tab);
+                appendTextAsync(text, tab).catch(err => console.error(err));
             });
             data.isClipboardMonitoringEnabled = true;
             addClipboardMonitor(tab, monitor);
@@ -364,14 +366,14 @@ let FuriganaInserter = {};
         let data = new BrowserData(tab);
         let alphabet = data.alphabet;
         let inserter = createInserter(alphabet);
-        return time(function () {
+        time(function () {
             let win = getFocusedWindow();
             let doc = win.document;
             let range = getSelectedRange(win);
             if (range) {
-                return inserter.doRangeAsync(range);
+                inserter.doRangeAsync(range).catch(err => console.error(err));
             } else {
-                return inserter.doElementAsync(doc.body);
+                inserter.doElementAsync(doc.body).catch(err => console.error(err));
             }
         });
     }
@@ -407,7 +409,7 @@ let FuriganaInserter = {};
 
     function appendTextAsync(text, tab) {
         if (!jRegex.test(text)) {
-            return null;
+            return Promise.resolve();
         }
         let browser = gBrowser.getBrowserForTab(tab);
         let win = browser.contentWindow;

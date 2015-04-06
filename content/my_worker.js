@@ -311,7 +311,8 @@ function createTagger(dicPath, userDicPath) {
 
 function init(data) {
     OS = data.OS;
-    mecab = new MeCab().init(data.dllPath);
+    mecab = new MeCab()
+    mecab.init(data.dllPath);
 }
 
 function getNodes(data) {

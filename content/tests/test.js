@@ -160,7 +160,7 @@ QUnit.asyncTest("getDictionaryInfoAsync", function (assert) {
         let dictionaryInfo = yield mw.getDictionaryInfoAsync();
         assert.notEqual(dictionaryInfo, "");
         QUnit.start();
-    }).then(null, onQUnitError);
+    }).catch(onQUnitError);
 });
 QUnit.asyncTest("getVersionAsync", function (assert) {
     expect(1);
@@ -168,7 +168,7 @@ QUnit.asyncTest("getVersionAsync", function (assert) {
         let version = yield mw.getVersionAsync();
         assert.strictEqual(version, "0.996");
         QUnit.start();
-    }).then(null, onQUnitError);
+    }).catch(onQUnitError);
 });
 QUnit.asyncTest("getNodesAsync1", function (assert) {
     expect(4);
@@ -181,7 +181,7 @@ QUnit.asyncTest("getNodesAsync1", function (assert) {
         assert.strictEqual(node0.length, 0);
         assert.strictEqual(node0.surface, "現在");
         QUnit.start();
-    }).then(null, onQUnitError);
+    }).catch(onQUnitError);
 });
 QUnit.asyncTest("getNodesAsync2", function (assert) {
     expect(4);
@@ -194,7 +194,7 @@ QUnit.asyncTest("getNodesAsync2", function (assert) {
         assert.strictEqual(node0.length, 0);
         assert.strictEqual(node0.surface, "それ");
         QUnit.start();
-    }).then(null, onQUnitError);
+    }).catch(onQUnitError);
 });
 QUnit.asyncTest("getNodesAsyncSerial", function (assert) {
     expect(4);
@@ -212,7 +212,7 @@ QUnit.asyncTest("getNodesAsyncSerial", function (assert) {
         nodes = data[0];
         assert.strictEqual(nodes.length, 13);
         QUnit.start();
-    }).then(null, onQUnitError);
+    }).catch(onQUnitError);
 });
 QUnit.asyncTest("getNodesAsyncParallel", function (assert) {
     expect(5);
@@ -220,32 +220,32 @@ QUnit.asyncTest("getNodesAsyncParallel", function (assert) {
         let data = yield mw.getNodesAsync(["それも質量ともに史上最大の百科事典を、"]);
         let nodes = data[0];
         assert.strictEqual(nodes.length, 13);
-    }).then(null, onQUnitError),
+    }).catch(onQUnitError),
     Task.spawn(function* () {
         let data = yield mw.getNodesAsync(["それも質量ともに史上最大の百科事典、"]);
         let nodes = data[0];
         assert.strictEqual(nodes.length, 12);
-    }).then(null, onQUnitError),
+    }).catch(onQUnitError),
     Task.spawn(function* () {
         let data = yield mw.getNodesAsync(["それも質量ともに史上最大の百科、"]);
         let nodes = data[0];
         assert.strictEqual(nodes.length, 11);
-    }).then(null, onQUnitError),
+    }).catch(onQUnitError),
     Task.spawn(function* () {
         let data = yield mw.getNodesAsync(["それも質量ともに史上最大の、"]);
         let nodes = data[0];
         assert.strictEqual(nodes.length, 10);
-    }).then(null, onQUnitError),
+    }).catch(onQUnitError),
     Task.spawn(function* () {
         let data = yield mw.getNodesAsync(["それも質量ともに史上最大、"]);
         let nodes = data[0];
         assert.strictEqual(nodes.length, 9);
-    }).then(null, onQUnitError)
+    }).catch(onQUnitError)
     ];
     Task.spawn(function* () {
         yield Promise.all(promises);
         QUnit.start();
-    }).then(null, onQUnitError);
+    }).catch(onQUnitError);
 });
 
 QUnit.module("parse.js");
