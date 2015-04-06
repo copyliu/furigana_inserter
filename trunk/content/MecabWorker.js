@@ -14,17 +14,16 @@ function MecabWorker () {
 //    this.worker = new ChromeWorker("chrome://furiganainserter/content/my_worker.js");
     this.worker = new ChromeWorker("../my_worker.js");
     this.worker.onmessage = (event) => {
-//        let {resolve, reject} = this.queue.shift();
         let d = this.queue.shift();
         d.resolve(event.data);
     };
     this.worker.onerror = (event) => {
-//        let {resolve, reject} = this.queue.shift();
         let d = this.queue.shift();
         let err = new Error(event.message, event.filename, event.lineno);
-//        console.error(err);
         if (d) {
             d.reject(err);
+        } else {
+            console.error(err);
         }
     };
     this.worker.postMessage({
@@ -37,13 +36,11 @@ function MecabWorker () {
 }
 
 MecabWorker.prototype._send = function (data) {
-//    let p = new Promise((resolve, reject) => {
-//        this.queue.push({resolve:resolve, reject:reject});
-//    });
-    let d = Promise.defer();
-    this.queue.push(d);
+    let p = new Promise((resolve, reject) => {
+        this.queue.push({resolve: resolve, reject: reject});
+    });
     this.worker.postMessage(data);
-    return d.promise;
+    return p;
 };
 
 MecabWorker.prototype.getVersionAsync = function () {
