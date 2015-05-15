@@ -3,12 +3,6 @@
 
 =Frequently Asked Questions=
 
-== What is the keywords mode?==
-The keywords mode introduced in FI 2.0 allows inserting a keywords for a kanji instead of the reading. A list of english keywords is available for download. You have to copy and paste the list into the keywords dialog. You can find it in "Tools->Furigana Inserter->Keywords...".
-
-==Why does all kanji disappear when I remove furigana from a web page?==
-This happens when you use the HTML Ruby add-on 6. To prevent this problem you should disable the option "Process inserted content" of the HTML Ruby add-on.
-
 ==How do I install a dictionary for Furigana Inserter?==
 There are two ways to install a dictionary required by Furigana Inserter.
  # The first option is to install the dictionary add-on for Firefox.
@@ -19,7 +13,14 @@ There are two ways to install a dictionary required by Furigana Inserter.
   # During the installation choose the UTF-8 format.
 
 ==How do I change the font size of ruby (furigana)?==
-The HTML Ruby add-on allows you to change the font size of ruby (furigana). Go to the `Tools` menu, select `Add-ons` then select `HTML Ruby` and choose `Options`. There you will find the option `Ruby text size`.
+Firefox >= 38 has built-in support for ruby. Add the following code to `userContent.css`:
+{{{
+rt {
+  font-size: 100%;
+}
+}}}
+
+See [http://superuser.com/questions/318912/how-to-override-the-css-of-a-site-in-firefox-with-usercontent-css this] for more information.
 
 ==What about Linux and Mac OS X?==
 Since version 2.0 Furigana Inserter should work on Linux and Mac OS X. Firefox version 4 or higher is required. The dictionary add-on should also work. I have only tested it on Linux and Windows.
@@ -31,4 +32,4 @@ To install FI 2.7 on Fedora 18 64-bit:
   # `sudo yum install mecab mecab-ipadic`
   # `sudo ln -s /usr/lib64/libmecab.so.2 /usr/lib64/libmecab.so.1`
 
-[http://akitaonrails.com/2012/05/08/off-topic-reading-with-subtitles-over-kanjis-in-japanese-webpages Blog entry] explaining how to install Furigana Inserter on Mac OS X.
+[http://akitaonrails.com/2012/05/08/off-topic-reading-with-subtitles-over-kanjis-in-japanese-webpages Blog entry] explains how to install Furigana Inserter on Mac OS X.
