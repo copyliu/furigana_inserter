@@ -22,14 +22,38 @@ rt {
 
 See [http://superuser.com/questions/318912/how-to-override-the-css-of-a-site-in-firefox-with-usercontent-css this] for more information.
 
-==What about Linux and Mac OS X?==
-Since version 2.0 Furigana Inserter should work on Linux and Mac OS X. Firefox version 4 or higher is required. The dictionary add-on should also work. I have only tested it on Linux and Windows.
+==Linux and Mac OS X==
+You need to install MeCab with the UTF-8 dictionary or MeCab and the dictionary add-on.
 
-The user dictionary will only work with the IPAdic dictionary. You have to install either !MeCab with a dictionary or !MeCab and the dictionary add-on for Firefox. You should use the UTF-8 encoding for the !MeCab dictionary.
-
+===Fedora===
 To install FI 2.7 on Fedora 18 64-bit:
   # Drag and drop `furigana-inserter-<version>.xpi` file into Firefox.
   # `sudo yum install mecab mecab-ipadic`
   # `sudo ln -s /usr/lib64/libmecab.so.2 /usr/lib64/libmecab.so.1`
 
+=== Mac OS X==
+
 [http://akitaonrails.com/2012/05/08/off-topic-reading-with-subtitles-over-kanjis-in-japanese-webpages Blog entry] explains how to install Furigana Inserter on Mac OS X.
+
+=== Ubuntu ===
+prereqs
+
+    firefox 38
+
+install mecab
+
+    open terminal (command line)
+{{{
+sudo apt-get install mecab
+}}}
+install plugin
+
+https://addons.mozilla.org/en-us/firefox/addon/furigana-inserter/
+
+download dictionary
+
+https://code.google.com/p/itadaki/downloads/detail?name=furiganainserter-dictionary-1.2.7z
+
+install dictionary
+
+    drag the downloaded file into the firefox window
