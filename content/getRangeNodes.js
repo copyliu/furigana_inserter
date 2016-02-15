@@ -20,9 +20,9 @@ function* getRangeNodes(range) {
             return;
         }
         if (descend) {
-            for (let temp of down(temp)) {
-                yield temp;
-                if (temp === end) {
+            for (let temp2 of down(temp)) {
+                yield temp2;
+                if (temp2 === end) {
                     return;
                 }
             }
