@@ -18,7 +18,7 @@ id="furigana-inserter-overlay" >
                        label="Furigana Inserter"
                        tooltiptext="Furigana Inserter"
                        type="menu-button"
-                       oncommand="FuriganaInserter.onTogglePopup(event);">
+                       oncommand="FuriganaInserter.onInsertFurigana(event);">
             <menupopup>
                 <menuitem id="fi-open-options-tb"
                           label="&openOptionsCommand.label;"
