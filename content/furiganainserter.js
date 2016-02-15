@@ -1,6 +1,6 @@
 "use strict";
 
-let FuriganaInserter = {};
+var FuriganaInserter = {};
 
 (function () {
     let Imports = {};

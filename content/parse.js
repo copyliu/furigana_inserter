@@ -1,18 +1,18 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["getSpans", "jRegex"];
+var EXPORTED_SYMBOLS = ["getSpans", "jRegex"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
-let kPat = "\u3005\u3400-\u9FCF"; // "\u3005" is "々" - CJK iteration mark
-let hPat = "\u3041-\u3096"; // Hiragana
-let katPat = "\u30A1-\u30FA"; // Katakana
-let jRegex = new RegExp('[' + kPat + hPat + katPat + ']');
-let kRegex = new RegExp("[" + kPat + "]");
-let katRegex = new RegExp("[" + katPat + "]");
-let hRegex = new RegExp("[" + hPat + "]");
-let hkRegex = new RegExp("^([" + hPat + "]*)([" + kPat + "]+)");
-let khRegex = new RegExp("^([" + kPat + "]+)([" + hPat + "]*)");
+var kPat = "\u3005\u3400-\u9FCF"; // "\u3005" is "々" - CJK iteration mark
+var hPat = "\u3041-\u3096"; // Hiragana
+var katPat = "\u30A1-\u30FA"; // Katakana
+var jRegex = new RegExp('[' + kPat + hPat + katPat + ']');
+var kRegex = new RegExp("[" + kPat + "]");
+var katRegex = new RegExp("[" + katPat + "]");
+var hRegex = new RegExp("[" + hPat + "]");
+var hkRegex = new RegExp("^([" + hPat + "]*)([" + kPat + "]+)");
+var khRegex = new RegExp("^([" + kPat + "]+)([" + hPat + "]*)");
 
 function Span() {
     this.reading = "";

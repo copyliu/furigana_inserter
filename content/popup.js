@@ -1,12 +1,12 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["Popup"];
+var EXPORTED_SYMBOLS = ["Popup"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
-let XPathResult = Components.interfaces.nsIDOMXPathResult;
-let Range = Components.interfaces.nsIDOMRange;
-let Node = Components.interfaces.nsIDOMNode;
+var XPathResult = Components.interfaces.nsIDOMXPathResult;
+var Range = Components.interfaces.nsIDOMRange;
+var Node = Components.interfaces.nsIDOMNode;
 
 function Popup(panel, dictSearcher) {
     this._timer = null;

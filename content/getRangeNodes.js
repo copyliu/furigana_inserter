@@ -1,12 +1,12 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["getRangeNodes", "getTextNodesFromRange", "TextNode"];
+var EXPORTED_SYMBOLS = ["getRangeNodes", "getTextNodesFromRange", "TextNode"];
 
-let Ci = Components.interfaces;
-let Cc = Components.classes;
-let XPathResult = Ci.nsIDOMXPathResult;
-let Node = Ci.nsIDOMNode;
-let NodeFilter = Ci.nsIDOMNodeFilter;
+var Ci = Components.interfaces;
+var Cc = Components.classes;
+var XPathResult = Ci.nsIDOMXPathResult;
+var Node = Ci.nsIDOMNode;
+var NodeFilter = Ci.nsIDOMNodeFilter;
 
 function* getRangeNodes(range) {
     let [start, end] = setup(range);

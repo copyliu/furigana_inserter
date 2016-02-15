@@ -1,6 +1,6 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["createInserter"];
+var EXPORTED_SYMBOLS = ["createInserter"];
 
 Components.utils["import"]("resource://gre/modules/Task.jsm");
 Components.utils["import"]("resource://gre/modules/devtools/Console.jsm");
@@ -10,9 +10,9 @@ Components.utils["import"]("resource://furiganainserter/ruby.js");
 Components.utils["import"]("resource://furiganainserter/getRangeNodes.js");
 Components.utils["import"]("resource://furiganainserter/parse.js");
 
-let Ci = Components.interfaces;
-let Cc = Components.classes;
-let XPathResult = Ci.nsIDOMXPathResult;
+var Ci = Components.interfaces;
+var Cc = Components.classes;
+var XPathResult = Ci.nsIDOMXPathResult;
 
 function isTextNotInRuby(node) {
     let expr = "self::text() and not(ancestor::ruby)";

@@ -1,6 +1,6 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["DictionarySearcher", "getDeinflector"];
+var EXPORTED_SYMBOLS = ["DictionarySearcher", "getDeinflector"];
 
 Components.utils["import"]('resource://gre/modules/Services.jsm');
 Components.utils["import"]("resource://gre/modules/Task.jsm");
@@ -9,8 +9,8 @@ Components.utils["import"]("resource://gre/modules/devtools/Console.jsm");
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
-let Ci = Components.interfaces;
-let Cc = Components.classes;
+var Ci = Components.interfaces;
+var Cc = Components.classes;
 
 function Dictionary () {
     this.name = "";
@@ -229,7 +229,7 @@ function Rule () {
     this.reason = 0;
 }
 
-let getDeinflector = (function () {
+var getDeinflector = (function () {
     let deinflector = null;
     return function () {
         if (deinflector === null) {

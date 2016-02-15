@@ -1,6 +1,6 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["revertElement", "revertRange"];
+var EXPORTED_SYMBOLS = ["revertElement", "revertRange"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 Components.utils["import"]("resource://furiganainserter/getRangeNodes.js");

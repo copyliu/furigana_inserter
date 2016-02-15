@@ -1,4 +1,4 @@
-let EXPORTED_SYMBOLS = ["MecabWorker"];
+var EXPORTED_SYMBOLS = ["MecabWorker"];
 
 Components.utils["import"]("resource://gre/modules/Promise.jsm");
 Components.utils["import"]("resource://gre/modules/devtools/Console.jsm");
@@ -6,8 +6,8 @@ Components.utils["import"]("resource://gre/modules/Services.jsm");
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
-let Ci = Components.interfaces;
-let Cc = Components.classes;
+var Ci = Components.interfaces;
+var Cc = Components.classes;
 
 function MecabWorker () {
     this.queue = [];

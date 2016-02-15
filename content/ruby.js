@@ -1,6 +1,6 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["HiraganaComplex", "KatakanaComplex", "RomajiComplex",
+var EXPORTED_SYMBOLS = ["HiraganaComplex", "KatakanaComplex", "RomajiComplex",
 "RomajiSimple", "HiraganaSimple", "KatakanaSimple"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
@@ -27,7 +27,7 @@ Simple.prototype.createRuby = function (ruby) {
     ruby.reading, "</rt><rp>)</rp></ruby>");
 };
 
-let HiraganaSimple = Simple;
+var HiraganaSimple = Simple;
 
 function KatakanaSimple () {}
 
@@ -99,7 +99,7 @@ Complex.prototype.createRuby = function (ruby) {
     ruby.reading, "</rt><rp>)</rp></ruby>");
 };
 
-let HiraganaComplex = Complex;
+var HiraganaComplex = Complex;
 
 function KatakanaComplex () {}
 

@@ -6,12 +6,12 @@ Components.utils["import"]("resource://gre/modules/Services.jsm");
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
-let Cc = Components.classes;
-let Ci = Components.interfaces;
+var Cc = Components.classes;
+var Ci = Components.interfaces;
 
-let initialized = false;
+var initialized = false;
 
-let sectionNames = {
+var sectionNames = {
     "name" : "name",
     "noun" : "noun"
 };

@@ -2,7 +2,7 @@
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 
-let keyCodes = {};
+var keyCodes = {};
 
 function onLoad () {
     for (let key in KeyEvent) {
@@ -12,7 +12,7 @@ function onLoad () {
     }
 }
 
-let onKeydown = (function () {
+var onKeydown = (function () {
     let pressedModifiers = {};
     return function (event) {
         event.preventDefault();

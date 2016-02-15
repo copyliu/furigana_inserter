@@ -1,7 +1,7 @@
 "use strict";
 
-let OS = "";
-let mecab = null;
+var OS = "";
+var mecab = null;
 
 function getOS() {
     return OS;

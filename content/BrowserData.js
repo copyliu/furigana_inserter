@@ -1,6 +1,6 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["BrowserData"];
+var EXPORTED_SYMBOLS = ["BrowserData"];
 
 Components.utils["import"]("resource://furiganainserter/utilities.js");
 

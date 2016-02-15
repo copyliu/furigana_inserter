@@ -1,6 +1,6 @@
 "use strict";
 
-let EXPORTED_SYMBOLS = ["escapeHTML", "time", "getNodesByXPath", "Preferences",
+var EXPORTED_SYMBOLS = ["escapeHTML", "time", "getNodesByXPath", "Preferences",
 "PreferencesObserver", "ClipboardMonitor", "katakanaToRomaji", "getPrefs",
 "katakanaToHiragana", "hiraganaToKatakana", "read", "write",
 "getDictionaryPath", "getUserDictionaryPath",
@@ -19,14 +19,14 @@ Components.utils["import"]("resource://gre/modules/FileUtils.jsm");
 
 Components.utils["import"]("resource://furiganainserter/MecabWorker.js");
 
-let Ci = Components.interfaces;
-let Cc = Components.classes;
-let XPathResult = Ci.nsIDOMXPathResult;
-let Node = Ci.nsIDOMNode;
-let NodeFilter = Ci.nsIDOMNodeFilter;
+var Ci = Components.interfaces;
+var Cc = Components.classes;
+var XPathResult = Ci.nsIDOMXPathResult;
+var Node = Ci.nsIDOMNode;
+var NodeFilter = Ci.nsIDOMNodeFilter;
 
-let vc = Services.vc;
-let appinfo = Services.appinfo;
+var vc = Services.vc;
+var appinfo = Services.appinfo;
 
 function groupBy(list, equal) {
     let group = [], result = [];
@@ -83,7 +83,7 @@ function hiraganaToKatakana(str) {
     return retval;
 }
 
-let loadRomaji = (function () {
+var loadRomaji = (function () {
     let romajiTable = null;
     return function () {
         if (romajiTable == null) {
@@ -429,7 +429,7 @@ function getUserDictionaryFile (extension) {
     return FileUtils.getFile("ProfD", ["furigana_inserter_user_dictionary." + extension]);
 }
 
-let getMecabWorker = (function () {
+var getMecabWorker = (function () {
     let mecabWorker = null;
     return function () {
         if (mecabWorker === null) {
@@ -477,7 +477,7 @@ function __extends(sub, sup) {
     sub.prototype.constructor = sub;
 }
 
-let getPrefs = (function () {
+var getPrefs = (function () {
     let prefs = null;
     return function () {
         if (prefs === null) {
